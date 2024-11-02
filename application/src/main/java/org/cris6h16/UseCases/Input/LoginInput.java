@@ -1,4 +1,4 @@
-package org.cris6h16;
+package org.cris6h16.UseCases.Input;
 
 import lombok.Getter;
 

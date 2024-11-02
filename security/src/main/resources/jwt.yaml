@@ -1,0 +1,8 @@
+jwt:
+  secret-key: 12345678yt432112345678765432123456789876543212345678432
+  refresh-token-exp:
+    time: 30
+    unit: DAYS
+  access-token-exp:
+    time: 20
+    unit: MINUTES

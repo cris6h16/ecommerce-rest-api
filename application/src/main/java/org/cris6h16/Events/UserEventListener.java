@@ -1,7 +1,6 @@
 package org.cris6h16.Events;
 
 import org.cris6h16.EmailService;
-import org.cris6h16.UserCreatedEvent;
 import org.cris6h16.VerificationCodeService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -20,8 +19,17 @@ import org.springframework.stereotype.Component;
     @EventListener
     //todo: async
     public void handleUserCreatedEvent(UserCreatedEvent event) {
-        codeService.deleteByEmail(event.getEmail());
-        String code = codeService.createAndSaveCode(event.getEmail());
-        emailService.sendEmailVerificationCode(event.getEmail(), code);
+        handleEmailVerif(event.getEmail());
+    }
+
+    @EventListener
+    public void handleEmailVerificationRequiredEvent(EmailVerificationRequiredEvent event) {
+        handleEmailVerif(event.getEmail());
+    }
+
+    private void handleEmailVerif(String email) {
+        codeService.deleteByEmail(email);
+        String code = codeService.createAndSaveCode(email);
+        emailService.sendEmailVerificationCode(email, code);
     }
 }

@@ -1,12 +1,13 @@
 package org.cris6h16.UseCases;
 
-import org.cris6h16.EmailNotVerifiedException;
-import org.cris6h16.EmailVerificationRequiredEvent;
+import org.cris6h16.Exceptions.EmailNotVerifiedException;
+import org.cris6h16.Events.EmailVerificationRequiredEvent;
 import org.cris6h16.ErrorMsgProperties;
 import org.cris6h16.Exceptions.NotFoundException;
-import org.cris6h16.InvalidCredentialsException;
-import org.cris6h16.LoginInput;
-import org.cris6h16.LoginOutput;
+import org.cris6h16.Exceptions.InvalidCredentialsException;
+import org.cris6h16.GenAccessTokenInput;
+import org.cris6h16.UseCases.Input.LoginInput;
+import org.cris6h16.UseCases.Output.LoginOutput;
 import org.cris6h16.SecurityService;
 import org.cris6h16.UserOutput;
 import org.cris6h16.UserService;
@@ -56,9 +57,15 @@ public class LoginUseCase {
     }
 
     private LoginOutput createLoginOutput(UserOutput output) {
-        String accessToken = securityService.generateAccessToken(output.getEmail());
-        String refreshToken = securityService.generateRefreshToken(output.getEmail());
+        GenAccessTokenInput input = genAccessTokenInput(output);
+
+        String accessToken = securityService.generateAccessToken(input);
+        String refreshToken = securityService.generateRefreshToken(output.getId());
         return new LoginOutput(accessToken, refreshToken);
+    }
+
+    private GenAccessTokenInput genAccessTokenInput(UserOutput output) {
+        return new GenAccessTokenInput(output.getId(), output.isEnabled(), output.getAuthorities());
     }
 
     private void isEmailVerified(UserOutput output) {

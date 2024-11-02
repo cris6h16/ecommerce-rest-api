@@ -2,15 +2,15 @@ package org.cris6h16.UseCases;
 
 import org.cris6h16.ErrorMsgProperties;
 import org.cris6h16.InvalidVerificationCodeException;
-import org.cris6h16.VerificationCodeServiceImpl;
+import org.cris6h16.VerificationCodeService;
 
 import java.time.LocalDateTime;
 
 public class VerifyEmailUseCase {
-    private final VerificationCodeServiceImpl verificationCodeService;
+    private final VerificationCodeService verificationCodeService;
     private final ErrorMsgProperties errorMsgProperties;
 
-    public VerifyEmailUseCase(VerificationCodeServiceImpl verificationCodeService, ErrorMsgProperties errorMsgProperties) {
+    public VerifyEmailUseCase(VerificationCodeService verificationCodeService, ErrorMsgProperties errorMsgProperties) {
         this.verificationCodeService = verificationCodeService;
         this.errorMsgProperties = errorMsgProperties;
     }

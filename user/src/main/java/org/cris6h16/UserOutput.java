@@ -7,18 +7,15 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 @Builder
+    @Getter
 public class UserOutput {
     private Long id;
     private String firstname;
     private String lastname;
-    @Getter
     private String email;
-    @Getter
     private String password;
     private BigDecimal balance;
-    @Getter
     private boolean enabled;
-    @Getter
     private boolean emailVerified;
-    private Set<AuthorityEntity> authorities;
+    private Set<String> authorities;
 }

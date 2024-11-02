@@ -3,7 +3,7 @@ package org.cris6h16.UseCases;
 import org.cris6h16.CreateUserInput;
 import org.cris6h16.ErrorMsgProperties;
 import org.cris6h16.SecurityService;
-import org.cris6h16.UserCreatedEvent;
+import org.cris6h16.Events.UserCreatedEvent;
 import org.cris6h16.UserOutput;
 import org.cris6h16.UserService;
 import org.springframework.context.ApplicationEventPublisher;

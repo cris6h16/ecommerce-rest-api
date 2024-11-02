@@ -11,7 +11,7 @@ import java.time.Year;
 import java.util.Arrays;
 
 @Slf4j
-public class EmailServiceImpl implements EmailService {
+ class EmailServiceImpl implements EmailService {
     private static final int MAX_RETRIES = 3;
     private static final String APP_NAME = "Demo App";
     private final ITemplateEngine templateEngine;

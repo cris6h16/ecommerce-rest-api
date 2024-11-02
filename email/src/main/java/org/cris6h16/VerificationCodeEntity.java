@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 @Entity
 @Table(name = "email_verification")
     @Getter
-public class VerificationCodeEntity {
+ class VerificationCodeEntity {
     public static final int EXP_MIN = 60;
     public static final int CODE_LENGTH = 6;
 
