@@ -1,0 +1,72 @@
+package org.cris6h16;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
+
+
+/**
+ * Representacion de la entidad {@code Usuario} en la base de datos
+ *
+ * @author <a href="https://github.com/cris6h16" target="_blank"> Cristian Manuel Herrera Guallo </a>
+ */
+@Entity(name = "users")
+@Table(
+        name = "users",
+        indexes = {
+                @Index(columnList = "username", name = "username_index"),
+                @Index(columnList = "email", name = "email_index")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email", name = "email_unique")
+        }
+)
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@EqualsAndHashCode
+@Getter
+@Setter
+class UserEntity {
+    // This statics have to be used as a centralize place for validation, not were wrote for make easy for change ( error messages contains this values )
+    protected static final int FIRSTNAME_LENGTH = 30;
+    protected static final int LASTNAME_LENGTH = 30;
+    protected static final int EMAIL_LENGTH = 255;
+    protected static final int PASSWORD_LENGTH = 60;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = FIRSTNAME_LENGTH, name = "first_name")
+    private String firstname;
+
+    @Column(nullable = false, name = "last_name", length = LASTNAME_LENGTH)
+    private String lastName;
+
+    @Column(nullable = false, length = EMAIL_LENGTH)
+    private String email;
+
+    @Column(nullable = false, length = PASSWORD_LENGTH)
+    private String password;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal balance;
+
+    @Column(nullable = false)
+    private boolean enabled;
+
+    @Column(nullable = false, name = "email_verified")
+    private boolean emailVerified;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(
+            name = "users_authorities",
+            joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_authority_user_id"))
+    )
+    private Set<EAuthority> authorities;
+}

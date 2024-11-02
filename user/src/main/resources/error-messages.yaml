@@ -1,0 +1,9 @@
+user:
+  first-name-length: "El primer nombre debe tebe tener entre 1 y 30 characters"
+  last-name-length: "El primer apellido debe tener entre 1 y 30 characters"
+  password-length: "La contraseña debe tener entre 8 y 60 characters"
+  email-invalid: "El email no es válido"
+  email-already-exists: "El email ya existe"
+  user-not-found: "El usuario no existe"
+  invalid-credentials: "Credenciales inválidas"
+  email-not-verified: "Su email no ha sido verificado, por favor revisa tu bandeja de entrada"
