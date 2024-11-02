@@ -37,6 +37,10 @@ public class VerificationCodeEntity {
     @Column(nullable = false)
     private LocalDateTime expiresAt;
 
+    protected VerificationCodeEntity() {
+
+    }
+
 
     @PrePersist
     public void onCreate() {

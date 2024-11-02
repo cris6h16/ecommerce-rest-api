@@ -12,4 +12,5 @@ import org.springframework.stereotype.Component;
 public class ErrorMsgProperties {
     private String invalidCredentials;
     private String emailNotVerified;
+    private String invalidVerificationCode;
 }

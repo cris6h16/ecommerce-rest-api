@@ -16,14 +16,13 @@ public class EmailServiceImpl implements EmailService {
     private static final String APP_NAME = "Demo App";
     private final ITemplateEngine templateEngine;
     private final JavaMailSender mailSender;
-    private final VerificationCodeService verificationCodeService;
 
-    public EmailServiceImpl(ITemplateEngine templateEngine, JavaMailSender mailSender, VerificationCodeService verificationCodeService) {
+    public EmailServiceImpl(ITemplateEngine templateEngine, JavaMailSender mailSender, VerificationCodeServiceImpl verificationCodeService) {
         this.templateEngine = templateEngine;
         this.mailSender = mailSender;
-        this.verificationCodeService = verificationCodeService;
     }
 
+    @SuppressWarnings("SameParameterValue")
     void sendEmail(String email, String content, String subject) {
         boolean success = false;
 
@@ -47,12 +46,13 @@ public class EmailServiceImpl implements EmailService {
 
                 mailSender.send(message);
 
-                log.debug("Email sent to {}", email);
+                log.debug("Email successfully sent to {} on attempt {}", email, attempts);
                 success = true;
+
             } catch (Exception e) {
                 log.warn("Attempt {}: Failed to send email to {}", attempts, email, e);
 
-                if(attempts == MAX_RETRIES - 1) {
+                if (attempts == MAX_RETRIES - 1) {
                     log.error("All attempts failed to send email to {}, {}", email, e.toString());
                 }
             }
@@ -60,9 +60,8 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendEmailVerificationCode(String email) {
-        String code = verificationCodeService.createAndSaveCode(email);
-        String content = verificationCodeContent(email, code);
+    public void sendEmailVerificationCode(String email, String verificationCode) {
+        String content = verificationCodeContent(email, verificationCode);
         sendEmail(email, content, "Email Verification Code");
     }
 
@@ -76,27 +75,3 @@ public class EmailServiceImpl implements EmailService {
         return templateEngine.process("email-verification-code.html", context);
     }
 }
-
-
-/*
-@EventListener
-public void handleUserCreatedEvent(UserCreatedEvent event) {
-    int attempts = 0;
-    boolean success = false;
-    while (attempts < MAX_RETRIES && !success) {
-        try {
-            emailService.sendEmailVerificationCode(event.getEmail());
-            success = true; // Email sent successfully
-        } catch (Exception e) {
-            attempts++;
-            logger.warn("Attempt {}: Failed to send email verification code to {}", attempts, event.getEmail(), e);
-            // Sleep or delay before retrying if necessary
-        }
-    }
-    if (!success) {
-        logger.error("All attempts failed to send email verification code to {}", event.getEmail());
-        // Notify admin or handle further
-    }
-}
-
- */
