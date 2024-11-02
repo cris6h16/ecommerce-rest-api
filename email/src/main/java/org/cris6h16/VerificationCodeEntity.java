@@ -9,16 +9,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "email_verification")
-@NoArgsConstructor
-public class EmailVerification {
+    @Getter
+public class VerificationCodeEntity {
     public static final int EXP_MIN = 60;
+    public static final int CODE_LENGTH = 6;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +28,7 @@ public class EmailVerification {
     @Column(nullable = false, length = UserEntity.EMAIL_LENGTH)
     private String email;
 
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = CODE_LENGTH)
     private String code;
 
     @Column(nullable = false)
@@ -35,6 +36,7 @@ public class EmailVerification {
 
     @Column(nullable = false)
     private LocalDateTime expiresAt;
+
 
     @PrePersist
     public void onCreate() {
@@ -48,8 +50,7 @@ public class EmailVerification {
         this.expiresAt = this.expiresAt.truncatedTo(ChronoUnit.MILLIS);
     }
 
-    public EmailVerification(Long id, String email, String code) {
-        this.id = id;
+    public VerificationCodeEntity(String email, String code) {
         this.email = email;
         this.code = code;
     }

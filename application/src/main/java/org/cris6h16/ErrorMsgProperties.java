@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "error-messages")
 @Getter
 @Setter
-class ErrorMsgProperties {
+public class ErrorMsgProperties {
     private String invalidCredentials;
     private String emailNotVerified;
 }

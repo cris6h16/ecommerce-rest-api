@@ -1,15 +1,10 @@
 package org.cris6h16;
 
-import org.springframework.context.ApplicationEvent;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-class UserCreatedEvent  {
+@Getter
+@AllArgsConstructor
+public class UserCreatedEvent  {
     private final String email;
-
-    public UserCreatedEvent(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
-    }
 }

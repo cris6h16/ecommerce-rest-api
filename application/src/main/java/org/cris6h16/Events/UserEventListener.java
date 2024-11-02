@@ -1,6 +1,7 @@
-package org.cris6h16;
+package org.cris6h16.Events;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.cris6h16.EmailService;
+import org.cris6h16.UserCreatedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -9,14 +10,13 @@ import org.springframework.stereotype.Component;
 
     private final EmailService emailService;
 
-    @Autowired
     public UserEventListener(EmailService emailService) {
         this.emailService = emailService;
     }
 
     @EventListener
+    //todo: async
     public void handleUserCreatedEvent(UserCreatedEvent event) {
-        String verificationLink = generateVerificationLink(event.getEmail());
-        emailService.sendVerificationEmail(event.getEmail(), verificationLink);
+        emailService.sendEmailVerificationCode(event.getEmail());
     }
 }
