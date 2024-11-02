@@ -1,7 +1,7 @@
-package org.cris6h16.Events;
+package org.cris6h16;
 
-public class UserCreatedEvent {
-    private final String email;
+ class UserCreatedEvent {
+    private final String email;w
 
     public UserCreatedEvent(String email) {
         this.email = email;

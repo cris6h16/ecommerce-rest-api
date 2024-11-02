@@ -5,7 +5,7 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-public class AddressEntity {
+ class AddressEntity {
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = {}

@@ -1,4 +1,4 @@
-package org.cris6h16.Properties;
+package org.cris6h16;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "error-messages")
 @Getter
 @Setter
-public class ErrorMessagesProperties {
+ class ErrorMessagesProperties {
     private String firstNameLength;
     private String lastNameLength;
     private String passwordLength;

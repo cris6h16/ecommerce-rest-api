@@ -1,11 +1,10 @@
 package org.cris6h16;
 
 import org.cris6h16.Exceptions.InvalidAttributeException;
-import org.cris6h16.Properties.ErrorMessagesProperties;
 
 import static org.cris6h16.UserEntity.*;
 
-public class UserValidator {
+ class UserValidator {
 
     private final ErrorMessagesProperties propErrors;
 

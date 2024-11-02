@@ -62,11 +62,18 @@ class UserEntity {
     @Column(nullable = false, name = "email_verified")
     private boolean emailVerified;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(
-            name = "users_authorities",
-            joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_authority_user_id"))
+    @ManyToMany(
+            fetch = FetchType.EAGER,
+            cascade = {}
     )
-    private Set<EAuthority> authorities;
+    @JoinTable(
+            name = "users_authorities",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id"),
+            uniqueConstraints = {
+                    @UniqueConstraint(columnNames = {"user_id", "authority_id"}, name = "unique_user_authority")
+            },
+            foreignKey = @ForeignKey(name = "fk_user_authority_user")
+    )
+    private Set<AuthorityEntity> authorities;
 }
