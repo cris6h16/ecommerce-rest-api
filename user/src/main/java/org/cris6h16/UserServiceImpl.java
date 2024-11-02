@@ -1,33 +1,45 @@
 package org.cris6h16;
 
 import org.cris6h16.Exceptions.AlreadyExistsException;
-import org.cris6h16.Exceptions.EmailNotVerifiedException;
-import org.cris6h16.Exceptions.InvalidCredentialsException;
-import org.springframework.context.ApplicationEventPublisher;
+import org.cris6h16.Exceptions.NotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
+@Service
 class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserValidator userValidator;
-    private final ErrorMessagesProperties errorProps;
+    private final ErrorMsgProperties errorProps;
 
-    UserServiceImpl(UserRepository userRepository, UserValidator userValidator, ErrorMessagesProperties errorMessagesProperties) {
+    UserServiceImpl(UserRepository userRepository, UserValidator userValidator, ErrorMsgProperties errorMessagesProperties) {
         this.userRepository = userRepository;
         this.userValidator = userValidator;
         this.errorProps = errorMessagesProperties;
     }
 
     @Override
-    public UserOutput createUser(CreateUserInput user) {
-        user.prepare();
-        isValid(user);
-        checkDuplicates(user);
-        UserEntity userEntity = createUserEntity(user);
-        UserEntity savedUserEntity = userRepository.save(userEntity);
-        return createUserOutput(savedUserEntity);
+    public UserOutput createUser(CreateUserInput input) {
+        input.prepare();
+        isValid(input);
+        checkDuplicates(input);
+        UserEntity saved = userRepository.save(createUserEntity(input));
+        return toUserOutput(saved);
+    }
+
+    private UserOutput toUserOutput(UserEntity saved) {
+        return UserOutput.builder()
+                .id(saved.getId())
+                .firstname(saved.getFirstname())
+                .lastname(saved.getLastName())
+                .email(saved.getEmail())
+                .password(saved.getPassword())
+                .balance(saved.getBalance())
+                .enabled(saved.isEnabled())
+                .emailVerified(saved.isEmailVerified())
+                .authorities(saved.getAuthorities())
+                .build();
     }
 
 
@@ -38,20 +50,13 @@ class UserServiceImpl implements UserService {
     }
 
     private void isValid(CreateUserInput user) {
-        userValidator.validateEmail(user.getEmail());
-        userValidator.validatePassword(user.getPassword());
         userValidator.validateFirstname(user.getFirstname());
         userValidator.validateLastname(user.getLastname());
+        userValidator.validateEmail(user.getEmail());
+        userValidator.validatePassword(user.getPassword());
+        userValidator.validateBalance(user.getBalance());
     }
 
-    private UserOutput createUserOutput(UserEntity ue) {
-        return UserOutput.builder()
-                .email(ue.getEmail())
-                .name(ue.getFirstname())
-                .lastName(ue.getLastName())
-                .id(ue.getId())
-                .build();
-    }
 
     private UserEntity createUserEntity(CreateUserInput user) {
         return UserEntity.builder()
@@ -63,43 +68,19 @@ class UserServiceImpl implements UserService {
                 .balance(BigDecimal.valueOf(0))
                 .enabled(true)
                 .emailVerified(false)
-                .authorities(Set.of(EAuthority.USER_ROLE))
+                .authorities(user.getAuthorities())
                 .build();
     }
 
     @Override
-    public UserOutput login(String email, String password) {
+    public UserOutput findByEmail(String email) {
         userValidator.validateEmail(email);
-
-        // InvalidCredentialsException
-        UserEntity user = getByEmailAndEnabledElseThrow(email, true);
-        passMatchElseThrow(password, user.getPassword());
-
-        // EmailNotVerifiedException
-        isEmailVerifiedElseThrow(user);
-
-        return createUserOutput(user);
+        UserEntity user = getByEmailElseThrow(email);
+        return toUserOutput(user);
     }
 
-    private void isEmailVerifiedElseThrow(UserEntity user) {
-        if (!user.isEmailVerified()) {
-            throw new EmailNotVerifiedException(errorProps.getEmailNotVerified());
-        }
-    }
-
-    private void passMatchElseThrow(String password, String passwordHash) {
-        if (!passwordEncoder.matches(password, passwordHash)) {
-            throw new InvalidCredentialsException(errorProps.getInvalidCredentials());
-        }
-    }
-
-    private UserEntity getByEmailAndEnabledElseThrow(String email, boolean isEnabled) {
-        return userRepository.findByEmailAndEnabled(email, isEnabled)
-                .orElseThrow(() -> new InvalidCredentialsException(errorProps.getInvalidCredentials()));
-    }
-
-    @Override
-    public UserOutput getUserByEmail(String email) {
-        return null;
+    private UserEntity getByEmailElseThrow(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(errorProps.getUserNotFound()));
     }
 }

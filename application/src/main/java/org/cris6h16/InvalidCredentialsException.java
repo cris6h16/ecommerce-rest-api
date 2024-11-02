@@ -1,4 +1,4 @@
-package org.cris6h16.Exceptions;
+package org.cris6h16;
 
 public class InvalidCredentialsException extends RuntimeException {
     public InvalidCredentialsException(String message) {

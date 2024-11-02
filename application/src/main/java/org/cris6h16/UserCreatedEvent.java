@@ -1,7 +1,9 @@
 package org.cris6h16;
 
- class UserCreatedEvent {
-    private final String email;w
+import org.springframework.context.ApplicationEvent;
+
+class UserCreatedEvent  {
+    private final String email;
 
     public UserCreatedEvent(String email) {
         this.email = email;

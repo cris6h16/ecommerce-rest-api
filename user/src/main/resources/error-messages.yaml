@@ -7,3 +7,4 @@ user:
   user-not-found: "El usuario no existe"
   invalid-credentials: "Credenciales inválidas"
   email-not-verified: "Su email no ha sido verificado, por favor revisa tu bandeja de entrada"
+  balance-invalid: "El balance no puede ser negativo"

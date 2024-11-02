@@ -2,13 +2,15 @@ package org.cris6h16;
 
 import org.cris6h16.Exceptions.InvalidAttributeException;
 
+import java.math.BigDecimal;
+
 import static org.cris6h16.UserEntity.*;
 
  class UserValidator {
 
-    private final ErrorMessagesProperties propErrors;
+    private final ErrorMsgProperties propErrors;
 
-    public UserValidator(ErrorMessagesProperties errorMessages) {
+    public UserValidator(ErrorMsgProperties errorMessages) {
         this.propErrors = errorMessages;
     }
 
@@ -37,6 +39,12 @@ import static org.cris6h16.UserEntity.*;
             throw new InvalidAttributeException(propErrors.getEmailInvalid());
         }
     }
+
+     void validateBalance(BigDecimal balance) {
+        if (balance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidAttributeException(propErrors.getBalanceInvalid());
+        }
+     }
 
 //    public void validateId(Long id) {
 //        if (id == null) {

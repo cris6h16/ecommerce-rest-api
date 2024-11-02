@@ -22,6 +22,7 @@
         <developer/>
     </developers>
     <modules>
+<!--        <module>user</module>-->
         <module>user</module>
         <module>email</module>
         <module>application</module>
