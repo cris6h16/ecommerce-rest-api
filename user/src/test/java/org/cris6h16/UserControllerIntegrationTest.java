@@ -1,11 +1,13 @@
 package org.cris6h16;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -15,6 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@ContextConfiguration(classes = UserControllerIntegrationTest.App.class)
 @AutoConfigureMockMvc
 class UserControllerIntegrationTest {
 
@@ -70,4 +73,15 @@ class UserControllerIntegrationTest {
         assertNotNull(output.getAccessToken());
         assertNotNull(output.getRefreshToken());
     }
+
+
+    @SpringBootApplication
+    static class App {
+
+        public static void main(String[] args) {
+            SpringApplication.run(App.class, args);
+        }
+
+    }
+
 }

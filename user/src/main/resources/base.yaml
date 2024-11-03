@@ -1,0 +1,23 @@
+spring:
+
+  application:
+    name: restful-api-jwt
+
+  jpa:
+    show-sql: ${jpa.show-sql}
+    hibernate:
+      ddl-auto: ${jpa.properties.hibernate.ddl-auto}
+    properties:
+      hibernate:
+        format_sql: ${jpa.properties.hibernate.format_sql}
+        ddl-auto: ${jpa.properties.hibernate.ddl-auto}
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+  datasource:
+    url: jdbc:postgresql://${db.host}:${db.port}/${db.db-name}
+    driver-class-name: org.postgresql.Driver
+    username: ${db.username}
+    password: ${db.password}
+    hikari:
+      schema: ${db.hikari.schema}
