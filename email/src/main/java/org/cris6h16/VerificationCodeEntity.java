@@ -25,7 +25,7 @@ import java.time.temporal.ChronoUnit;
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = UserEntity.EMAIL_LENGTH)
+    @Column(nullable = false, length = 255)
     private String email;
 
     @Column(nullable = false, length = CODE_LENGTH)

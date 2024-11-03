@@ -32,32 +32,33 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void signup(SignupInput input) {
+    public Long signup(SignupDTO input) {
         input.prepare();
         isValid(input);
         checkDuplicates(input);
         encodePass(input);
         UserEntity saved = userRepository.save(toUserEntity(input));
         sendVerificationEmail(saved);
+        return saved.getId();
     }
 
     private void sendVerificationEmail(UserEntity saved) {
         emailService.sendEmailVerificationCode(saved.getEmail());
     }
 
-    private void encodePass(SignupInput input) {
+    private void encodePass(SignupDTO input) {
         String encodedPass = securityService.encodePassword(input.getPassword());
         input.setPassword(encodedPass);
     }
 
 
-    private void checkDuplicates(SignupInput user) {
+    private void checkDuplicates(SignupDTO user) {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new AlreadyExistsException(errorProps.getEmailAlreadyExists());
         }
     }
 
-    private void isValid(SignupInput user) {
+    private void isValid(SignupDTO user) {
         userValidator.validateFirstname(user.getFirstname());
         userValidator.validateLastname(user.getLastname());
         userValidator.validateEmail(user.getEmail());
@@ -65,7 +66,7 @@ class UserServiceImpl implements UserService {
     }
 
 
-    private UserEntity toUserEntity(SignupInput user) {
+    private UserEntity toUserEntity(SignupDTO user) {
         return UserEntity.builder()
                 .id(null)
                 .firstname(user.getFirstname())
@@ -75,7 +76,7 @@ class UserServiceImpl implements UserService {
                 .balance(BigDecimal.valueOf(0))
                 .enabled(true)
                 .emailVerified(false)
-                .authorities(getOrCreateAuthority(SignupInput.DEF_AUTHORITY))
+                .authorities(getOrCreateAuthority(SignupDTO.DEF_AUTHORITY))
                 .build();
     }
 
@@ -91,9 +92,12 @@ class UserServiceImpl implements UserService {
 
     //todo: crear un exception supplier el cual sera el encargado de injectar el mensaje antes de pasarnos
     @Override
-    public LoginOutput login(String email, String password) {
+    public LoginOutput login(LoginDTO dto) {
         Supplier<InvalidCredentialsException> credE = () -> new InvalidCredentialsException(errorProps.getInvalidCredentials());
         Supplier<EmailNotVerifiedException> emailE = () -> new EmailNotVerifiedException(errorProps.getEmailNotVerified());
+
+        String email = dto.getEmail();
+        String password = dto.getPassword();
 
         userValidator.validateEmail(email);
         userValidator.validatePassword(password);
