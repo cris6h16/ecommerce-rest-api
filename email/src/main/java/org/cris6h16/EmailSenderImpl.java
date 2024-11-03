@@ -4,6 +4,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -11,6 +12,7 @@ import java.time.Year;
 import java.util.Arrays;
 
 @Slf4j
+@Component
  class EmailSenderImpl implements EmailSender {
     private static final int MAX_RETRIES = 3;
     private static final String APP_NAME = "Demo App";

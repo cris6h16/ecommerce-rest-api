@@ -1,9 +1,10 @@
 package org.cris6h16;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-
+@Component
 @Slf4j
  class VerificationCodeServiceImpl implements VerificationCodeService{
     private final VerificationCodeGenerator codeGenerator;
@@ -37,8 +38,8 @@ import java.time.LocalDateTime;
     }
 
     @Override
-    public boolean existsByEmailAndCodeAndExpiresAtBefore(String email, String code, LocalDateTime comparisonTime) {
-        return codeRepository.existsByEmailAndCodeAndExpiresAtBefore(email, code, comparisonTime);
+    public boolean existsByEmailAndCodeAndExpiresAtAfter(String email, String code, LocalDateTime comparisonTime) {
+        return codeRepository.existsByEmailAndCodeAndExpiresAtAfter(email, code, comparisonTime);
     }
 
 

@@ -1,9 +1,12 @@
 package org.cris6h16;
 
-import org.cris6h16.Exceptions.AlreadyExistsException;
+import lombok.extern.slf4j.Slf4j;
+import org.cris6h16.Exceptions.AlreadyExistsException.EmailAlreadyExistsException;
 import org.cris6h16.Exceptions.EmailNotVerifiedException;
 import org.cris6h16.Exceptions.InvalidCredentialsException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -13,24 +16,24 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserValidator userValidator;
-    private final ErrorMsgProperties errorProps;
     private final EmailService emailService;
     private final SecurityService securityService;
     private final AuthorityRepository authorityRepository;
 
-    UserServiceImpl(UserRepository userRepository, UserValidator userValidator, ErrorMsgProperties errorMessagesProperties, EmailService emailService, SecurityService securityService, AuthorityRepository authorityRepository) {
+    UserServiceImpl(UserRepository userRepository, UserValidator userValidator, UserErrorMsgProperties errorMessagesProperties, EmailService emailService, SecurityService securityService, AuthorityRepository authorityRepository) {
         this.userRepository = userRepository;
         this.userValidator = userValidator;
-        this.errorProps = errorMessagesProperties;
         this.emailService = emailService;
         this.securityService = securityService;
         this.authorityRepository = authorityRepository;
     }
 
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     @Override
     public Long signup(SignupDTO input) {
         input.prepare();
@@ -54,7 +57,7 @@ class UserServiceImpl implements UserService {
 
     private void checkDuplicates(SignupDTO user) {
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new AlreadyExistsException(errorProps.getEmailAlreadyExists());
+            throw new EmailAlreadyExistsException();
         }
     }
 
@@ -67,6 +70,8 @@ class UserServiceImpl implements UserService {
 
 
     private UserEntity toUserEntity(SignupDTO user) {
+        log.debug("Creating UserEntity from SignupDTO");
+        log.debug("User: {}", user);
         return UserEntity.builder()
                 .id(null)
                 .firstname(user.getFirstname())
@@ -91,10 +96,13 @@ class UserServiceImpl implements UserService {
 
 
     //todo: crear un exception supplier el cual sera el encargado de injectar el mensaje antes de pasarnos
+
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     @Override
     public LoginOutput login(LoginDTO dto) {
-        Supplier<InvalidCredentialsException> credE = () -> new InvalidCredentialsException(errorProps.getInvalidCredentials());
-        Supplier<EmailNotVerifiedException> emailE = () -> new EmailNotVerifiedException(errorProps.getEmailNotVerified());
+        //todo: refactor todas las exception y poner el mensaje en el advice en lugar de en cadwa una
+        Supplier<InvalidCredentialsException> credE = InvalidCredentialsException::new;
+        Supplier<EmailNotVerifiedException> emailE = EmailNotVerifiedException::new;
 
         String email = dto.getEmail();
         String password = dto.getPassword();
@@ -107,6 +115,13 @@ class UserServiceImpl implements UserService {
         isEnable(entity, credE);
         isEmailVerified(entity, emailE);
         return createLoginOutput(entity);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
+    public void verifyEmail(VerifyEmailDTO dto) {
+        emailService.checkCode(dto.getEmail(), dto.getCode());
+        userRepository.updateEmailVerifiedByEmail(dto.getEmail(), true);
     }
 
     private LoginOutput createLoginOutput(UserEntity output) {
@@ -129,19 +144,27 @@ class UserServiceImpl implements UserService {
 
     private void isEmailVerified(UserEntity entity, Supplier<? extends RuntimeException> exceptionSupplier) {
         if (!entity.isEmailVerified()) {
+            log.debug("Email not verified");
             emailService.sendEmailVerificationCode(entity.getEmail());
             throw exceptionSupplier.get();
         }
+        log.debug("Has a verified email");
     }
 
     private void isEnable(UserEntity user, Supplier<? extends RuntimeException> exceptionSupplier) {
-        if (!user.isEnabled()) throw exceptionSupplier.get();
+        if (!user.isEnabled()) {
+            log.debug("User is not enabled");
+            throw exceptionSupplier.get();
+        }
+        log.debug("User is enabled");
     }
 
     private void passMatch(UserEntity entity, String rawPassword, Supplier<InvalidCredentialsException> exceptionSupplier) {
         if (!securityService.matches(rawPassword, entity.getPassword())) {
+            log.debug("Password not match");
             throw exceptionSupplier.get();
         }
+        log.debug("Password match");
     }
 //
 //    private <T> void notNull(T any, Supplier<? extends RuntimeException> exceptionSupplier) {
@@ -149,6 +172,11 @@ class UserServiceImpl implements UserService {
 //    }
 
     private UserEntity getByEmail(String email, Supplier<? extends RuntimeException> exceptionSupplier) {
-        return userRepository.findByEmail(email).orElseThrow(exceptionSupplier);
+        try {
+            return userRepository.findByEmail(email).orElseThrow(exceptionSupplier);
+        } catch (RuntimeException e) {
+            log.debug("User not found with email: {}, exception: {}", email, e.toString());
+            throw e;
+        }
     }
 }

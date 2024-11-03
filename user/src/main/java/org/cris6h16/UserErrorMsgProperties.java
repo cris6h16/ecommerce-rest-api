@@ -6,10 +6,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "error-messages")
+@ConfigurationProperties(prefix = "user.error-messages")
 @Getter
 @Setter
-  class ErrorMsgProperties {
+class UserErrorMsgProperties {
     private String firstNameLength;
     private String lastNameLength;
     private String passwordLength;
@@ -18,5 +18,6 @@ import org.springframework.stereotype.Component;
     private String userNotFound;
     private String invalidCredentials;
     private String emailNotVerified;
-    private String balanceInvalid;
+    private String verificationCodeLength;
+
 }

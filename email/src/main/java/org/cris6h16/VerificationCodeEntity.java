@@ -19,7 +19,8 @@ import java.time.temporal.ChronoUnit;
     @Getter
  class VerificationCodeEntity {
     public static final int EXP_MIN = 60;
-    public static final int CODE_LENGTH = 6;
+    public static final int CODE_LENGTH = 10;
+    public static final int EMAIL_LENGTH = 255;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,12 +47,14 @@ import java.time.temporal.ChronoUnit;
     public void onCreate() {
         this.createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
         this.expiresAt = this.createdAt.plusMinutes(EXP_MIN).truncatedTo(ChronoUnit.MILLIS);
+        this.code = this.code.toLowerCase();
     }
 
     @PreUpdate
     public void onUpdate() {
         this.createdAt = this.createdAt.truncatedTo(ChronoUnit.MILLIS);
         this.expiresAt = this.expiresAt.truncatedTo(ChronoUnit.MILLIS);
+        this.code = this.code.toLowerCase();
     }
 
     public VerificationCodeEntity(String email, String code) {

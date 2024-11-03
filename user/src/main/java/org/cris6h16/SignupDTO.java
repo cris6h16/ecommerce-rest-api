@@ -3,9 +3,11 @@ package org.cris6h16;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Builder
+@ToString
 public class SignupDTO implements Prepareable {
     public static final String DEF_AUTHORITY = "ROLE_USER";
 

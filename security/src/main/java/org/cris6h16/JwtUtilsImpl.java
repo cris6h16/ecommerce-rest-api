@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.*;
@@ -14,6 +15,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Component
  class JwtUtilsImpl implements JwtUtils {
 
     private final JwtProperties jwtProperties;
@@ -116,14 +118,13 @@ import java.util.stream.Collectors;
         return genToken(
                 input.getId(),
                 claims,
-                refreshAccessTokenExpSecs()
+                accessTokenExpSecs()
         );
     }
 
-    private long refreshAccessTokenExpSecs() {
-        long time = this.jwtProperties.getAccessTokenExp().getTime();
-        String unit = this.jwtProperties.getAccessTokenExp().getUnit();
-        return toSecs(time, unit);
+    private long accessTokenExpSecs() {
+        long time = this.jwtProperties.getAccessTokenExpMinutes();
+        return toSecs(time, "MINUTES");
     }
 
     @Override
@@ -132,14 +133,13 @@ import java.util.stream.Collectors;
         return genToken(
                 id,
                 null,
-                refreshRefreshTokenExpSecs()
+                refreshTokenExpSecs()
         );
     }
 
-    private long refreshRefreshTokenExpSecs() {
-        long time = this.jwtProperties.getRefreshTokenExp().getTime();
-        String unit = this.jwtProperties.getRefreshTokenExp().getUnit();
-        return toSecs(time, unit);
+    private long refreshTokenExpSecs() {
+        long time = this.jwtProperties.getRefreshTokenExpMinutes();
+        return toSecs(time, "MINUTES");
     }
 
     private long toSecs(long time, String unit) {

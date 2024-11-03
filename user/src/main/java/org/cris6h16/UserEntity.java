@@ -35,7 +35,7 @@ class UserEntity {
     protected static final int FIRSTNAME_LENGTH = 30;
     protected static final int LASTNAME_LENGTH = 30;
     protected static final int EMAIL_LENGTH = 255;
-    protected static final int PASSWORD_LENGTH = 60;
+    protected static final int PASSWORD_LENGTH = 80; // deberia ser 60 (bcrypt) pero la encrypción suele dejar prefijo como {bcrypt} o {noop}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

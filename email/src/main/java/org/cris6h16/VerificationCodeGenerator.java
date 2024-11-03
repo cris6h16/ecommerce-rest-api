@@ -1,8 +1,11 @@
 package org.cris6h16;
 
+import org.springframework.stereotype.Component;
+
 import java.security.SecureRandom;
 
 import static org.cris6h16.VerificationCodeEntity.CODE_LENGTH;
+@Component
 
  class VerificationCodeGenerator {
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789";

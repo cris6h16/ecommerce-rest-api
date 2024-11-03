@@ -1,7 +1,9 @@
 package org.cris6h16;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SecurityServiceImpl implements SecurityService{
 
     private final PasswordEncoder passwordEncoder;

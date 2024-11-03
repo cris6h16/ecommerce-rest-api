@@ -1,6 +1,6 @@
 db:
   host: localhost
-  port: 9000
+  port: 5432
   db-name: api
   username: cris6h16
   password: 12345678
@@ -19,3 +19,11 @@ spring:
   config:
     import:
       - classpath:base.yaml
+      - classpath:error-messages.yaml
+
+logging:
+    level:
+#      org:
+#        hibernate:
+#            SQL: debug
+      root: debug
