@@ -40,12 +40,6 @@ import static org.cris6h16.UserEntity.*;
         }
     }
 
-     void validateBalance(BigDecimal balance) {
-        if (balance.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidAttributeException(propErrors.getBalanceInvalid());
-        }
-     }
-
 //    public void validateId(Long id) {
 //        if (id == null) {
 //            throw new InvalidAttributeException(errors.getIdNull());

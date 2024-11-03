@@ -1,6 +1,6 @@
 package org.cris6h16;
 
 public interface UserService {
-    UserOutput createUser(CreateUserInput user);
-    UserOutput findByEmail(String email);
+    void signup(SignupInput user);
+    LoginOutput login(String email, String password);
 }

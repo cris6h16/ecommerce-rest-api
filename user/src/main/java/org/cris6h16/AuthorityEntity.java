@@ -8,6 +8,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "authorities",
@@ -15,11 +19,15 @@ import jakarta.persistence.UniqueConstraint;
                 @UniqueConstraint(columnNames = "name", name = "unique_authority_name")
         }
 )
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 class AuthorityEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @Column(unique = true, length = 50, nullable = false)
     private String name;
 }

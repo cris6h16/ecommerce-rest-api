@@ -1,4 +1,4 @@
-package org.cris6h16.UseCases.Output;
+package org.cris6h16;
 
 import lombok.AllArgsConstructor;
 
