@@ -78,7 +78,7 @@ class UserControllerIntegrationTest {
         // Arrange
 
         // Act
-        String location = mockMvc.perform(post("/api/v1/users")
+        String location = mockMvc.perform(post("/api/v1/users/signup")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
@@ -97,7 +97,7 @@ class UserControllerIntegrationTest {
         when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 
         // create
-        mockMvc.perform(post("/api/v1/users")
+        mockMvc.perform(post("/api/v1/users/signup")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated());
@@ -187,7 +187,7 @@ class UserControllerIntegrationTest {
         when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 
         // create
-        mockMvc.perform(post("/api/v1/users")
+        mockMvc.perform(post("/api/v1/users/signup")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated());

@@ -30,7 +30,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping(consumes = APPLICATION_JSON_VALUE)
+    @PostMapping(
+            path = "/signup",
+            consumes = APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<Void> signUp(@RequestBody SignupDTO dto) {
         Long id = userService.signup(dto);
         return ResponseEntity

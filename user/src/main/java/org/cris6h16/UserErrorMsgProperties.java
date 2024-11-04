@@ -19,5 +19,6 @@ class UserErrorMsgProperties {
     private String invalidCredentials;
     private String emailNotVerified;
     private String verificationCodeLength;
+    private String unexpectedError;
 
 }

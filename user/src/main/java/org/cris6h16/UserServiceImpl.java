@@ -25,7 +25,7 @@ class UserServiceImpl implements UserService {
     private final SecurityService securityService;
     private final AuthorityRepository authorityRepository;
 
-    UserServiceImpl(UserRepository userRepository, UserValidator userValidator, UserErrorMsgProperties errorMessagesProperties, EmailService emailService, SecurityService securityService, AuthorityRepository authorityRepository) {
+    UserServiceImpl(UserRepository userRepository, UserValidator userValidator, EmailService emailService, SecurityService securityService, AuthorityRepository authorityRepository) {
         this.userRepository = userRepository;
         this.userValidator = userValidator;
         this.emailService = emailService;
