@@ -1,4 +1,4 @@
-package org.cris6h16.email;
+package org.cris6h16.Controllers.Advices.Properties;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -16,7 +16,6 @@ public class EmailErrorMsgProperties {
     private String emailInvalid;
     private String invalidCodeLength;
     private String validVerificationCodeNotFound;
-    private String unexpectedError;
 
 
     @PostConstruct

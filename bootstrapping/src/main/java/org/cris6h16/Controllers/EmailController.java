@@ -1,5 +1,6 @@
-package org.cris6h16.email;
+package org.cris6h16.Controllers;
 
+import org.cris6h16.email.EmailService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

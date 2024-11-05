@@ -1,7 +1,7 @@
 package org.cris6h16;
 
-import org.cris6h16.email.EmailController;
-import org.cris6h16.user.UserController;
+import org.cris6h16.Controllers.EmailController;
+import org.cris6h16.Controllers.UserController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;

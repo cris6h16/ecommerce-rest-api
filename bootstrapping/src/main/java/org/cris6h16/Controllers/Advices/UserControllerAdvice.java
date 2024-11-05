@@ -1,6 +1,8 @@
-package org.cris6h16.user;
+package org.cris6h16.Controllers.Advices;
 
 import lombok.extern.slf4j.Slf4j;
+import org.cris6h16.Controllers.Advices.Properties.SystemErrorProperties;
+import org.cris6h16.Controllers.Advices.Properties.UserErrorMsgProperties;
 import org.cris6h16.user.Exceptions.AlreadyExistsException.AlreadyExistsException;
 import org.cris6h16.user.Exceptions.AlreadyExistsException.EmailAlreadyExistsException;
 import org.cris6h16.user.Exceptions.EmailNotVerifiedException;
@@ -16,16 +18,19 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import static org.cris6h16.user.UserCommons.jsonHeaderCons;
+import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
+
 
 @RestControllerAdvice
 @Slf4j
 public class UserControllerAdvice {
 
     private final UserErrorMsgProperties userErrorMsgProperties;
+    private final SystemErrorProperties systemErrorProperties;
 
-    public UserControllerAdvice(UserErrorMsgProperties userErrorMsgProperties) {
+    public UserControllerAdvice(UserErrorMsgProperties userErrorMsgProperties, SystemErrorProperties systemErrorProperties) {
         this.userErrorMsgProperties = userErrorMsgProperties;
+        this.systemErrorProperties = systemErrorProperties;
     }
 
     @ExceptionHandler(AlreadyExistsException.class)
@@ -41,7 +46,7 @@ public class UserControllerAdvice {
             return userErrorMsgProperties.getEmailAlreadyExists();
         }
         log.error("A custom exception should have a custom message", e);
-        return userErrorMsgProperties.getUnexpectedError();
+        return systemErrorProperties.getUnexpectedError();
     }
 
 
@@ -68,7 +73,7 @@ public class UserControllerAdvice {
         }
 
         log.error("A custom exception should have a custom message", e);
-        return userErrorMsgProperties.getUnexpectedError();
+        return systemErrorProperties.getUnexpectedError();
     }
     @ExceptionHandler(EmailNotVerifiedException.class)
     public ResponseEntity<ErrorResponse> handleEmailNotVerified(EmailNotVerifiedException e) {
@@ -92,7 +97,7 @@ public class UserControllerAdvice {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(userErrorMsgProperties.getUnexpectedError()));
+                .body(new ErrorResponse(systemErrorProperties.getUnexpectedError()));
     }
     private void logIfRelevant(Exception e) {
         if (e instanceof NoResourceFoundException) {
@@ -102,6 +107,4 @@ public class UserControllerAdvice {
         }
     }
 
-    public static record ErrorResponse(String message) {
-    }
 }

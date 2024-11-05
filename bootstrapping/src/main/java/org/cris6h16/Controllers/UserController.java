@@ -1,5 +1,10 @@
-package org.cris6h16.user;
+package org.cris6h16.Controllers;
 
+import org.cris6h16.user.LoginDTO;
+import org.cris6h16.user.LoginOutput;
+import org.cris6h16.user.SignupDTO;
+import org.cris6h16.user.UserService;
+import org.cris6h16.user.VerifyEmailDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
-import static org.cris6h16.user.UserCommons.jsonHeaderCons;
+import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController

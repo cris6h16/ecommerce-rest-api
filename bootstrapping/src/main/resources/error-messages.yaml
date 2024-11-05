@@ -9,11 +9,13 @@ user:
     invalid-credentials: "Credenciales inválidas"
     email-not-verified: "Su email no ha sido verificado, por favor revisa tu bandeja de entrada"
     verification-code-length: "El código de verificación tiene una longitud inválida"
-    unexpected-error: "Ha ocurrido un error inesperado"
 
 email:
   error-messages:
     email-invalid: "El email no es válido"
     invalid-code-length: "El código de verificación tiene una longitud inválida"
     valid-verification-code-not-found: "El código de verificación no es válido o ya ha sido utilizado"
+
+system:
+  error-messages:
     unexpected-error: "Ha ocurrido un error inesperado"

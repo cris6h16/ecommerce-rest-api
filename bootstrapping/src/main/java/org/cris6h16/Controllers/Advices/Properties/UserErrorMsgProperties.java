@@ -1,4 +1,4 @@
-package org.cris6h16.user;
+package org.cris6h16.Controllers.Advices.Properties;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import java.util.function.BiConsumer;
 @ConfigurationProperties(prefix = "user.error-messages")
 @Getter
 @Setter
-class UserErrorMsgProperties {
+public class UserErrorMsgProperties {
     private String firstNameLength;
     private String lastNameLength;
     private String passwordLength;
@@ -22,7 +22,6 @@ class UserErrorMsgProperties {
     private String invalidCredentials;
     private String emailNotVerified;
     private String verificationCodeLength;
-    private String unexpectedError;
 
 
     @PostConstruct
@@ -42,6 +41,5 @@ class UserErrorMsgProperties {
         ex.accept("invalidCredentials", invalidCredentials);
         ex.accept("emailNotVerified", emailNotVerified);
         ex.accept("verificationCodeLength", verificationCodeLength);
-        ex.accept("unexpectedError", unexpectedError);
     }
 }

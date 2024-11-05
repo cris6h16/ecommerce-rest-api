@@ -1,6 +1,8 @@
-package org.cris6h16.email;
+package org.cris6h16.Controllers.Advices;
 
 import lombok.extern.slf4j.Slf4j;
+import org.cris6h16.Controllers.Advices.Properties.EmailErrorMsgProperties;
+import org.cris6h16.Controllers.Advices.Properties.SystemErrorProperties;
 import org.cris6h16.email.Exceptions.InvalidAttributeException.InvalidAttributeException;
 import org.cris6h16.email.Exceptions.InvalidAttributeException.InvalidCodeLengthException;
 import org.cris6h16.email.Exceptions.InvalidAttributeException.InvalidEmailException;
@@ -11,15 +13,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import static org.cris6h16.email.EmailCommons.jsonHeaderCons;
+import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 
 @RestControllerAdvice
 @Slf4j
 public class EmailControllerAdvice {
 
+    private final SystemErrorProperties systemErrorProperties;
+
     private final EmailErrorMsgProperties emailErrorMsgProperties;
 
-    public EmailControllerAdvice(EmailErrorMsgProperties emailErrorMsgProperties) {
+    public EmailControllerAdvice(SystemErrorProperties systemErrorProperties, EmailErrorMsgProperties emailErrorMsgProperties) {
+        this.systemErrorProperties = systemErrorProperties;
         this.emailErrorMsgProperties = emailErrorMsgProperties;
     }
 
@@ -40,7 +45,7 @@ public class EmailControllerAdvice {
         }
 
         log.error("A custom exception should have a custom message", e);
-        return emailErrorMsgProperties.getUnexpectedError();
+        return systemErrorProperties.getUnexpectedError();
     }
 
     @ExceptionHandler(ValidVerificationCodeNotFoundException.class)
@@ -51,24 +56,5 @@ public class EmailControllerAdvice {
                 .body(new ErrorResponse(emailErrorMsgProperties.getValidVerificationCodeNotFound()));
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception e) {
-        logIfRelevant(e);
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .headers(jsonHeaderCons)
-                .body(new ErrorResponse(emailErrorMsgProperties.getUnexpectedError()));
-    }
 
-    private void logIfRelevant(Exception e) {
-        if (e instanceof NoResourceFoundException) {
-            log.debug("Someone tried to access a non-existent resource");
-        } else {
-            log.error("Unexpected error", e);
-        }
-    }
-
-
-    public static record ErrorResponse(String message) {
-    }
 }
