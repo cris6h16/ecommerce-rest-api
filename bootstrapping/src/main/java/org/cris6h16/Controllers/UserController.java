@@ -1,10 +1,11 @@
 package org.cris6h16.Controllers;
 
-import org.cris6h16.user.LoginDTO;
-import org.cris6h16.user.LoginOutput;
-import org.cris6h16.user.SignupDTO;
+import org.cris6h16.user.DTOs.LoginDTO;
+import org.cris6h16.user.DTOs.ResetPasswordDTO;
+import org.cris6h16.user.DTOs.SignupDTO;
+import org.cris6h16.user.DTOs.VerifyEmailDTO;
+import org.cris6h16.user.Outputs.LoginOutput;
 import org.cris6h16.user.UserService;
-import org.cris6h16.user.VerifyEmailDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Isolation;
@@ -19,6 +20,10 @@ import java.net.URI;
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@Transactional(
+        rollbackFor = Exception.class,
+        isolation = Isolation.READ_COMMITTED
+)
 @RestController
 @RequestMapping(UserController.BASE_PATH)
 public class UserController {
@@ -35,10 +40,6 @@ public class UserController {
             path = "/signup",
             consumes = APPLICATION_JSON_VALUE
     )
-    @Transactional(
-            rollbackFor = Exception.class,
-            isolation = Isolation.READ_COMMITTED
-    )
     public ResponseEntity<Void> signUp(@RequestBody SignupDTO dto) {
         Long id = userService.signup(dto);
         return ResponseEntity
@@ -50,10 +51,6 @@ public class UserController {
             path = "/login",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
-    )
-    @Transactional(
-            rollbackFor = Exception.class,
-            isolation = Isolation.READ_COMMITTED
     )
     public ResponseEntity<LoginOutput> login(@RequestBody LoginDTO dto) {
         LoginOutput output = userService.login(dto);
@@ -68,14 +65,21 @@ public class UserController {
             path = "/verify-email",
             consumes = APPLICATION_JSON_VALUE
     )
-    @Transactional(
-            rollbackFor = Exception.class,
-            isolation = Isolation.READ_COMMITTED
-    )
     public ResponseEntity<Void> verifyEmail(@RequestBody VerifyEmailDTO dto) {
         userService.verifyEmail(dto);
         return ResponseEntity
                 .status(HttpStatus.OK)
+                .build();
+    }
+
+    @PostMapping(
+            path = "/reset-password",
+            consumes = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Void> resetPassword(@RequestBody ResetPasswordDTO dto) {
+        userService.resetPassword(dto);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
                 .build();
     }
 }

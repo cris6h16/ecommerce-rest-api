@@ -2,13 +2,17 @@ package org.cris6h16.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.email.EmailService;
+import org.cris6h16.user.DTOs.LoginDTO;
+import org.cris6h16.user.DTOs.ResetPasswordDTO;
+import org.cris6h16.user.DTOs.SignupDTO;
+import org.cris6h16.user.DTOs.VerifyEmailDTO;
 import org.cris6h16.user.Exceptions.AlreadyExistsException.EmailAlreadyExistsException;
 import org.cris6h16.user.Exceptions.EmailNotVerifiedException;
 import org.cris6h16.user.Exceptions.InvalidCredentialsException;
 import org.cris6h16.GenAccessTokenInput;
 import org.cris6h16.SecurityService;
+import org.cris6h16.user.Outputs.LoginOutput;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -127,6 +131,23 @@ class UserServiceImpl implements UserService {
     public void verifyEmail(VerifyEmailDTO dto) {
         emailService.checkCodeAfterRemAllMyCodes(dto.getEmail(), dto.getCode());
         userRepository.updateEmailVerifiedByEmail(dto.getEmail(), true);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
+    public void resetPassword(ResetPasswordDTO dto) {
+        dto.prepare();
+        isValid(dto);
+        emailService.checkCodeAfterRemAllMyCodes(dto.getEmail(), dto.getCode());
+        userRepository.updatePasswordByEmail(
+                dto.getEmail(),
+                securityService.encodePassword(dto.getPassword())
+        );
+    }
+
+    private void isValid(ResetPasswordDTO dto) {
+        userValidator.validateEmail(dto.getEmail());
+        userValidator.validatePassword(dto.getPassword());
     }
 
     private LoginOutput createLoginOutput(UserEntity output) {
