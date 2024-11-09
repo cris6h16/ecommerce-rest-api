@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 // manualmente excluido la config de seguridad no deberia pasar pero la componucacion entre components no se da por controllers es por eso q se incluye sola ( al importar el module )
 @SpringBootApplication(
-        scanBasePackageClasses = {UserController.class, EmailController.class, SecurityService.class},
+        scanBasePackageClasses = {UserController.class, EmailController.class, SecurityComponent.class},
         exclude = SecurityAutoConfiguration.class
 )
 public class Main {

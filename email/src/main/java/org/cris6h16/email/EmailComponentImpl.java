@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 
 @Service
 @Slf4j
-public class EmailServiceImpl implements EmailService {
+public class EmailComponentImpl implements EmailComponent {
     private final VerificationCodeService verificationCodeService;
     private final EmailSender emailSender;
     private final EmailValidator validator;
 
-    public EmailServiceImpl(VerificationCodeService verificationCodeService, EmailSender emailSender, EmailValidator validator) {
+    public EmailComponentImpl(VerificationCodeService verificationCodeService, EmailSender emailSender, EmailValidator validator) {
         this.verificationCodeService = verificationCodeService;
         this.emailSender = emailSender;
         this.validator = validator;

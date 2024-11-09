@@ -1,10 +1,12 @@
-package org.cris6h16.user.DTOs;
+package org.cris6h16.user;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Builder
+@Setter
 public class ResetPasswordDTO implements Prepareable {
     private String email;
     private String code;

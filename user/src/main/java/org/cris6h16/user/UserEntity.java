@@ -43,7 +43,7 @@ class UserEntity {
     private String firstname;
 
     @Column(nullable = false, name = "last_name", length = LASTNAME_LENGTH)
-    private String lastName;
+    private String lastname;
 
     @Column(nullable = false, length = EMAIL_LENGTH, unique = true)
     private String email;

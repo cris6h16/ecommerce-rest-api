@@ -32,6 +32,7 @@
         <module>order</module>
         <module>bootstrapping</module>
         <module>address</module>
+        <module>application</module>
     </modules>
     <scm>
         <connection/>

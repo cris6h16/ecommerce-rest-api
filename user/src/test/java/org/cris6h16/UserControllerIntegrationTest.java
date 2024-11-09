@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Multipart;
 import jakarta.mail.internet.MimeMessage;
-import org.cris6h16.email.EmailServiceImpl;
-import org.cris6h16.user.DTOs.LoginDTO;
+import org.cris6h16.email.EmailComponentImpl;
+import org.cris6h16.user.LoginDTO;
 import org.cris6h16.user.Outputs.LoginOutput;
-import org.cris6h16.user.DTOs.SignupDTO;
+import org.cris6h16.user.SignupDTO;
 import org.cris6h16.user.UserRepository;
-import org.cris6h16.user.DTOs.VerifyEmailDTO;
+import org.cris6h16.user.VerifyEmailDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -216,7 +216,7 @@ class UserControllerIntegrationTest {
     @SpringBootApplication
     @EnableJpaRepositories
     @EntityScan
-    @Import({EmailServiceImpl.class, SecurityServiceImpl.class})
+    @Import({EmailComponentImpl.class, SecurityServiceImpl.class})
     static class App {
 
         public static void main(String[] args) {

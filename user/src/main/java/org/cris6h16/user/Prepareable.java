@@ -1,4 +1,4 @@
-package org.cris6h16.user.DTOs;
+package org.cris6h16.user;
 
  interface Prepareable {
      void trim();

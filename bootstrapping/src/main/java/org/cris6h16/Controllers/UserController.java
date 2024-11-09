@@ -1,11 +1,11 @@
 package org.cris6h16.Controllers;
 
-import org.cris6h16.user.DTOs.LoginDTO;
-import org.cris6h16.user.DTOs.ResetPasswordDTO;
-import org.cris6h16.user.DTOs.SignupDTO;
-import org.cris6h16.user.DTOs.VerifyEmailDTO;
+import org.cris6h16.user.LoginDTO;
+import org.cris6h16.user.ResetPasswordDTO;
+import org.cris6h16.user.SignupDTO;
+import org.cris6h16.user.VerifyEmailDTO;
 import org.cris6h16.user.Outputs.LoginOutput;
-import org.cris6h16.user.UserService;
+import org.cris6h16.user.UserComponent;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Isolation;
@@ -30,9 +30,9 @@ public class UserController {
 
     public static final String BASE_PATH = "/api/v1/users";
 
-    private final UserService userService;
+    private final UserComponent userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserComponent userService) {
         this.userService = userService;
     }
 
@@ -41,7 +41,7 @@ public class UserController {
             consumes = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Void> signUp(@RequestBody SignupDTO dto) {
-        Long id = userService.signup(dto);
+        Long id = userService.create(dto);
         return ResponseEntity
                 .created(URI.create(BASE_PATH + "/" + id))
                 .build();
@@ -53,7 +53,7 @@ public class UserController {
             produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<LoginOutput> login(@RequestBody LoginDTO dto) {
-        LoginOutput output = userService.login(dto);
+        LoginOutput output = userService.existsByEmailAndPassword(dto);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

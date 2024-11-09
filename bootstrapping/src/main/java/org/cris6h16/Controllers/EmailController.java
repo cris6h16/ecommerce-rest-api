@@ -1,10 +1,9 @@
 package org.cris6h16.Controllers;
 
-import org.cris6h16.email.EmailService;
+import org.cris6h16.email.EmailComponent;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmailController {
     public static final String BASE_PATH = "/api/v1/email";
 
-    private final EmailService emailService;
+    private final EmailComponent emailService;
 
-    public EmailController(EmailService emailService) {
+    public EmailController(EmailComponent emailService) {
         this.emailService = emailService;
     }
 
