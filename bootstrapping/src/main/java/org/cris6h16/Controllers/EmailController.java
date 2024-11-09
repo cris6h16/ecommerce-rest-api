@@ -3,6 +3,9 @@ package org.cris6h16.Controllers;
 import org.cris6h16.email.EmailService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,8 +26,12 @@ public class EmailController {
             path = "send-email-verification",
             consumes = MediaType.TEXT_PLAIN_VALUE
     )
+    @Transactional(
+            rollbackFor = Exception.class,
+            isolation = Isolation.READ_COMMITTED
+    )
     public ResponseEntity<Void> sendEmailVerification(@RequestBody String email) {
-        this.emailService.sendEmailVerificationCode(email);
+        this.emailService.remOldCodesAndCreateOneAndSendInEmailVerification(email);
         return ResponseEntity.ok().build();
     }
 }

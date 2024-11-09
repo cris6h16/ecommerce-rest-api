@@ -1,6 +1,6 @@
 package org.cris6h16.email;
 
 public interface EmailService {
-    void sendEmailVerificationCode(String email);
-    void checkCode(String email, String code);
+    void remOldCodesAndCreateOneAndSendInEmailVerification(String email);
+    void checkCodeAfterRemAllMyCodes(String email, String code);
 }

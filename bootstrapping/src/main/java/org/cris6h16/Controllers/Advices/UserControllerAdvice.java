@@ -12,6 +12,8 @@ import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidFirstnameLe
 import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidLastnameLengthException;
 import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidPasswordLengthException;
 import org.cris6h16.user.Exceptions.InvalidCredentialsException;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +24,7 @@ import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 
 
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
 public class UserControllerAdvice {
 
@@ -90,21 +93,4 @@ public class UserControllerAdvice {
                 .headers(jsonHeaderCons)
                 .body(new ErrorResponse(userErrorMsgProperties.getInvalidCredentials()));
     }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception e) {
-        logIfRelevant(e);
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .headers(jsonHeaderCons)
-                .body(new ErrorResponse(systemErrorProperties.getUnexpectedError()));
-    }
-    private void logIfRelevant(Exception e) {
-        if (e instanceof NoResourceFoundException) {
-            log.info("Someone tried to access a non-existent resource");
-        } else {
-            log.error("Unexpected error", e);
-        }
-    }
-
 }

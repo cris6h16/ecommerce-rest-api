@@ -15,6 +15,7 @@ email:
     email-invalid: "El email no es válido"
     invalid-code-length: "El código de verificación tiene una longitud inválida"
     valid-verification-code-not-found: "El código de verificación no es válido o ya ha sido utilizado"
+    email-sending: "Ha ocurrido un error al enviar el email de verificación"
 
 system:
   error-messages:

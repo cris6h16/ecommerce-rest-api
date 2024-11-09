@@ -3,6 +3,8 @@ package org.cris6h16.email;
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.email.Exceptions.ValidVerificationCodeNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +22,8 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendEmailVerificationCode(String email) {
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
+    public void remOldCodesAndCreateOneAndSendInEmailVerification(String email) {
         validator.validateEmail(email);
 
         removeAllCodesByEmail(email);
@@ -29,7 +32,8 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void checkCode(String email, String code) {
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
+    public void checkCodeAfterRemAllMyCodes(String email, String code) {
         email = trimIfNullEmpty(email);
         code = trimIfNullEmpty(code).toLowerCase();
 

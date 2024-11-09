@@ -7,6 +7,8 @@ import org.cris6h16.user.UserService;
 import org.cris6h16.user.VerifyEmailDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +35,10 @@ public class UserController {
             path = "/signup",
             consumes = APPLICATION_JSON_VALUE
     )
+    @Transactional(
+            rollbackFor = Exception.class,
+            isolation = Isolation.READ_COMMITTED
+    )
     public ResponseEntity<Void> signUp(@RequestBody SignupDTO dto) {
         Long id = userService.signup(dto);
         return ResponseEntity
@@ -44,6 +50,10 @@ public class UserController {
             path = "/login",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
+    )
+    @Transactional(
+            rollbackFor = Exception.class,
+            isolation = Isolation.READ_COMMITTED
     )
     public ResponseEntity<LoginOutput> login(@RequestBody LoginDTO dto) {
         LoginOutput output = userService.login(dto);
@@ -57,6 +67,10 @@ public class UserController {
     @PostMapping(
             path = "/verify-email",
             consumes = APPLICATION_JSON_VALUE
+    )
+    @Transactional(
+            rollbackFor = Exception.class,
+            isolation = Isolation.READ_COMMITTED
     )
     public ResponseEntity<Void> verifyEmail(@RequestBody VerifyEmailDTO dto) {
         userService.verifyEmail(dto);

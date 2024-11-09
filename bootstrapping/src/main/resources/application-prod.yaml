@@ -8,12 +8,15 @@ db:
     schema: prod
 
 jpa:
-  show-sql: true
+  show-sql: false
   properties:
     hibernate:
       format_sql: true
       ddl-auto: create
 
+mail:
+  username: ${MAIL_USER}
+  password: ${MAIL_PASS}
 
 spring:
   config:
@@ -21,11 +24,6 @@ spring:
       - classpath:base.yaml
       - classpath:mail.yaml
       - classpath:error-messages.yaml
-
-
 logging:
   level:
-    #      org:
-    #        hibernate:
-    #            SQL: debug
     root: debug

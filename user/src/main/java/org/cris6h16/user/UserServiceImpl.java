@@ -9,6 +9,7 @@ import org.cris6h16.GenAccessTokenInput;
 import org.cris6h16.SecurityService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -36,8 +37,9 @@ class UserServiceImpl implements UserService {
         this.authorityRepository = authorityRepository;
     }
 
-    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
+
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public Long signup(SignupDTO input) {
         input.prepare();
         isValid(input);
@@ -49,7 +51,7 @@ class UserServiceImpl implements UserService {
     }
 
     private void sendVerificationEmail(UserEntity saved) {
-        emailService.sendEmailVerificationCode(saved.getEmail());
+        emailService.remOldCodesAndCreateOneAndSendInEmailVerification(saved.getEmail());
     }
 
     private void encodePass(SignupDTO input) {
@@ -100,8 +102,8 @@ class UserServiceImpl implements UserService {
 
     //todo: crear un exception supplier el cual sera el encargado de injectar el mensaje antes de pasarnos
 
-    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public LoginOutput login(LoginDTO dto) {
         //todo: refactor todas las exception y poner el mensaje en el advice en lugar de en cadwa una
         Supplier<InvalidCredentialsException> credE = InvalidCredentialsException::new;
@@ -121,9 +123,9 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public void verifyEmail(VerifyEmailDTO dto) {
-        emailService.checkCode(dto.getEmail(), dto.getCode());
+        emailService.checkCodeAfterRemAllMyCodes(dto.getEmail(), dto.getCode());
         userRepository.updateEmailVerifiedByEmail(dto.getEmail(), true);
     }
 
@@ -148,7 +150,7 @@ class UserServiceImpl implements UserService {
     private void isEmailVerified(UserEntity entity, Supplier<? extends RuntimeException> exceptionSupplier) {
         if (!entity.isEmailVerified()) {
             log.debug("Email not verified");
-            emailService.sendEmailVerificationCode(entity.getEmail());
+            emailService.remOldCodesAndCreateOneAndSendInEmailVerification(entity.getEmail());
             throw exceptionSupplier.get();
         }
         log.debug("Has a verified email");

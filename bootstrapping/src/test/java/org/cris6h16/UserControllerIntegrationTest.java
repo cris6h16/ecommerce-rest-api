@@ -82,6 +82,8 @@ class UserControllerIntegrationTest {
     @Test
     void signup_successful() throws Exception {
         // Arrange
+        MimeMessage mimeMessage = mock(MimeMessage.class);
+        when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 
         // Act
         String location = mockMvc.perform(post("/api/v1/users/signup")
