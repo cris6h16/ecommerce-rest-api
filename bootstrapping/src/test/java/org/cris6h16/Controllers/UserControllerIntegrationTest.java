@@ -10,6 +10,7 @@ import org.cris6h16.facades.LoginDTO;
 import org.cris6h16.facades.VerifyEmailDTO;
 import org.cris6h16.user.CreateUserInput;
 import org.cris6h16.user.Outputs.LoginOutput;
+import org.cris6h16.user.ResetPasswordDTO;
 import org.cris6h16.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,6 +47,8 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -212,6 +215,67 @@ class UserControllerIntegrationTest {
         mockMvc.perform(post("/api/v1/users/verify-email")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(verifyEmailDTO)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void resetPassword_successful() throws Exception {
+        // Arrange
+        MimeMessage mimeMessage = Mockito.mock(MimeMessage.class);
+        when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
+
+        // create
+        mockMvc.perform(post("/api/v1/users/signup")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isCreated());
+
+        String sentCodeWhenSignup = extractSentCode(mimeMessage);
+
+        // verify-email
+        VerifyEmailDTO verifyEmailDTO = VerifyEmailDTO.builder()
+                .email(this.dto.getEmail())
+                .code(sentCodeWhenSignup)
+                .build();
+
+        mockMvc.perform(post("/api/v1/users/verify-email")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(verifyEmailDTO)))
+                .andExpect(status().isOk());
+
+        // request a new email verification code ( code can be used only once )
+        Mockito.clearInvocations(mimeMessage, javaMailSender);
+
+        mockMvc.perform(post("/api/v1/email/send-email-verification")
+                        .contentType(TEXT_PLAIN)
+                        .content(this.dto.getEmail()))
+                .andExpect(status().isOk());
+
+        String sentCodeWhenRequestedACode = extractSentCode(mimeMessage);
+
+        // reset-password
+        ResetPasswordDTO resetPasswordDTO = ResetPasswordDTO.builder()
+                .email(this.dto.getEmail())
+                .code(sentCodeWhenRequestedACode)
+                .password("87654321")
+                .build();
+        // Act
+        mockMvc.perform(post("/api/v1/users/reset-password")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(resetPasswordDTO)))
+                .andExpect(status().isNoContent());
+
+
+        // Assert
+        // login with the new password
+        LoginDTO loginDTO = LoginDTO.builder()
+                .email(this.dto.getEmail())
+                .password(resetPasswordDTO.getPassword())
+                .build();
+
+        mockMvc.perform(post("/api/v1/users/login")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginDTO)))
                 .andExpect(status().isOk());
     }
 
