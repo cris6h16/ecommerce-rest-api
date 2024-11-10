@@ -37,6 +37,7 @@ public class UserControllerAdvice {
 
     @ExceptionHandler(AlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleAlreadyExists(AlreadyExistsException e) {
+        log.debug("AlreadyExistsException", e);
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .headers(jsonHeaderCons)
@@ -54,6 +55,7 @@ public class UserControllerAdvice {
 
     @ExceptionHandler(InvalidAttributeException.class)
     public ResponseEntity<ErrorResponse> handleInvalidAttribute(InvalidAttributeException e) {
+        log.debug("InvalidAttributeException", e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(jsonHeaderCons)
@@ -79,6 +81,7 @@ public class UserControllerAdvice {
     }
     @ExceptionHandler(EmailNotVerifiedException.class)
     public ResponseEntity<ErrorResponse> handleEmailNotVerified(EmailNotVerifiedException e) {
+        log.debug("EmailNotVerifiedException", e);
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .headers(jsonHeaderCons)
@@ -87,6 +90,7 @@ public class UserControllerAdvice {
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException e) {
+        log.debug("InvalidCredentialsException", e);
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .headers(jsonHeaderCons)

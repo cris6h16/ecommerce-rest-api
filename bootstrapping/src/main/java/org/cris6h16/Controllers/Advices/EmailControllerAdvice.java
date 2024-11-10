@@ -33,6 +33,7 @@ public class EmailControllerAdvice {
 
     @ExceptionHandler(EmailSendingException.class)
     public ResponseEntity<ErrorResponse> handleEmailSendingException(EmailSendingException e) {
+        log.debug("EmailSendingException", e);
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .headers(jsonHeaderCons)
@@ -41,6 +42,7 @@ public class EmailControllerAdvice {
 
     @ExceptionHandler(InvalidAttributeException.class)
     public ResponseEntity<ErrorResponse> handleInvalidAttributeException(InvalidAttributeException e) {
+        log.debug("InvalidAttributeException", e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(jsonHeaderCons)
@@ -61,6 +63,7 @@ public class EmailControllerAdvice {
 
     @ExceptionHandler(ValidVerificationCodeNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleValidVerificationCodeNotFoundException(ValidVerificationCodeNotFoundException e) {
+        log.debug("ValidVerificationCodeNotFoundException", e);
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .headers(jsonHeaderCons)

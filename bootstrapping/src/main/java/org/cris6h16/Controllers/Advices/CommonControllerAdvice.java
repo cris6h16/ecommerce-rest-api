@@ -26,6 +26,7 @@ public class CommonControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         logIfRelevant(e);
+        log.debug("Exception", e);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .headers(jsonHeaderCons)
@@ -33,11 +34,8 @@ public class CommonControllerAdvice {
     }
 
     private void logIfRelevant(Exception e) {
-        if (e instanceof NoResourceFoundException) {
-            log.debug("Someone tried to access a non-existent resource");
-        } else {
-            log.error("Unexpected error", e);
-        }
+        if (e instanceof NoResourceFoundException) return;
+        log.error("Unexpected error", e);
     }
 
 }

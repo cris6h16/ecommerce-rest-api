@@ -68,7 +68,7 @@ class UserFacadeImpl implements UserFacade {
     }
 
     private void setSignupDefaults(CreateUserInput input) {
-        input.setEnabled(false);
+        input.setEnabled(true);
         input.setEmailVerified(false);
         input.setAuthorities(Set.of("ROLE_USER"));
     }
