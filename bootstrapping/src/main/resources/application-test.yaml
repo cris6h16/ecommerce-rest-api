@@ -19,6 +19,7 @@ spring:
   config:
     import:
       - classpath:base.yaml
+      - classpath:jwt.yaml
       - classpath:error-messages.yaml
 
 logging:

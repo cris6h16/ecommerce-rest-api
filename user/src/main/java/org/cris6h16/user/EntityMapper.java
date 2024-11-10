@@ -1,16 +1,13 @@
 package org.cris6h16.user;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 class EntityMapper {
-    static UserDTO toUserDTO(UserEntity userEntity) {
+    static UserOutput toUserDTO(UserEntity userEntity) {
         if (userEntity == null) return null;
-        return UserDTO.builder()
+        return UserOutput.builder()
                 .id(userEntity.getId())
                 .firstname(userEntity.getFirstname())
                 .lastname(userEntity.getLastname())

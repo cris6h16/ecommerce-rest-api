@@ -1,14 +1,14 @@
 package org.cris6h16.facades;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.GenAccessTokenInput;
-import org.cris6h16.SecurityComponent;
+import org.cris6h16.security.GenAccessTokenInput;
+import org.cris6h16.security.SecurityComponent;
 import org.cris6h16.email.EmailComponent;
 import org.cris6h16.user.Outputs.LoginOutput;
 import org.cris6h16.user.ResetPasswordDTO;
 import org.cris6h16.user.CreateUserInput;
 import org.cris6h16.user.UserComponent;
-import org.cris6h16.user.UserDTO;
+import org.cris6h16.user.UserOutput;
 import org.cris6h16.user.UserValidator;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -88,26 +88,28 @@ class UserFacadeImpl implements UserFacade {
         Supplier<InvalidCredentialsException> credE = InvalidCredentialsException::new;
         Supplier<EmailNotVerifiedException> emailE = EmailNotVerifiedException::new;
 
-        UserDTO userDTO = userComponent.findByEmailAndEnabled(loginDTO.getEmail(), true).orElseThrow(credE);
+        UserOutput userDTO = userComponent.findByEmailAndEnabled(loginDTO.getEmail(), true).orElseThrow(credE);
         passMatches(loginDTO, userDTO, credE);
         isEmailVerified(userDTO, emailE);
         return createLoginOutput(userDTO);
     }
 
-    private LoginOutput createLoginOutput(UserDTO userDTO) {
+    private LoginOutput createLoginOutput(UserOutput userDTO) {
         GenAccessTokenInput input = toGenAccessTokenInput(userDTO);
 
         String accessToken = securityComponent.generateAccessToken(input);
         String refreshToken = securityComponent.generateRefreshToken(userDTO.getId());
+
+        log.debug("Generated access token: {}, refresh token: {}", accessToken, refreshToken);
         return new LoginOutput(accessToken, refreshToken);
     }
 
-    private GenAccessTokenInput toGenAccessTokenInput(UserDTO userDTO) {
+    private GenAccessTokenInput toGenAccessTokenInput(UserOutput userDTO) {
         return new GenAccessTokenInput(userDTO.getId(), userDTO.isEnabled(), userDTO.getAuthorities());
     }
 
 
-    private void isEmailVerified(UserDTO userDTO, Supplier<? extends RuntimeException> exceptionSupplier) {
+    private void isEmailVerified(UserOutput userDTO, Supplier<? extends RuntimeException> exceptionSupplier) {
         if (!userDTO.isEmailVerified()) {
             log.debug("Email not verified");
             removeOldCodesByEmail(userDTO.getEmail());
@@ -117,7 +119,7 @@ class UserFacadeImpl implements UserFacade {
         log.debug("Has a verified email");
     }
 
-    private void passMatches(LoginDTO loginDTO, UserDTO userDTO, Supplier<? extends RuntimeException> exceptionSupplier) {
+    private void passMatches(LoginDTO loginDTO, UserOutput userDTO, Supplier<? extends RuntimeException> exceptionSupplier) {
         if (!securityComponent.matches(loginDTO.getPassword(), userDTO.getPassword())) {
             log.debug("Password not match");
             throw exceptionSupplier.get();
@@ -149,6 +151,13 @@ class UserFacadeImpl implements UserFacade {
         processPassword(dto);
         userComponent.updatePasswordByEmail(dto.getEmail(), dto.getPassword());
         removeOldCodesByEmail(dto.getEmail());
+    }
+
+    // todo: no deberia mandar directamente el output, deberia mapearlo a un dto, pero por tiempo no lo hice
+    @Override
+    public UserOutput me() {
+        Long id = securityComponent.getCurrentUserId();
+        return userComponent.findByIdAndEnable(id, true).orElseThrow(UserNotFoundException::new);
     }
 
     private void checkVerificationCode(String email, String code, Supplier<? extends RuntimeException> exceptionSupplier) {

@@ -3,6 +3,7 @@ package org.cris6h16.Controllers.Advices;
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.Controllers.Advices.Properties.SystemErrorProperties;
 import org.cris6h16.Controllers.Advices.Properties.UserErrorMsgProperties;
+import org.cris6h16.facades.UserNotFoundException;
 import org.cris6h16.user.Exceptions.AlreadyExistsException.AlreadyExistsException;
 import org.cris6h16.user.Exceptions.AlreadyExistsException.EmailAlreadyExistsException;
 import org.cris6h16.facades.EmailNotVerifiedException;
@@ -34,6 +35,16 @@ public class UserControllerAdvice {
         this.userErrorMsgProperties = userErrorMsgProperties;
         this.systemErrorProperties = systemErrorProperties;
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException e) {
+        log.debug("UserNotFoundException", e);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .headers(jsonHeaderCons)
+                .body(new ErrorResponse(userErrorMsgProperties.getUserNotFound()));
+    }
+
 
     @ExceptionHandler(AlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleAlreadyExists(AlreadyExistsException e) {

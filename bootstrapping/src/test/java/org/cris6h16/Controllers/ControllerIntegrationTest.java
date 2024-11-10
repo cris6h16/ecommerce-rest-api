@@ -5,7 +5,6 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.Multipart;
 import jakarta.mail.internet.MimeMessage;
 import org.cris6h16.Main;
-import org.cris6h16.email.EmailComponentImpl;
 import org.cris6h16.facades.LoginDTO;
 import org.cris6h16.facades.VerifyEmailDTO;
 import org.cris6h16.user.CreateUserInput;
@@ -16,14 +15,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -48,15 +42,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
-import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @ContextConfiguration(classes = Main.class)
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 @ActiveProfiles("test")
-class UserControllerIntegrationTest {
+class ControllerIntegrationTest { // todo:refactor a uno menos general
 
     @MockBean
     private JavaMailSender javaMailSender; // avoid sending real emails
@@ -90,7 +84,7 @@ class UserControllerIntegrationTest {
         when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 
         // Act
-        String location = mockMvc.perform(post("/api/v1/users/signup")
+        String location = mockMvc.perform(post("/api/v1/auth/signup")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
@@ -98,7 +92,8 @@ class UserControllerIntegrationTest {
 
         // Assert
         assertNotNull(location);
-        assertTrue(location.matches("/api/v1/users/\\d+"));
+//        assertTrue(location.matches("/api/v1/users/\\d+"));
+        assertTrue(location.matches("/api/v1/users/me"));
         // todo: mock.perform( get(location) ).andExpect( status().isOk() );
     }
 
@@ -109,7 +104,7 @@ class UserControllerIntegrationTest {
         when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 
         // create
-        mockMvc.perform(post("/api/v1/users/signup")
+        mockMvc.perform(post("/api/v1/auth/signup")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated());
@@ -122,7 +117,7 @@ class UserControllerIntegrationTest {
                 .code(sentCode)
                 .build();
 
-        mockMvc.perform(post("/api/v1/users/verify-email")
+        mockMvc.perform(post("/api/v1/auth/verify-email")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(verifyEmailDTO)))
                 .andExpect(status().isOk());
@@ -133,7 +128,7 @@ class UserControllerIntegrationTest {
                 .build();
 
         // Act
-        String response = mockMvc.perform(post("/api/v1/users/login")
+        String response = mockMvc.perform(post("/api/v1/auth/login")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
@@ -199,7 +194,7 @@ class UserControllerIntegrationTest {
         when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 
         // create
-        mockMvc.perform(post("/api/v1/users/signup")
+        mockMvc.perform(post("/api/v1/auth/signup")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated());
@@ -212,7 +207,7 @@ class UserControllerIntegrationTest {
                 .build();
 
         // Act
-        mockMvc.perform(post("/api/v1/users/verify-email")
+        mockMvc.perform(post("/api/v1/auth/verify-email")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(verifyEmailDTO)))
                 .andExpect(status().isOk());
@@ -225,7 +220,7 @@ class UserControllerIntegrationTest {
         when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 
         // create
-        mockMvc.perform(post("/api/v1/users/signup")
+        mockMvc.perform(post("/api/v1/auth/signup")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated());
@@ -238,7 +233,7 @@ class UserControllerIntegrationTest {
                 .code(sentCodeWhenSignup)
                 .build();
 
-        mockMvc.perform(post("/api/v1/users/verify-email")
+        mockMvc.perform(post("/api/v1/auth/verify-email")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(verifyEmailDTO)))
                 .andExpect(status().isOk());
@@ -246,7 +241,7 @@ class UserControllerIntegrationTest {
         // request a new email verification code ( code can be used only once )
         Mockito.clearInvocations(mimeMessage, javaMailSender);
 
-        mockMvc.perform(post("/api/v1/email/send-email-verification")
+        mockMvc.perform(post("/api/v1/auth/send-email-verification")
                         .contentType(TEXT_PLAIN)
                         .content(this.dto.getEmail()))
                 .andExpect(status().isOk());
@@ -259,8 +254,9 @@ class UserControllerIntegrationTest {
                 .code(sentCodeWhenRequestedACode)
                 .password("87654321")
                 .build();
+
         // Act
-        mockMvc.perform(post("/api/v1/users/reset-password")
+        mockMvc.perform(post("/api/v1/auth/reset-password")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(resetPasswordDTO)))
                 .andExpect(status().isNoContent());
@@ -273,10 +269,57 @@ class UserControllerIntegrationTest {
                 .password(resetPasswordDTO.getPassword())
                 .build();
 
-        mockMvc.perform(post("/api/v1/users/login")
+        mockMvc.perform(post("/api/v1/auth/login")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDTO)))
                 .andExpect(status().isOk());
     }
 
+
+
+    // 0.............. user ..............
+    @Test
+    void getUser_successful() throws Exception {
+        // Arrange
+        MimeMessage mimeMessage = Mockito.mock(MimeMessage.class);
+        when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
+
+        // create
+        mockMvc.perform(post("/api/v1/auth/signup")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isCreated());
+
+        String sentCode = extractSentCode(mimeMessage);
+
+        // verify-email
+        VerifyEmailDTO verifyEmailDTO = VerifyEmailDTO.builder()
+                .email(this.dto.getEmail())
+                .code(sentCode)
+                .build();
+
+        mockMvc.perform(post("/api/v1/auth/verify-email")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(verifyEmailDTO)))
+                .andExpect(status().isOk());
+
+        LoginDTO dto = LoginDTO.builder()
+                .email(this.dto.getEmail())
+                .password(this.dto.getPassword())
+                .build();
+
+        // login
+        String response = mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        LoginOutput output = objectMapper.readValue(response, LoginOutput.class);
+
+        // Act
+        mockMvc.perform(get("/api/v1/users/me")
+                        .header("Authorization", "Bearer " + output.getAccessToken()))
+                .andExpect(status().isOk());
+    }
 }

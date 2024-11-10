@@ -1,4 +1,4 @@
-package org.cris6h16;
+package org.cris6h16.security;
 
 
 import io.jsonwebtoken.Claims;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  class JwtUtilsImpl implements JwtUtils {
 
     private final JwtProperties jwtProperties;
-    private final String ROLE_CLAIM = "roles";
+    private final String AUTHORITY_CLAIM = "authorities";
 
     public JwtUtilsImpl(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
         return tk;
     }
 
-
+@Override
     public boolean validate(String token) {
         log.debug("Validating token");
         try {
@@ -68,12 +68,14 @@ import java.util.stream.Collectors;
         }
     }
 
+    @Override
     public Long getId(String token) {
         return Long.valueOf(getAClaim(token, Claims::getSubject));
     }
 
-    public Set<String> getRoles(String token) {
-        String rolesStr = getAClaim(token, claims -> claims.get(ROLE_CLAIM, String.class));
+    @Override
+    public Set<String> getAuthority(String token) {
+        String rolesStr = getAClaim(token, claims -> claims.get(AUTHORITY_CLAIM, String.class));
 
         if (rolesStr == null || rolesStr.isEmpty()) {
             log.debug("No roles claim found in token");
@@ -143,11 +145,13 @@ import java.util.stream.Collectors;
     }
 
     private long toSecs(long time, String unit) {
-        return switch (unit) {
+        long secs = switch (unit) {
             case "MINUTES" -> time * 60;
             case "DAYS" ->  time * 60 * 60 * 24;
             default -> throw new IllegalStateException("Unexpected value: " + unit);
         };
+        log.debug("Converted {} {} to {} seconds", time, unit, secs);
+        return secs;
     }
 
 

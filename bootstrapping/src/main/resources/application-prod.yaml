@@ -23,6 +23,7 @@ spring:
     import:
       - classpath:base.yaml
       - classpath:mail.yaml
+      - classpath:jwt.yaml
       - classpath:error-messages.yaml
 logging:
   level:

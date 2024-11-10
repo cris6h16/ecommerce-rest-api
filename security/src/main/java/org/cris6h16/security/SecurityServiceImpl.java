@@ -1,9 +1,12 @@
-package org.cris6h16;
+package org.cris6h16.security;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class SecurityServiceImpl implements SecurityComponent {
 
     private final PasswordEncoder passwordEncoder;
@@ -32,6 +35,15 @@ public class SecurityServiceImpl implements SecurityComponent {
     @Override
     public String generateRefreshToken(Long id) {
         return jwtUtils.genRefreshToken(id);
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (obj instanceof UserPrincipal userPrincipal) {
+            return ((UserPrincipal) obj).getId();
+        }
+        throw new IllegalStateException("Principal is not an instance of UserPrincipal");
     }
 
 

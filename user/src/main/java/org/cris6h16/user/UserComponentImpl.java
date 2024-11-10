@@ -55,7 +55,7 @@ class UserComponentImpl implements UserComponent {
 
 
     @Override
-    public Optional<UserDTO> findByEmailAndEnabled(String email, boolean enabled) {
+    public Optional<UserOutput> findByEmailAndEnabled(String email, boolean enabled) {
         userValidator.validateEmail(email);
 
         UserEntity ue = userRepository.findByEmailAndEnabled(email, enabled).orElse(null);
@@ -83,6 +83,12 @@ class UserComponentImpl implements UserComponent {
         userValidator.validateEmail(email);
 
         return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Optional<UserOutput> findByIdAndEnable(Long id, boolean enabled) {
+        userValidator.validateId(id);
+        return userRepository.findByIdAndEnabled(id, enabled).map(EntityMapper::toUserDTO);
     }
 
 }

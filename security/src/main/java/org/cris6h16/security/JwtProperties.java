@@ -1,4 +1,4 @@
-package org.cris6h16;
+package org.cris6h16.security;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -14,8 +14,8 @@ import java.util.function.BiConsumer;
 @Setter
 public class JwtProperties {
     private String secretKey;
-    private long accessTokenExpMinutes;
-    private long refreshTokenExpMinutes;
+    private Long accessTokenExpMinutes;
+    private Long refreshTokenExpMinutes;
 
     @PostConstruct
     public void initNotNull() {

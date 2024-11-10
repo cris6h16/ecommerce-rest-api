@@ -3,6 +3,7 @@ package org.cris6h16.user;
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidEmailException;
 import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidFirstnameLengthException;
+import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidIdException;
 import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidLastnameLengthException;
 import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidPasswordLengthException;
 import org.springframework.stereotype.Component;
@@ -51,4 +52,10 @@ import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
         log.debug("Valid email: {}", email);
     }
 
+    void validateId(Long id) {
+        if (id == null || id <= 0) {
+            throw new InvalidIdException();
+        }
+        log.debug("Valid id: {}", id);
+    }
 }
