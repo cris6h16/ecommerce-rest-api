@@ -1,17 +1,19 @@
-package org.cris6h16;
+package org.cris6h16.Controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Multipart;
 import jakarta.mail.internet.MimeMessage;
+import org.cris6h16.Main;
 import org.cris6h16.email.EmailComponentImpl;
-import org.cris6h16.user.LoginDTO;
+import org.cris6h16.facades.LoginDTO;
+import org.cris6h16.facades.VerifyEmailDTO;
+import org.cris6h16.user.CreateUserInput;
 import org.cris6h16.user.Outputs.LoginOutput;
-import org.cris6h16.user.SignupDTO;
 import org.cris6h16.user.UserRepository;
-import org.cris6h16.user.VerifyEmailDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -41,7 +43,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -49,7 +50,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@ContextConfiguration(classes = UserControllerIntegrationTest.App.class)
+@ContextConfiguration(classes = Main.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 class UserControllerIntegrationTest {
@@ -64,7 +65,7 @@ class UserControllerIntegrationTest {
     private MockMvc mockMvc;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final SignupDTO dto = SignupDTO.builder()
+    private final CreateUserInput dto = CreateUserInput.builder()
             .firstname("Cristian")
             .lastname("Herrera")
             .email("cristianmherrera21@gmail.com")
@@ -82,7 +83,7 @@ class UserControllerIntegrationTest {
     @Test
     void signup_successful() throws Exception {
         // Arrange
-        MimeMessage mimeMessage = mock(MimeMessage.class);
+        MimeMessage mimeMessage = Mockito.mock(MimeMessage.class);
         when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 
         // Act
@@ -101,7 +102,7 @@ class UserControllerIntegrationTest {
     @Test
     void login_successful() throws Exception {
         // Arrange
-        MimeMessage mimeMessage = mock(MimeMessage.class);
+        MimeMessage mimeMessage = Mockito.mock(MimeMessage.class);
         when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 
         // create
@@ -191,7 +192,7 @@ class UserControllerIntegrationTest {
     @Test
     void verifyEmail_successful() throws Exception {
         // Arrange
-        MimeMessage mimeMessage = mock(MimeMessage.class);
+        MimeMessage mimeMessage = Mockito.mock(MimeMessage.class);
         when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 
         // create
@@ -212,20 +213,6 @@ class UserControllerIntegrationTest {
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(verifyEmailDTO)))
                 .andExpect(status().isOk());
-    }
-
-
-    @SpringBootApplication
-    @EnableJpaRepositories
-    @EntityScan
-    @Import({EmailComponentImpl.class, SecurityServiceImpl.class})
-    static class App {
-
-        public static void main(String[] args) {
-            SpringApplication.run(App.class, args);
-        }
-
-
     }
 
 }

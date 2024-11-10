@@ -1,4 +1,4 @@
-package org.cris6h16.user;
+package org.cris6h16.facades;
 
 import lombok.Builder;
 import lombok.Getter;

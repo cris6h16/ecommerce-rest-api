@@ -4,42 +4,73 @@ import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.GenAccessTokenInput;
 import org.cris6h16.SecurityComponent;
 import org.cris6h16.email.EmailComponent;
-import org.cris6h16.email.Exceptions.ValidVerificationCodeNotFoundException;
-import org.cris6h16.user.Exceptions.EmailNotVerifiedException;
-import org.cris6h16.user.Exceptions.InvalidCredentialsException;
-import org.cris6h16.user.LoginDTO;
 import org.cris6h16.user.Outputs.LoginOutput;
 import org.cris6h16.user.ResetPasswordDTO;
-import org.cris6h16.user.SignupDTO;
+import org.cris6h16.user.CreateUserInput;
 import org.cris6h16.user.UserComponent;
 import org.cris6h16.user.UserDTO;
-import org.cris6h16.user.VerifyEmailDTO;
+import org.cris6h16.user.UserValidator;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 @Slf4j
-public class UserFacadeImpl implements UserFacade {
+@Component
+class UserFacadeImpl implements UserFacade {
 
     private final EmailComponent emailComponent;
     private final UserComponent userComponent;
     private final SecurityComponent securityComponent;
+    private final UserValidator userValidator;
 
-    public UserFacadeImpl(EmailComponent emailComponent, UserComponent userComponent, SecurityComponent securityComponent) {
+    public UserFacadeImpl(EmailComponent emailComponent,
+                          UserComponent userComponent,
+                          SecurityComponent securityComponent,
+                          UserValidator userValidator) {
         this.emailComponent = emailComponent;
         this.userComponent = userComponent;
         this.securityComponent = securityComponent;
+        this.userValidator = userValidator;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
-    public Long signup(SignupDTO input) {
-        encodePass(input);
+    public Long signup(SignupDTO dto) {
+        CreateUserInput input = toCreateUserInput(dto);
+        processPassword(input);
+        setSignupDefaults(input);
         Long id = userComponent.create(input);
         removeOldCodesByEmail(input.getEmail());
         sendEmailVerificationCode(input.getEmail());
         return id;
+    }
+
+    private void processPassword(CreateUserInput input) {
+        // replicacion de la logica de validacion de contrasena, esto lo hace el componente, pero al yo mandar la contrasena al componente ya encriptada la validacion de contrasena siempre sera exitosa ( length > 8 ) es por eso que es la unica validacion afuera del componente
+        input.prepare();
+        userValidator.validatePassword(input.getPassword()); // el validador del componente fue expuesto al exterior para evitar reescribir la logica de validacion de contrasena
+
+        // encriptacion de la contrasena
+        String encodedPass = securityComponent.encodePassword(input.getPassword());
+        input.setPassword(encodedPass);
+    }
+
+    private CreateUserInput toCreateUserInput(SignupDTO dto) {
+        return CreateUserInput.builder()
+                .firstname(dto.getFirstname())
+                .lastname(dto.getLastname())
+                .email(dto.getEmail())
+                .password(dto.getPassword())
+                .build();
+    }
+
+    private void setSignupDefaults(CreateUserInput input) {
+        input.setEnabled(false);
+        input.setEmailVerified(false);
+        input.setAuthorities(Set.of("ROLE_USER"));
     }
 
     private void sendEmailVerificationCode(String email) {
@@ -48,11 +79,6 @@ public class UserFacadeImpl implements UserFacade {
 
     private void removeOldCodesByEmail(String email) {
         emailComponent.removeOldCodesByEmail(email);
-    }
-
-    private void encodePass(SignupDTO input) {
-        String encodedPass = securityComponent.encodePassword(input.getPassword());
-        input.setPassword(encodedPass);
     }
 
 
@@ -120,7 +146,7 @@ public class UserFacadeImpl implements UserFacade {
         Supplier<ValidVerificationCodeNotFoundException> codeE = ValidVerificationCodeNotFoundException::new;
 
         checkVerificationCode(dto.getEmail(), dto.getCode(), codeE);
-        encodePass(dto);
+        processPassword(dto);
         userComponent.updatePasswordByEmail(dto.getEmail(), dto.getPassword());
         removeOldCodesByEmail(dto.getEmail());
     }
@@ -133,7 +159,8 @@ public class UserFacadeImpl implements UserFacade {
         }
         log.debug("Code is valid");
     }
-    private void encodePass(ResetPasswordDTO dto) {
+
+    private void processPassword(ResetPasswordDTO dto) {
         String encodedPass = securityComponent.encodePassword(dto.getPassword());
         dto.setPassword(encodedPass);
     }

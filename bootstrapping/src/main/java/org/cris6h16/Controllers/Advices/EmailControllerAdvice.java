@@ -7,7 +7,7 @@ import org.cris6h16.email.Exceptions.EmailSendingException;
 import org.cris6h16.email.Exceptions.InvalidAttributeException.InvalidAttributeException;
 import org.cris6h16.email.Exceptions.InvalidAttributeException.InvalidCodeLengthException;
 import org.cris6h16.email.Exceptions.InvalidAttributeException.InvalidEmailException;
-import org.cris6h16.email.Exceptions.ValidVerificationCodeNotFoundException;
+import org.cris6h16.facades.ValidVerificationCodeNotFoundException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;

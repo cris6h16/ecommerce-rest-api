@@ -14,7 +14,7 @@ import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
 
 @Slf4j
 @Component
-class UserValidator {
+ public class UserValidator {
     //todo: eliminar property classes ya que se elimino el parametro string para recibir por el contructor
 
     public void validateFirstname(String firstname) {

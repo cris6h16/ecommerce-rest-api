@@ -62,7 +62,7 @@ class UserEntity {
 
     @ManyToMany(
             fetch = FetchType.EAGER,
-            cascade = {}
+            cascade = {CascadeType.PERSIST}
     )
     @JoinTable(
             name = "users_authorities",

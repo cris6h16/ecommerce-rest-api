@@ -1,11 +1,11 @@
 package org.cris6h16.Controllers;
 
-import org.cris6h16.user.LoginDTO;
-import org.cris6h16.user.ResetPasswordDTO;
-import org.cris6h16.user.SignupDTO;
-import org.cris6h16.user.VerifyEmailDTO;
+import org.cris6h16.facades.LoginDTO;
+import org.cris6h16.facades.SignupDTO;
+import org.cris6h16.facades.UserFacade;
+import org.cris6h16.facades.VerifyEmailDTO;
 import org.cris6h16.user.Outputs.LoginOutput;
-import org.cris6h16.user.UserComponent;
+import org.cris6h16.user.ResetPasswordDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Isolation;
@@ -30,10 +30,10 @@ public class UserController {
 
     public static final String BASE_PATH = "/api/v1/users";
 
-    private final UserComponent userService;
+    private final UserFacade userFacade;
 
-    public UserController(UserComponent userService) {
-        this.userService = userService;
+    public UserController(UserFacade userFacade) {
+        this.userFacade = userFacade;
     }
 
     @PostMapping(
@@ -41,7 +41,7 @@ public class UserController {
             consumes = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Void> signUp(@RequestBody SignupDTO dto) {
-        Long id = userService.create(dto);
+        Long id = userFacade.signup(dto);
         return ResponseEntity
                 .created(URI.create(BASE_PATH + "/" + id))
                 .build();
@@ -53,7 +53,7 @@ public class UserController {
             produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<LoginOutput> login(@RequestBody LoginDTO dto) {
-        LoginOutput output = userService.existsByEmailAndPassword(dto);
+        LoginOutput output = userFacade.login(dto);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -66,7 +66,7 @@ public class UserController {
             consumes = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Void> verifyEmail(@RequestBody VerifyEmailDTO dto) {
-        userService.verifyEmail(dto);
+        userFacade.verifyEmail(dto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .build();
@@ -77,7 +77,7 @@ public class UserController {
             consumes = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Void> resetPassword(@RequestBody ResetPasswordDTO dto) {
-        userService.resetPassword(dto);
+        userFacade.resetPassword(dto);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();

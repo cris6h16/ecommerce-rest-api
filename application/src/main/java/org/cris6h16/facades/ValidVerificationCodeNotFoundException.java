@@ -1,4 +1,4 @@
-package org.cris6h16.email.Exceptions;
+package org.cris6h16.facades;
 
 public class ValidVerificationCodeNotFoundException extends RuntimeException{
 }

@@ -20,7 +20,7 @@ class EmailSenderImpl implements EmailSender {
     private final ITemplateEngine templateEngine;
     private final JavaMailSender mailSender;
 
-    public EmailSenderImpl(ITemplateEngine templateEngine, JavaMailSender mailSender, VerificationCodeServiceImpl verificationCodeService) {
+    public EmailSenderImpl(ITemplateEngine templateEngine, JavaMailSender mailSender) {
         this.templateEngine = templateEngine;
         this.mailSender = mailSender;
     }

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 
-@Repository
  interface VerificationCodeRepository extends JpaRepository<VerificationCodeEntity, Long> {
     // expiresAt > comparisonTime
     boolean existsByEmailAndCodeAndExpiresAtAfter(String email, String code, LocalDateTime comparisonTime);

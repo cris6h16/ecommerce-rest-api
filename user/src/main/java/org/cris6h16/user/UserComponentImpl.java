@@ -4,11 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.user.Exceptions.AlreadyExistsException.EmailAlreadyExistsException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
 
 import static org.cris6h16.user.EntityMapper.toUserDTO;
 import static org.cris6h16.user.EntityMapper.toUserEntity;
@@ -21,7 +17,9 @@ class UserComponentImpl implements UserComponent {
     private final UserValidator userValidator;
     private final AuthorityRepository authorityRepository;
 
-    UserComponentImpl(UserRepository userRepository, UserValidator userValidator, AuthorityRepository authorityRepository) {
+    UserComponentImpl(UserRepository userRepository,
+                      UserValidator userValidator,
+                      AuthorityRepository authorityRepository) {
         this.userRepository = userRepository;
         this.userValidator = userValidator;
         this.authorityRepository = authorityRepository;
@@ -29,36 +27,26 @@ class UserComponentImpl implements UserComponent {
 
 
     @Override
-    public Long create(SignupDTO input) {
+    public Long create(CreateUserInput input) {
         input.prepare();
         isValid(input);
         checkDuplicates(input);
-        UserEntity entity = toUserEntity(input);
-        entity.setAuthorities(getOrCreateAuthority(SignupDTO.DEF_AUTHORITY));
+        UserEntity entity = toUserEntity(input, authorityRepository);
         entity = userRepository.save(entity);
         return entity.getId();
     }
 
     //todo: agregar license & author
 
-    @SuppressWarnings("SameParameterValue")
-    private Set<AuthorityEntity> getOrCreateAuthority(String authority) {
-        Supplier<AuthorityEntity> saved = () ->
-                authorityRepository.save(AuthorityEntity.builder().name(authority).build());
 
-        AuthorityEntity entity = authorityRepository
-                .findByName(authority).orElseGet(saved);
 
-        return new HashSet<>(List.of(entity));
-    }
-
-    private void checkDuplicates(SignupDTO user) {
+    private void checkDuplicates(CreateUserInput user) {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new EmailAlreadyExistsException();
         }
     }
 
-    private void isValid(SignupDTO user) {
+    private void isValid(CreateUserInput user) {
         userValidator.validateFirstname(user.getFirstname());
         userValidator.validateLastname(user.getLastname());
         userValidator.validateEmail(user.getEmail());
@@ -88,6 +76,13 @@ class UserComponentImpl implements UserComponent {
         userValidator.validatePassword(password);
 
         userRepository.updatePasswordByEmail(email, password);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        userValidator.validateEmail(email);
+
+        return userRepository.existsByEmail(email);
     }
 
 }

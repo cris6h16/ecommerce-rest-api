@@ -5,20 +5,19 @@ import org.cris6h16.Controllers.Advices.Properties.SystemErrorProperties;
 import org.cris6h16.Controllers.Advices.Properties.UserErrorMsgProperties;
 import org.cris6h16.user.Exceptions.AlreadyExistsException.AlreadyExistsException;
 import org.cris6h16.user.Exceptions.AlreadyExistsException.EmailAlreadyExistsException;
-import org.cris6h16.user.Exceptions.EmailNotVerifiedException;
+import org.cris6h16.facades.EmailNotVerifiedException;
 import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidAttributeException;
 import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidEmailException;
 import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidFirstnameLengthException;
 import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidLastnameLengthException;
 import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidPasswordLengthException;
-import org.cris6h16.user.Exceptions.InvalidCredentialsException;
+import org.cris6h16.facades.InvalidCredentialsException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 
