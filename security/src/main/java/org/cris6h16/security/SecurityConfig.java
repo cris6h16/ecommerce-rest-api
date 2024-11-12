@@ -30,12 +30,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/signup").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/verify-email").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/reset-password").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/send-email-verification").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/me").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh-token").authenticated()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/signup",
+                                "/api/v1/auth/verify-email",
+                                "/api/v1/auth/reset-password",
+                                "/api/v1/auth/send-email-verification").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)

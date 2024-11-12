@@ -1,10 +1,9 @@
 package org.cris6h16.facades;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.security.GenAccessTokenInput;
 import org.cris6h16.security.SecurityComponent;
 import org.cris6h16.email.EmailComponent;
-import org.cris6h16.user.Outputs.LoginOutput;
+import org.cris6h16.user.LoginOutput;
 import org.cris6h16.user.ResetPasswordDTO;
 import org.cris6h16.user.CreateUserInput;
 import org.cris6h16.user.UserComponent;
@@ -95,17 +94,14 @@ class UserFacadeImpl implements UserFacade {
     }
 
     private LoginOutput createLoginOutput(UserOutput userDTO) {
-        GenAccessTokenInput input = toGenAccessTokenInput(userDTO);
+        Long id = userDTO.getId();
+        Set<String> authorities = userDTO.getAuthorities();
 
-        String accessToken = securityComponent.generateAccessToken(input);
-        String refreshToken = securityComponent.generateRefreshToken(userDTO.getId());
+        String accessToken = securityComponent.generateAccessToken(id, authorities);
+        String refreshToken = securityComponent.generateRefreshToken(id, authorities);
 
         log.debug("Generated access token: {}, refresh token: {}", accessToken, refreshToken);
         return new LoginOutput(accessToken, refreshToken);
-    }
-
-    private GenAccessTokenInput toGenAccessTokenInput(UserOutput userDTO) {
-        return new GenAccessTokenInput(userDTO.getId(), userDTO.isEnabled(), userDTO.getAuthorities());
     }
 
 
@@ -158,6 +154,20 @@ class UserFacadeImpl implements UserFacade {
     public UserOutput me() {
         Long id = securityComponent.getCurrentUserId();
         return userComponent.findByIdAndEnable(id, true).orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    public String refreshAccessToken() {
+        Long id = securityComponent.getCurrentUserId();
+        Set<String> authorities = securityComponent.getCurrentUserAuthorities();
+        existsEnabledUser(id);
+        return securityComponent.generateAccessToken(id, authorities);
+    }
+
+    private void existsEnabledUser(Long id) {
+        if (!userComponent.existsByIdAndEnabled(id, true)) {
+            throw new UserNotFoundException();
+        }
     }
 
     private void checkVerificationCode(String email, String code, Supplier<? extends RuntimeException> exceptionSupplier) {

@@ -5,7 +5,7 @@ import org.cris6h16.facades.LoginDTO;
 import org.cris6h16.facades.SignupDTO;
 import org.cris6h16.facades.UserFacade;
 import org.cris6h16.facades.VerifyEmailDTO;
-import org.cris6h16.user.Outputs.LoginOutput;
+import org.cris6h16.user.LoginOutput;
 import org.cris6h16.user.ResetPasswordDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +21,7 @@ import java.net.URI;
 
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @RestController
 @RequestMapping(AuthenticationController.BASE_PATH)
@@ -100,7 +101,7 @@ public class AuthenticationController {
 
 
     @PostMapping(
-            path = "send-email-verification",
+            path = "/send-email-verification",
             consumes = MediaType.TEXT_PLAIN_VALUE
     )
     @Transactional(
@@ -112,4 +113,12 @@ public class AuthenticationController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping(
+            path = "/refresh-token",
+            produces = TEXT_PLAIN_VALUE
+    )
+    public ResponseEntity<String> refreshAccessToken() {
+        String accessToken = userFacade.refreshAccessToken(); // todo: organizar mejor aqui no es user facade es authentication facade
+        return ResponseEntity.ok(accessToken);
+    }
 }

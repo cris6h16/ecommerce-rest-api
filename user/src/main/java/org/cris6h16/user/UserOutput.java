@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Getter
@@ -19,5 +20,7 @@ public class UserOutput {
     private String password;
     private Set<String> authorities;
     private boolean enabled;
+    private BigDecimal balance;
     private boolean emailVerified;
 }
+

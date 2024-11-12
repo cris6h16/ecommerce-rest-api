@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
- class JwtUtilsImpl implements JwtUtils {
+class JwtUtilsImpl implements JwtUtils {
 
     private final JwtProperties jwtProperties;
     private final String AUTHORITY_CLAIM = "authorities";
@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
         return tk;
     }
 
-@Override
+    @Override
     public boolean validate(String token) {
         log.debug("Validating token");
         try {
@@ -110,48 +110,23 @@ import java.util.stream.Collectors;
     }
 
     @Override
-    public String genAccessToken(GenAccessTokenInput input) {
-        log.debug("Generating refresh token for input: {}", input.toString());
-
+    public String genAccessToken(Long id, Set<String> authorities) {
+        long mins = this.jwtProperties.getAccessTokenExpMinutes();
         Map<String, String> claims = new HashMap<>();
-        claims.put("enabled", String.valueOf(input.isEnabled()));
-        claims.put("authorities", input.getAuthorities().toString());
+        claims.put("authorities", authorities.toString());
 
-        return genToken(
-                input.getId(),
-                claims,
-                accessTokenExpSecs()
-        );
-    }
-
-    private long accessTokenExpSecs() {
-        long time = this.jwtProperties.getAccessTokenExpMinutes();
-        return toSecs(time, "MINUTES");
+        log.debug("Generating access token for user ID: {}, authorities: {}, expiration time: {} minutes", id, authorities, mins);
+        return genToken(id, claims, 60 * mins);
     }
 
     @Override
-    public String genRefreshToken(Long id) {
-        log.debug("Generating access token for user ID: {}", id);
-        return genToken(
-                id,
-                null,
-                refreshTokenExpSecs()
-        );
-    }
+    public String genRefreshToken(Long id, Set<String> authorities) {
+        long mins = this.jwtProperties.getRefreshTokenExpMinutes();
+        Map<String, String> claims = new HashMap<>();
+        claims.put("authorities", authorities.toString());
 
-    private long refreshTokenExpSecs() {
-        long time = this.jwtProperties.getRefreshTokenExpMinutes();
-        return toSecs(time, "MINUTES");
-    }
-
-    private long toSecs(long time, String unit) {
-        long secs = switch (unit) {
-            case "MINUTES" -> time * 60;
-            case "DAYS" ->  time * 60 * 60 * 24;
-            default -> throw new IllegalStateException("Unexpected value: " + unit);
-        };
-        log.debug("Converted {} {} to {} seconds", time, unit, secs);
-        return secs;
+        log.debug("Generating refresh token for user ID: {}, authorities: {}, expiration time: {} minutes", id, authorities, mins);
+        return genToken(id, claims, 60 * mins);
     }
 
 

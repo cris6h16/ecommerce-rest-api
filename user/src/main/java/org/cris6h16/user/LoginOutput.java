@@ -1,4 +1,4 @@
-package org.cris6h16.user.Outputs;
+package org.cris6h16.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

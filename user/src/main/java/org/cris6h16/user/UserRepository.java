@@ -23,4 +23,6 @@ import java.util.Optional;
     void updatePasswordByEmail(String email, String password);
 
     Optional<UserEntity> findByIdAndEnabled(Long id, boolean enabled);
-}
+
+     boolean existsByIdAndEnabled(Long id, boolean enabled);
+ }

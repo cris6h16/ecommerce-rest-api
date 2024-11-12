@@ -41,6 +41,7 @@ import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
             throw new InvalidPasswordLengthException();
         }
         log.debug("Valid password length: {}", password.length());
+        log.debug("Valid password: {}", password);
     }
 
     //--> ^ = start of the string, \S = any non-whitespace character, + = one or more, @ = @, \S = any non-whitespace character, + = one or more, \. = ., \S = any non-whitespace character, + = one or more, $ = end of the string

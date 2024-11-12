@@ -11,4 +11,6 @@ public interface UserComponent {
     boolean existsByEmail(String email);
 
     Optional<UserOutput> findByIdAndEnable(Long id, boolean enabled);
+
+    boolean existsByIdAndEnabled(Long id, boolean enabled);
 }

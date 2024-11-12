@@ -91,4 +91,10 @@ class UserComponentImpl implements UserComponent {
         return userRepository.findByIdAndEnabled(id, enabled).map(EntityMapper::toUserDTO);
     }
 
+    @Override
+    public boolean existsByIdAndEnabled(Long id, boolean enabled) {
+        userValidator.validateId(id);
+        return userRepository.existsByIdAndEnabled(id, enabled);
+    }
+
 }

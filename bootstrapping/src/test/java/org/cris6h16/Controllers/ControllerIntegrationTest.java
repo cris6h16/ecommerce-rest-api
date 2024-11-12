@@ -8,7 +8,7 @@ import org.cris6h16.Main;
 import org.cris6h16.facades.LoginDTO;
 import org.cris6h16.facades.VerifyEmailDTO;
 import org.cris6h16.user.CreateUserInput;
-import org.cris6h16.user.Outputs.LoginOutput;
+import org.cris6h16.user.LoginOutput;
 import org.cris6h16.user.ResetPasswordDTO;
 import org.cris6h16.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;

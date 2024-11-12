@@ -16,6 +16,7 @@ class EntityMapper {
                 .enabled(userEntity.isEnabled())
                 .emailVerified(userEntity.isEmailVerified())
                 .authorities(toSetOfString(userEntity.getAuthorities()))
+                .balance(userEntity.getBalance())
                 .build();
     }
 
