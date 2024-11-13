@@ -1,0 +1,5 @@
+package org.cris6h16.product;
+
+public interface ProductComponent {
+    Long save(CreateProductInput input);
+}

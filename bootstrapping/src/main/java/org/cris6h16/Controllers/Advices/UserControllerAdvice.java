@@ -4,14 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.Controllers.Advices.Properties.SystemErrorProperties;
 import org.cris6h16.Controllers.Advices.Properties.UserErrorMsgProperties;
 import org.cris6h16.facades.UserNotFoundException;
-import org.cris6h16.user.Exceptions.AlreadyExistsException.AlreadyExistsException;
-import org.cris6h16.user.Exceptions.AlreadyExistsException.EmailAlreadyExistsException;
+import org.cris6h16.user.Exceptions.AlreadyExistsException.UserAttributeAlreadyExistsException;
+import org.cris6h16.user.Exceptions.AlreadyExistsException.UserEmailAlreadyExistsException;
 import org.cris6h16.facades.EmailNotVerifiedException;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidAttributeException;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidEmailException;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidFirstnameLengthException;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidLastnameLengthException;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidPasswordLengthException;
+import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidAttributeException;
+import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidEmailException;
+import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidFirstnameLengthException;
+import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidLastnameLengthException;
+import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidPasswordLengthException;
 import org.cris6h16.facades.InvalidCredentialsException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -46,8 +46,8 @@ public class UserControllerAdvice {
     }
 
 
-    @ExceptionHandler(AlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleAlreadyExists(AlreadyExistsException e) {
+    @ExceptionHandler(UserAttributeAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyExists(UserAttributeAlreadyExistsException e) {
         log.debug("AlreadyExistsException", e);
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
@@ -55,8 +55,8 @@ public class UserControllerAdvice {
                 .body(new ErrorResponse(getMsg(e)));
     }
 
-    private String getMsg(AlreadyExistsException e) {
-        if (e instanceof EmailAlreadyExistsException) {
+    private String getMsg(UserAttributeAlreadyExistsException e) {
+        if (e instanceof UserEmailAlreadyExistsException) {
             return userErrorMsgProperties.getEmailAlreadyExists();
         }
         log.error("A custom exception should have a custom message", e);
@@ -64,8 +64,8 @@ public class UserControllerAdvice {
     }
 
 
-    @ExceptionHandler(InvalidAttributeException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidAttribute(InvalidAttributeException e) {
+    @ExceptionHandler(UserInvalidAttributeException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidAttribute(UserInvalidAttributeException e) {
         log.debug("InvalidAttributeException", e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -73,17 +73,17 @@ public class UserControllerAdvice {
                 .body(new ErrorResponse(getMsg(e)));
     }
 
-    private String getMsg(InvalidAttributeException e) {
-        if (e instanceof InvalidEmailException) {
+    private String getMsg(UserInvalidAttributeException e) {
+        if (e instanceof UserInvalidEmailException) {
             return userErrorMsgProperties.getEmailInvalid();
         }
-        if (e instanceof InvalidFirstnameLengthException) {
+        if (e instanceof UserInvalidFirstnameLengthException) {
             return userErrorMsgProperties.getFirstNameLength();
         }
-        if (e instanceof InvalidLastnameLengthException) {
+        if (e instanceof UserInvalidLastnameLengthException) {
             return userErrorMsgProperties.getLastNameLength();
         }
-        if (e instanceof InvalidPasswordLengthException) {
+        if (e instanceof UserInvalidPasswordLengthException) {
             return userErrorMsgProperties.getPasswordLength();
         }
 

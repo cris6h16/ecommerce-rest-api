@@ -1,11 +1,11 @@
 package org.cris6h16.user;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidEmailException;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidFirstnameLengthException;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidIdException;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidLastnameLengthException;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.InvalidPasswordLengthException;
+import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidEmailException;
+import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidFirstnameLengthException;
+import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidIdException;
+import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidLastnameLengthException;
+import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidPasswordLengthException;
 import org.springframework.stereotype.Component;
 
 import static org.cris6h16.user.UserEntity.EMAIL_LENGTH;
@@ -21,7 +21,7 @@ import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
     public void validateFirstname(String firstname) {
         firstname = firstname == null ? "" : firstname.trim();
         if (firstname.isEmpty() || firstname.length() > FIRSTNAME_LENGTH) {
-            throw new InvalidFirstnameLengthException();
+            throw new UserInvalidFirstnameLengthException();
         }
         log.debug("Valid first name: {}", firstname);
     }
@@ -29,7 +29,7 @@ import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
     public void validateLastname(String lastname) {
         lastname = lastname == null ? "" : lastname.trim();
         if (lastname.isEmpty() || lastname.length() > LASTNAME_LENGTH) {
-            throw new InvalidLastnameLengthException();
+            throw new UserInvalidLastnameLengthException();
         }
         log.debug("Valid last name: {}", lastname);
     }
@@ -38,7 +38,7 @@ import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
     public void validatePassword(String password) {
         password = password == null ? "" : password.trim();
         if (password.length() < 8 || password.length() > PASSWORD_LENGTH) {
-            throw new InvalidPasswordLengthException();
+            throw new UserInvalidPasswordLengthException();
         }
         log.debug("Valid password length: {}", password.length());
         log.debug("Valid password: {}", password);
@@ -48,14 +48,14 @@ import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
     public void validateEmail(String email) {
         email = email == null ? "" : email.trim();
         if (email.isEmpty() || email.length() > EMAIL_LENGTH || !email.matches("^\\S+@\\S+\\.\\S+$")) {
-            throw new InvalidEmailException();
+            throw new UserInvalidEmailException();
         }
         log.debug("Valid email: {}", email);
     }
 
     void validateId(Long id) {
         if (id == null || id <= 0) {
-            throw new InvalidIdException();
+            throw new UserInvalidIdException();
         }
         log.debug("Valid id: {}", id);
     }

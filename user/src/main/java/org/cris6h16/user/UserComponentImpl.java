@@ -1,7 +1,7 @@
 package org.cris6h16.user;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.user.Exceptions.AlreadyExistsException.EmailAlreadyExistsException;
+import org.cris6h16.user.Exceptions.AlreadyExistsException.UserEmailAlreadyExistsException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -42,7 +42,7 @@ class UserComponentImpl implements UserComponent {
 
     private void checkDuplicates(CreateUserInput user) {
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new EmailAlreadyExistsException();
+            throw new UserEmailAlreadyExistsException();
         }
     }
 
