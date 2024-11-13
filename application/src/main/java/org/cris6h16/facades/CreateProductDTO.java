@@ -20,4 +20,6 @@ public class CreateProductDTO {
     private Integer approxWidthCm;
     private Integer approxHeightCm;
     private String imageUrl;
+    private Long brandId;
+    private Long categoryId;
 }

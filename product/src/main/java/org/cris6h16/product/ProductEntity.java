@@ -1,7 +1,6 @@
 package org.cris6h16.product;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
@@ -22,7 +21,6 @@ import lombok.ToString;
 import org.cris6h16.user.UserEntity;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 // todo: agregar indexes en entities
 @Entity(name = "products")
@@ -43,15 +41,15 @@ import java.util.Set;
 @Setter
 @ToString
 class ProductEntity {
-    public final static int NAME_LENGTH = 255;
-    public final static int DESCRIPTION_LENGTH = 1000;
-    public final static int IMG_URL_LENGTH = 1000;
+    public final static int PRODUCT_NAME_LENGTH = 255;
+    public final static int PRODUCT_DESCRIPTION_LENGTH = 1000;
+    public final static int PRODUCT_IMG_URL_LENGTH = 1000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = NAME_LENGTH)
+    @Column(nullable = false, length = PRODUCT_NAME_LENGTH)
     private String name;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -60,7 +58,7 @@ class ProductEntity {
     @Column(nullable = false)
     private Integer stock;
 
-    @Column(nullable = false, length = DESCRIPTION_LENGTH)
+    @Column(nullable = false, length = PRODUCT_DESCRIPTION_LENGTH)
     private String description;
 
     @Column(nullable = false)
@@ -72,7 +70,7 @@ class ProductEntity {
     @Column(nullable = false)
     private Integer approxHeightCm;
 
-    @Column(nullable = false, length = IMG_URL_LENGTH)
+    @Column(nullable = false, length = PRODUCT_IMG_URL_LENGTH)
     private String imageUrl;
 
     @ManyToOne(
@@ -96,18 +94,4 @@ class ProductEntity {
     )
     private CategoryEntity category;
 
-
-    @ManyToOne(
-            cascade = {},
-            fetch = FetchType.LAZY
-    )
-    @JoinColumn(
-            name = "brand_id",
-            foreignKey = @ForeignKey(name = "fk_products_brands")
-    )
-    private BrandEntity brand; // todo: SN default
-
-// at the moment, tags are not needed
-//    @ElementCollection(fetch = FetchType.LAZY)
-//    private Set<String> tags;
 }

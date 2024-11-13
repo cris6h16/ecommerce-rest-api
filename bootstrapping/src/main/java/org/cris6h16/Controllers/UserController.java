@@ -8,13 +8,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.cris6h16.Controllers.HTTPCommons.PATH_PREFIX;
+import static org.cris6h16.Controllers.UserController.BASE_PATH;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(UserController.BASE_PATH)
+@RequestMapping(BASE_PATH)
 public class UserController {
 
-    public static final String BASE_PATH = "/api/v1/users";
+     static final String BASE_PATH = PATH_PREFIX + "/users";
+
 
     private final UserFacade userFacade;
 

@@ -19,15 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
+import static org.cris6h16.Controllers.AuthenticationController.BASE_PATH;
+import static org.cris6h16.Controllers.HTTPCommons.PATH_PREFIX;
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @RestController
-@RequestMapping(AuthenticationController.BASE_PATH)
+@RequestMapping(BASE_PATH)
 public class AuthenticationController {
 
-    public static final String BASE_PATH = "/api/v1/auth";
+     static final String BASE_PATH = PATH_PREFIX + "/auth";
     private final UserFacade userFacade;
     private final EmailFacade emailFacade;
 

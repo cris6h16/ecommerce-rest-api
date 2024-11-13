@@ -4,35 +4,37 @@ import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidApproxHeightCmException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidApproxWeightLbException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidApproxWidthCmException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidBrandIdException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidCategoryIdException;
+import org.cris6h16.product.Exceptions.invalid.ProductInvalidCategoryNameLengthException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidDescriptionLengthException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidImageUrlLengthException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidNameLengthException;
+import org.cris6h16.product.Exceptions.invalid.ProductInvalidProductNameLengthException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidPriceException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidStockException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidUserIdException;
+import org.springframework.stereotype.Component;
 
-import static org.cris6h16.product.ProductEntity.DESCRIPTION_LENGTH;
-import static org.cris6h16.product.ProductEntity.IMG_URL_LENGTH;
-import static org.cris6h16.product.ProductEntity.NAME_LENGTH;
+import static org.cris6h16.product.CategoryEntity.CATEGORY_NAME_LENGTH;
+import static org.cris6h16.product.ProductEntity.PRODUCT_DESCRIPTION_LENGTH;
+import static org.cris6h16.product.ProductEntity.PRODUCT_IMG_URL_LENGTH;
+import static org.cris6h16.product.ProductEntity.PRODUCT_NAME_LENGTH;
 
 @Slf4j
+@Component
 class ProductValidator {
 
 
     public void validate(CreateProductInput input) {
-        validateString(input.getName(), NAME_LENGTH, "product name", ProductInvalidNameLengthException.class);
+        validateString(input.getName(), PRODUCT_NAME_LENGTH, "product name", ProductInvalidProductNameLengthException.class);
         validatePositive(input.getPrice(), "product price", ProductInvalidPriceException.class);
         validateNonNegative(input.getStock(), "product stock", ProductInvalidStockException.class);
-        validateString(input.getDescription(), DESCRIPTION_LENGTH, "description", ProductInvalidDescriptionLengthException.class);
+        validateString(input.getDescription(), PRODUCT_DESCRIPTION_LENGTH, "description", ProductInvalidDescriptionLengthException.class);
         validateNonNegative(input.getApproxWeightLb(), "approx weight (lbs)", ProductInvalidApproxWeightLbException.class);
         validateNonNegative(input.getApproxWidthCm(), "approx width (cm)", ProductInvalidApproxWidthCmException.class);
         validateNonNegative(input.getApproxHeightCm(), "approx height (cm)", ProductInvalidApproxHeightCmException.class);
-        validateString(input.getImageUrl(), IMG_URL_LENGTH, "image URL", ProductInvalidImageUrlLengthException.class);
+        validateString(input.getImageUrl(), PRODUCT_IMG_URL_LENGTH, "image URL", ProductInvalidImageUrlLengthException.class);
         validatePositive(input.getCategoryId(), "category ID", ProductInvalidCategoryIdException.class);
         validatePositive(input.getUserId(), "user ID", ProductInvalidUserIdException.class);
-        validatePositive(input.getBrandId(), "brand ID", ProductInvalidBrandIdException.class);
     }
 
     private <E extends RuntimeException> void validateString(String value, int maxLength, String fieldName, Class<E> exceptionClass) {
@@ -63,11 +65,16 @@ class ProductValidator {
             throw createException(exceptionClass);
         }
     }
+
     private <E extends RuntimeException> E createException(Class<E> exceptionClass) {
         try {
             return exceptionClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException("Failed to instantiate exception: " + exceptionClass, e);
         }
+    }
+
+    void validate(CreateCategoryInput input) {
+        validateString(input.getName(), CATEGORY_NAME_LENGTH, "category name", ProductInvalidCategoryNameLengthException.class);
     }
 }

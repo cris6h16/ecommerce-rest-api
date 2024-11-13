@@ -1,5 +1,9 @@
 package org.cris6h16.facades;
 
+import java.util.Set;
+
 public interface ProductFacade {
-    Long save(CreateProductDTO input);
+    Long createProduct(CreateProductDTO dto);
+    Set<CategoryDTO> getCategories(); // todo: pageable
+    Long createCategory(CreateCategoryDTO dto);
 }

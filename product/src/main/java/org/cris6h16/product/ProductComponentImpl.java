@@ -1,36 +1,66 @@
 package org.cris6h16.product;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.product.Exceptions.NotFound.ProductBrandNotFoundException;
 import org.cris6h16.product.Exceptions.NotFound.ProductCategoryNotFoundException;
 import org.cris6h16.product.Exceptions.NotFound.ProductUserNotFoundException;
 import org.cris6h16.product.Exceptions.alreadyExists.ProductAlreadyExistsException;
 import org.cris6h16.user.UserEntity;
 import org.cris6h16.user.UserRepository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 @Slf4j
+@Component
 public class ProductComponentImpl implements ProductComponent {
     private final ProductRepository productRepository;
-    private final ProductValidator ProductValidator;
+    private final ProductValidator productValidator;
     private final UserRepository userRepository;
-    private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
 
-     ProductComponentImpl(ProductRepository productRepository, ProductValidator productValidator, UserRepository userRepository, BrandRepository brandRepository, CategoryRepository categoryRepository) {
+    ProductComponentImpl(ProductRepository productRepository, ProductValidator productValidator, UserRepository userRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
-        this.ProductValidator = productValidator;
+        this.productValidator = productValidator;
         this.userRepository = userRepository;
-        this.brandRepository = brandRepository;
-         this.categoryRepository = categoryRepository;
-     }
+        this.categoryRepository = categoryRepository;
+    }
 
     @Override
-    public Long save(CreateProductInput input) {
+    public Long createProduct(CreateProductInput input) {
         input.prepare();
-        ProductValidator.validate(input);
-        ProductEntity pe = createProductEntity(input);
+        productValidator.validate(input);
+        ProductEntity pe = toProductEntity(input);
         checkDuplicates(pe);
         return productRepository.save(pe).getId();
+    }
+
+    @Override
+    public Long createCategory(CreateCategoryInput input) {
+        productValidator.validate(input);
+        CategoryEntity ce = toCategoryEntity(input);
+        return categoryRepository.save(ce).getId();
+    }
+
+    private CategoryEntity toCategoryEntity(CreateCategoryInput input) {
+        CategoryEntity ce = CategoryEntity.builder()
+                .id(null)
+                .name(input.getName())
+                .build();
+        log.info("to CategoryEntity: {}", ce);
+        return ce;
+    }
+
+    @Override
+    public Set<CategoryOutput> findAllCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(this::toCategoryOutput).toSet();
+    }
+
+    private CategoryOutput toCategoryOutput(CategoryEntity category) {
+        return CategoryOutput.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .build();
     }
 
     private void checkDuplicates(ProductEntity pe) {
@@ -45,7 +75,7 @@ public class ProductComponentImpl implements ProductComponent {
         }
     }
 
-    private ProductEntity createProductEntity(CreateProductInput input) {
+    private ProductEntity toProductEntity(CreateProductInput input) {
         ProductEntity pe = ProductEntity.builder()
                 .id(null)
                 .name(input.getName())
@@ -58,9 +88,8 @@ public class ProductComponentImpl implements ProductComponent {
                 .imageUrl(input.getImageUrl())
                 .category(findCategory(input.getCategoryId()))
                 .user(findUser(input.getUserId()))
-                .brand(findBrand(input.getBrandId()))
                 .build();
-        log.info("ProductEntity created: {}", pe);
+        log.info("to ProductEntity: {}", pe);
         return pe;
     }
 
@@ -68,9 +97,6 @@ public class ProductComponentImpl implements ProductComponent {
         return categoryRepository.findById(categoryId).orElseThrow(ProductCategoryNotFoundException::new);
     }
 
-    private BrandEntity findBrand(Long brandId) {
-        return brandRepository.findById(brandId).orElseThrow(ProductBrandNotFoundException::new);
-    }
 
     private UserEntity findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(ProductUserNotFoundException::new);

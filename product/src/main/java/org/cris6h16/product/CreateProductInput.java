@@ -22,7 +22,6 @@ public class CreateProductInput implements Prepareable{
     private String imageUrl;
     private Long categoryId;
     private Long userId;
-    private Long brandId; // todo: SN default
 
     @Override
     public void trim() {
