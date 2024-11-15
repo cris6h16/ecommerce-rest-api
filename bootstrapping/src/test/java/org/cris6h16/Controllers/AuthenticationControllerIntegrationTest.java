@@ -2,7 +2,6 @@ package org.cris6h16.Controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
-import jakarta.mail.Multipart;
 import jakarta.mail.internet.MimeMessage;
 import org.cris6h16.Main;
 import org.cris6h16.facades.LoginDTO;
@@ -25,15 +24,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.cris6h16.Controllers.Common.extractSentCode;
+import static org.cris6h16.Controllers.Common.getToken;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = Main.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class ControllerIntegrationTest { // todo:refactor a uno menos general
+class AuthenticationControllerIntegrationTest {
 
     @MockBean
     private JavaMailSender javaMailSender; // avoid sending real emails
@@ -109,7 +104,7 @@ class ControllerIntegrationTest { // todo:refactor a uno menos general
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated());
 
-        String sentCode = extractSentCode(mimeMessage);
+        String sentCode = extractSentCode(mimeMessage, javaMailSender);
 
         // verify-email
         VerifyEmailDTO verifyEmailDTO = VerifyEmailDTO.builder()
@@ -140,53 +135,6 @@ class ControllerIntegrationTest { // todo:refactor a uno menos general
         assertNotNull(output.getRefreshToken());
     }
 
-    private String extractSentCode(MimeMessage mimeMessage) throws MessagingException {
-        AtomicReference<String> verificationToken = new AtomicReference<>();
-
-        verify(javaMailSender).send(any(MimeMessage.class));
-        verify(mimeMessage).setContent(argThat(multipart -> {
-            try {
-                verificationToken.set(getToken(multipart));
-                return true;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }));
-
-        return verificationToken.get();
-    }
-
-    /*
-       html ..........
-       <p class="code">12345689...</p>
-       html ..........
-        */
-    private String getToken(Multipart multipart) throws MessagingException, IOException {
-        String content = getContent(multipart);
-
-        // <p class="code">value-here</p>
-        Pattern pattern = Pattern.compile("<p class=\"code\">(.*?)</p>");
-        Matcher matcher = pattern.matcher(content);
-
-        if (matcher.find()) {
-            return matcher.group(1);  // return the code value
-        }
-
-        throw new IllegalArgumentException("Token not found in the email content");
-    }
-
-    private String getContent(Multipart multipart) throws MessagingException, IOException {
-        Path file = Files.createTempFile("cris6h16", ".txt");
-        try (OutputStream os = Files.newOutputStream(file, StandardOpenOption.WRITE)) {
-            multipart.writeTo(os);
-        }
-        byte[] fileBytes = Files.readAllBytes(file);
-        String content = new String(fileBytes, StandardCharsets.UTF_8);
-        System.out.println("Content: " + content);
-
-        return content;
-    }
-
     @Test
     void verifyEmail_successful() throws Exception {
         // Arrange
@@ -199,7 +147,7 @@ class ControllerIntegrationTest { // todo:refactor a uno menos general
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated());
 
-        String sentCode = extractSentCode(mimeMessage);
+        String sentCode = extractSentCode(mimeMessage, javaMailSender);
 
         VerifyEmailDTO verifyEmailDTO = VerifyEmailDTO.builder()
                 .email(this.dto.getEmail())
@@ -225,7 +173,7 @@ class ControllerIntegrationTest { // todo:refactor a uno menos general
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated());
 
-        String sentCodeWhenSignup = extractSentCode(mimeMessage);
+        String sentCodeWhenSignup = extractSentCode(mimeMessage, javaMailSender);
 
         // verify-email
         VerifyEmailDTO verifyEmailDTO = VerifyEmailDTO.builder()
@@ -246,7 +194,7 @@ class ControllerIntegrationTest { // todo:refactor a uno menos general
                         .content(this.dto.getEmail()))
                 .andExpect(status().isOk());
 
-        String sentCodeWhenRequestedACode = extractSentCode(mimeMessage);
+        String sentCodeWhenRequestedACode = extractSentCode(mimeMessage, javaMailSender);
 
         // reset-password
         ResetPasswordDTO resetPasswordDTO = ResetPasswordDTO.builder()
@@ -275,11 +223,8 @@ class ControllerIntegrationTest { // todo:refactor a uno menos general
                 .andExpect(status().isOk());
     }
 
-
-
-    // 0.............. user ..............
     @Test
-    void getUser_successful() throws Exception {
+    void refreshAccessToken_successful() throws Exception {
         // Arrange
         MimeMessage mimeMessage = Mockito.mock(MimeMessage.class);
         when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
@@ -290,7 +235,7 @@ class ControllerIntegrationTest { // todo:refactor a uno menos general
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated());
 
-        String sentCode = extractSentCode(mimeMessage);
+        String sentCode = extractSentCode(mimeMessage, javaMailSender);
 
         // verify-email
         VerifyEmailDTO verifyEmailDTO = VerifyEmailDTO.builder()
@@ -318,8 +263,57 @@ class ControllerIntegrationTest { // todo:refactor a uno menos general
         LoginOutput output = objectMapper.readValue(response, LoginOutput.class);
 
         // Act
+        String accessToken = mockMvc.perform(post("/api/v1/auth/refresh-token")
+                        .contentType(APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + output.getRefreshToken()))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        // Assert
+        assertThat(accessToken).isNotNull();
         mockMvc.perform(get("/api/v1/users/me")
-                        .header("Authorization", "Bearer " + output.getAccessToken()))
+                        .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void sendEmailVerification_successful() throws Exception {
+        // Arrange
+        MimeMessage mimeMessage = Mockito.mock(MimeMessage.class);
+        when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
+
+        // create
+        mockMvc.perform(post("/api/v1/auth/signup")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isCreated());
+
+        Mockito.clearInvocations(javaMailSender, mimeMessage);
+
+        // Act
+        mockMvc.perform(post("/api/v1/auth/send-email-verification")
+                        .contentType(TEXT_PLAIN)
+                        .content(this.dto.getEmail()))
+                .andExpect(status().isOk());
+
+        // Assert
+        AtomicReference<String> token = new AtomicReference<>(null);
+        verify(javaMailSender).send(any(MimeMessage.class));
+        verify(mimeMessage).setContent(argThat(multipart -> {
+            try {
+                token.set(getToken(multipart));
+            } catch (MessagingException | IOException e) {
+                throw new RuntimeException(e);
+            }
+            return true;
+        }));
+        VerifyEmailDTO verifyEmailDTO = VerifyEmailDTO.builder()
+                .email(this.dto.getEmail())
+                .code(token.get())
+                .build();
+        mockMvc.perform(post("/api/v1/auth/verify-email")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(verifyEmailDTO)))
                 .andExpect(status().isOk());
     }
 }

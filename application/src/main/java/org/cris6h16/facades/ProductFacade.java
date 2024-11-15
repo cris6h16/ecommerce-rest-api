@@ -4,6 +4,6 @@ import java.util.Set;
 
 public interface ProductFacade {
     Long createProduct(CreateProductDTO dto);
-    Set<CategoryDTO> getCategories(); // todo: pageable
+    Set<CategoryDTO> getCategories(); //todo: pageable
     Long createCategory(CreateCategoryDTO dto);
 }

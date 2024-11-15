@@ -20,6 +20,7 @@ class EntityMapper {
                 .build();
     }
 
+
     private static Set<String> toSetOfString(Set<AuthorityEntity> authorities) {
         return authorities.stream()
                 .map(AuthorityEntity::getName)

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.cris6h16.Controllers.HTTPCommons.PATH_PREFIX;
+import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 import static org.cris6h16.Controllers.UserController.BASE_PATH;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -33,6 +34,7 @@ public class UserController {
     public ResponseEntity<UserOutput> me() {
         return ResponseEntity
                 .status(HttpStatus.OK)
+                .headers(jsonHeaderCons)
                 .body(userFacade.me());
     }
 }

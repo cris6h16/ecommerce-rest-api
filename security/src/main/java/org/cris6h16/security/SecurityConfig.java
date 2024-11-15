@@ -3,6 +3,8 @@ package org.cris6h16.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -31,7 +33,11 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/me").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/products/create-category").hasRole("SELLER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/products/create-product").hasRole("SELLER")
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh-token").authenticated()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/products/categories").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/signup",
@@ -46,6 +52,14 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable);
         return http.build();
+    }
+
+    @Bean
+    static RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.withDefaultRolePrefix()
+                .role("ADMIN").implies("SELLER")
+                .role("SELLER").implies("USER")
+                .build();
     }
 
     @Bean

@@ -91,7 +91,8 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     private boolean isPermitAllEndpoint(String uri) {
-        return uri.matches("/api/v1/auth/(login|signup|verify-email|reset-password|send-email-verification)");
+        return uri.matches("/api/v1/auth/(login|signup|verify-email|reset-password|send-email-verification)")
+                || uri.equals("/api/v1/products/categories");
     }
 
 }

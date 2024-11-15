@@ -149,7 +149,6 @@ class UserFacadeImpl implements UserFacade {
         removeOldCodesByEmail(dto.getEmail());
     }
 
-    // todo: no deberia mandar directamente el output, deberia mapearlo a un dto, pero por tiempo no lo hice
     @Override
     public UserOutput me() {
         Long id = securityComponent.getCurrentUserId();
