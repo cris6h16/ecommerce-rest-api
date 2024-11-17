@@ -1,4 +1,4 @@
-package org.cris6h16.Products;
+package org.cris6h16.Controllers.Products;
 
 import org.cris6h16.facades.CategoryDTO;
 import org.cris6h16.facades.CreateCategoryDTO;
@@ -17,7 +17,7 @@ import java.net.URI;
 import java.util.Set;
 
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
-import static org.cris6h16.Products.CategoryController.CATEGORY_PATH;
+import static org.cris6h16.Controllers.Products.CategoryController.CATEGORY_PATH;
 
 @RestController
 @RequestMapping(CATEGORY_PATH)

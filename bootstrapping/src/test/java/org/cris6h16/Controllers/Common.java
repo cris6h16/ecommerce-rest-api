@@ -1,9 +1,14 @@
 package org.cris6h16.Controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Multipart;
 import jakarta.mail.internet.MimeMessage;
+import org.cris6h16.facades.LoginDTO;
+import org.cris6h16.facades.SignupDTO;
+import org.cris6h16.user.LoginOutput;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,6 +23,9 @@ import java.util.regex.Pattern;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class Common {
 
@@ -66,6 +74,26 @@ public class Common {
         System.out.println("Content: " + content);
 
         return content;
+    }
+
+
+
+
+    public static LoginOutput login(SignupDTO dto, MockMvc mockMvc) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        LoginDTO loginDTO = LoginDTO.builder()
+                .email(dto.getEmail())
+                .password(dto.getPassword())
+                .build();
+
+        String response = mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginDTO)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        return objectMapper.readValue(response, LoginOutput.class);
     }
 
 }

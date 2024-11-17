@@ -2,6 +2,7 @@ package org.cris6h16.facades;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.product.CategoryOutput;
+import org.cris6h16.product.CreateBrandInput;
 import org.cris6h16.product.CreateCategoryInput;
 import org.cris6h16.product.CreateProductInput;
 import org.cris6h16.product.ProductComponent;
@@ -50,6 +51,16 @@ public class ProductFacadeImpl implements ProductFacade {
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public Long createCategory(CreateCategoryDTO dto) {
         return productComponent.createCategory(toInput(dto));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
+    public Long createBrand(CreateBrandDTO dto) {
+        return productComponent.createBrand(toInput(dto));
+    }
+
+    private CreateBrandInput toInput(CreateBrandDTO dto) {
+        return new CreateBrandInput();
     }
 
     private CreateCategoryInput toInput(CreateCategoryDTO input) {

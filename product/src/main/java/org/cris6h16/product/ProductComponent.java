@@ -8,6 +8,7 @@ public interface ProductComponent {
     Long createProduct(CreateProductInput input);
 
     Long createCategory(CreateCategoryInput input);
+    Long createBrand(CreateBrandInput input);
 
     Set<CategoryOutput> findAllCategories(Pageable pageable);
 
