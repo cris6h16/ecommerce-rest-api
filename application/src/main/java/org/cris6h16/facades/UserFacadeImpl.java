@@ -42,8 +42,8 @@ class UserFacadeImpl implements UserFacade {
         processPassword(input);
         setSignupDefaults(input);
         Long id = userComponent.create(input);
-        removeOldCodesByEmail(input.getEmail());
-        sendEmailVerificationCode(input.getEmail());
+        emailComponent.removeOldCodesByEmail(input.getEmail());
+        emailComponent.sendEmailVerificationCode(input.getEmail());
         return id;
     }
 
@@ -72,20 +72,13 @@ class UserFacadeImpl implements UserFacade {
         input.setAuthorities(Set.of("ROLE_USER"));
     }
 
-    private void sendEmailVerificationCode(String email) {
-        emailComponent.sendEmailVerificationCode(email);
-    }
-
-    private void removeOldCodesByEmail(String email) {
-        emailComponent.removeOldCodesByEmail(email);
-    }
 
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public LoginOutput login(LoginDTO loginDTO) {
-        Supplier<InvalidCredentialsException> credE = InvalidCredentialsException::new;
-        Supplier<EmailNotVerifiedException> emailE = EmailNotVerifiedException::new;
+        Supplier<ApplicationInvalidCredentialsException> credE = ApplicationInvalidCredentialsException::new;
+        Supplier<ApplicationEmailNotVerifiedException> emailE = ApplicationEmailNotVerifiedException::new;
 
         UserOutput userDTO = userComponent.findByEmailAndEnabled(loginDTO.getEmail(), true).orElseThrow(credE);
         passMatches(loginDTO, userDTO, credE);
@@ -108,8 +101,8 @@ class UserFacadeImpl implements UserFacade {
     private void isEmailVerified(UserOutput userDTO, Supplier<? extends RuntimeException> exceptionSupplier) {
         if (!userDTO.isEmailVerified()) {
             log.debug("Email not verified");
-            removeOldCodesByEmail(userDTO.getEmail());
-            sendEmailVerificationCode(userDTO.getEmail());
+            emailComponent.removeOldCodesByEmail(userDTO.getEmail());
+            emailComponent.sendEmailVerificationCode(userDTO.getEmail());
             throw exceptionSupplier.get();
         }
         log.debug("Has a verified email");
@@ -126,11 +119,11 @@ class UserFacadeImpl implements UserFacade {
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public void verifyEmail(VerifyEmailDTO dto) {
-        Supplier<EmailNotVerifiedException> emailE = EmailNotVerifiedException::new;
+        Supplier<ApplicationEmailNotVerifiedException> emailE = ApplicationEmailNotVerifiedException::new;
 
         checkVerificationCode(dto.getEmail(), dto.getCode(), emailE);
         updateEmailVerifiedByEmail(dto.getEmail(), true);
-        removeOldCodesByEmail(dto.getEmail());
+        emailComponent.removeOldCodesByEmail(dto.getEmail());
     }
 
     private void updateEmailVerifiedByEmail(String email, boolean emailVerified) {
@@ -141,18 +134,18 @@ class UserFacadeImpl implements UserFacade {
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public void resetPassword(ResetPasswordDTO dto) {
-        Supplier<ValidVerificationCodeNotFoundException> codeE = ValidVerificationCodeNotFoundException::new;
+        Supplier<ApplicationValidVerificationCodeNotFoundException> codeE = ApplicationValidVerificationCodeNotFoundException::new;
 
         checkVerificationCode(dto.getEmail(), dto.getCode(), codeE);
         processPassword(dto);
         userComponent.updatePasswordByEmail(dto.getEmail(), dto.getPassword());
-        removeOldCodesByEmail(dto.getEmail());
+        emailComponent.removeOldCodesByEmail(dto.getEmail());
     }
 
     @Override
     public UserOutput me() {
         Long id = securityComponent.getCurrentUserId();
-        return userComponent.findByIdAndEnable(id, true).orElseThrow(UserNotFoundException::new);
+        return userComponent.findByIdAndEnable(id, true).orElseThrow(ApplicationEnabledUserNotFoundException::new);
     }
 
     @Override
@@ -165,7 +158,7 @@ class UserFacadeImpl implements UserFacade {
 
     private void existsEnabledUser(Long id) {
         if (!userComponent.existsByIdAndEnabled(id, true)) {
-            throw new UserNotFoundException();
+            throw new ApplicationEnabledUserNotFoundException();
         }
     }
 

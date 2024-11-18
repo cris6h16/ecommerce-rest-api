@@ -33,6 +33,7 @@
         <module>bootstrapping</module>
         <module>address</module>
         <module>application</module>
+        <module>file</module>
     </modules>
     <scm>
         <connection/>

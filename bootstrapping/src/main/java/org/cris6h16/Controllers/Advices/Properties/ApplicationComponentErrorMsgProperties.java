@@ -7,10 +7,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "error-messages.system")
+@ConfigurationProperties(prefix = "error-messages.components.application")
 @Getter
 @Setter
 @ValidatePropertiesNotNullOrEmpty
-public class SystemErrorProperties {
-    private String unexpectedError;
+public class ApplicationComponentErrorMsgProperties {
+    private String validVerificationCodeNotFound;
+    private String emailNotVerified;
+    private String invalidCredentials;
+    private String imgMultipartFileIsEmpty;
+    private String enabledUserNotFound;
 }

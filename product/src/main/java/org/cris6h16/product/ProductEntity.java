@@ -41,9 +41,10 @@ import java.math.BigDecimal;
 @Setter
 @ToString
 class ProductEntity {
-    public final static int PRODUCT_NAME_LENGTH = 255;
-    public final static int PRODUCT_DESCRIPTION_LENGTH = 1000;
-    public final static int PRODUCT_IMG_URL_LENGTH = 1000;
+    // todo: se puede centrilizar en un YAML para que los errores se actualizen dinamicamente
+    public final static int PRODUCT_NAME_LENGTH = 255; // si se cambia esto, hay que su error message correspondiente
+    public final static int PRODUCT_DESCRIPTION_LENGTH = 1000; // si se cambia esto, hay que su error message correspondiente
+    public final static int PRODUCT_IMG_URL_LENGTH = 1000;// si se cambia esto, hay que su error message correspondiente
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

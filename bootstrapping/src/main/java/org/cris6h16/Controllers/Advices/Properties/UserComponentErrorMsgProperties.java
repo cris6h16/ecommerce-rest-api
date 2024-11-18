@@ -7,13 +7,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "email.error-messages")
+@ConfigurationProperties(prefix = "error-messages.components.user")
 @Getter
 @Setter
 @ValidatePropertiesNotNullOrEmpty
-public class EmailErrorMsgProperties {
+public class UserComponentErrorMsgProperties {
+    private String firstNameLength;
+    private String lastNameLength;
+    private String passwordLength;
     private String emailInvalid;
-    private String invalidCodeLength;
-    private String validVerificationCodeNotFound;
-    private String emailSending;
+    private String emailAlreadyExists;
+    private String invalidUserId;
 }

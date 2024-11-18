@@ -1,22 +1,42 @@
-user:
-  error-messages:
-    first-name-length: "El primer nombre debe tebe tener entre 1 y 30 characters"
-    last-name-length: "El primer apellido debe tener entre 1 y 30 characters"
-    password-length: "La contraseña debe tener entre 8 y 60 characters"
-    email-invalid: "El email no es válido"
-    email-already-exists: "El email ya existe"
-    user-not-found: "El usuario no existe"
-    invalid-credentials: "Credenciales inválidas"
-    email-not-verified: "Su email no ha sido verificado, por favor revisa tu bandeja de entrada"
-    verification-code-length: "El código de verificación tiene una longitud inválida"
-
-email:
-  error-messages:
-    email-invalid: "El email no es válido"
-    invalid-code-length: "El código de verificación tiene una longitud inválida"
-    valid-verification-code-not-found: "El código de verificación no es válido o ya ha sido utilizado"
-    email-sending: "Ha ocurrido un error al enviar el email de verificación"
-
-system:
-  error-messages:
+error-messages:
+  system:
     unexpected-error: "Ha ocurrido un error inesperado"
+
+  components:
+    user:
+      first-name-length: "El primer nombre debe tebe tener entre 1 y 30 characters"
+      last-name-length: "El primer apellido debe tener entre 1 y 30 characters"
+      password-length: "La contraseña debe tener entre 8 y 60 characters"
+      email-invalid: "El email no es válido"
+      email-already-exists: "El email ya existe"
+      invalid-user-id: "El id del usuario es invalido"
+
+    product:
+      user-already-has-a-product-with-the-specified-name: "Ustd ya tiene un producto con ese nombre, porfavor cambielo"
+      category-not-found: "No se encontro la categoria que se especifico en el producto"
+      invalid-approx-height-cm: "La altura aproximada en centimetros del producto debe ser mayor o igual a 0"
+      invalid-approx-weight-lb: "La el peso aproximado en libras del producto debe ser mayor o igual a 0"
+      invalid-approx-width-cm: "La anchura aproximada en centimetros del producto debe ser mayor o igual a 0"
+      invalid-category-id: "El id de la categoria debe ser mayor a 1"
+      invalid-category-name-length: "El nombre de la categoria debe tener mas de 1 caracter"
+      invalid-description-length: "La descripcion del producto no puede ser mayor a 1000 caracteres"
+      invalid-image-url-length: "El URL de la imagen del producto no puede ser mayor a 1000 caracteres"
+      invalid-price: "El precio del producto debe ser mayor o igual a 0"
+      invalid-product-id: "El id del producto debe ser mayor a 0"
+      invalid-product-name-length: "El nombre del producto no puede ser mayor a 255 caracteres"
+      invalid-stock: "El stock no puede ser menor que 0"
+      invalid-user-id: "El id del usuario debe ser mayor a 0"
+      user-not-found: "No se encontro al usuario especificado en el producto"
+
+    email:
+      email-invalid: "El email no es válido"
+      email-sending: "Ha ocurrido un error al enviar el email de verificación"
+      invalid-code-length: "El código de verificación tiene una longitud inválida"
+
+    application:
+      email-not-verified: "Su email no ha sido verificado, por favor revisa tu bandeja de entrada"
+      invalid-credentials: "Credenciales inválidas"
+      valid-verification-code-not-found: "El código de verificación no es válido o ya ha sido utilizado"
+      enabled-user-not-found: "Usuario no encotradi"
+      img-multipart-file-is-empty: "La imagen del producto es requerida"
+

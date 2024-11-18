@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.product.Exceptions.NotFound.ProductCategoryNotFoundException;
 import org.cris6h16.product.Exceptions.NotFound.ProductUserNotFoundException;
 import org.cris6h16.product.Exceptions.alreadyExists.ProductAlreadyExistsException;
+import org.cris6h16.product.Exceptions.alreadyExists.ProductUserAlreadyHasAProductWithTheSpecifiedNameException;
 import org.cris6h16.user.UserEntity;
 import org.cris6h16.user.UserRepository;
 import org.springframework.data.domain.Pageable;
@@ -56,6 +57,14 @@ public class ProductComponentImpl implements ProductComponent {
         return categoryRepository.findAll(pageable).map(this::toCategoryOutput).toSet();
     }
 
+    @Override
+    public void updateImageUrlById(Long id, String url) {
+        productValidator.validateProductId(id);
+        productValidator.validateImageUrl(url);
+
+        productRepository.updateImageUrlById(id, url);
+    }
+
     private CategoryOutput toCategoryOutput(CategoryEntity category) {
         return CategoryOutput.builder()
                 .id(category.getId())
@@ -64,14 +73,12 @@ public class ProductComponentImpl implements ProductComponent {
     }
 
     private void checkDuplicates(ProductEntity pe) {
-        boolean exists = productRepository.existsByNameAndApproxWeightLbAndApproxWidthCmAndApproxHeightCm(
+        boolean exists = productRepository.existsByNameAndUserId(
                 pe.getName(),
-                pe.getApproxWeightLb(),
-                pe.getApproxWidthCm(),
-                pe.getApproxHeightCm()
+                pe.getUser().getId()
         );
         if (exists) {
-            throw new ProductAlreadyExistsException();
+            throw new ProductUserAlreadyHasAProductWithTheSpecifiedNameException();
         }
     }
 

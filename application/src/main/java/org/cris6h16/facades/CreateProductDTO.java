@@ -1,9 +1,12 @@
 package org.cris6h16.facades;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
@@ -11,6 +14,8 @@ import java.math.BigDecimal;
 @Setter
 @Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateProductDTO {
     private String name;
     private BigDecimal price;
@@ -19,7 +24,6 @@ public class CreateProductDTO {
     private Integer approxWeightLb;
     private Integer approxWidthCm;
     private Integer approxHeightCm;
-    private String imageUrl;
-    private Long brandId;
+    private MultipartFile image;
     private Long categoryId;
 }

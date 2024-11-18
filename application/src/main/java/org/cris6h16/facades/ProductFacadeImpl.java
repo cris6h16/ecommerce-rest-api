@@ -1,8 +1,8 @@
 package org.cris6h16.facades;
 
 import lombok.extern.slf4j.Slf4j;
+import org.cris6h16.file.FileComponent;
 import org.cris6h16.product.CategoryOutput;
-import org.cris6h16.product.CreateBrandInput;
 import org.cris6h16.product.CreateCategoryInput;
 import org.cris6h16.product.CreateProductInput;
 import org.cris6h16.product.ProductComponent;
@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
@@ -21,16 +22,21 @@ import static java.util.stream.Collectors.toSet;
 public class ProductFacadeImpl implements ProductFacade {
     private final ProductComponent productComponent;
     private final SecurityComponent securityComponent;
+    private final FileComponent fileComponent;
 
-    public ProductFacadeImpl(ProductComponent productComponent, SecurityComponent securityComponent) {
+    public ProductFacadeImpl(ProductComponent productComponent, SecurityComponent securityComponent, FileComponent fileComponent) {
         this.productComponent = productComponent;
         this.securityComponent = securityComponent;
+        this.fileComponent = fileComponent;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public Long createProduct(CreateProductDTO dto) {
-        return productComponent.createProduct(toInput(dto));
+        Long id = productComponent.createProduct(toInput(dto));
+        String url = fileComponent.upload(IfImgIsNotEmpty(dto.getImage()));
+        productComponent.updateImageUrlById(id, url);
+        return id;
     }
 
     @Override
@@ -53,16 +59,6 @@ public class ProductFacadeImpl implements ProductFacade {
         return productComponent.createCategory(toInput(dto));
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
-    public Long createBrand(CreateBrandDTO dto) {
-        return productComponent.createBrand(toInput(dto));
-    }
-
-    private CreateBrandInput toInput(CreateBrandDTO dto) {
-        return new CreateBrandInput();
-    }
-
     private CreateCategoryInput toInput(CreateCategoryDTO input) {
         log.debug("Converting CreateCategoryDTO to CreateCategoryInput: {}", input);
         CreateCategoryInput res = CreateCategoryInput.builder()
@@ -74,6 +70,7 @@ public class ProductFacadeImpl implements ProductFacade {
 
     private CreateProductInput toInput(CreateProductDTO dto) {
         log.debug("Converting CreateProductDTO to CreateProductInput: {}", dto);
+        MultipartFile imgF = dto.getImage();
         CreateProductInput res = CreateProductInput.builder()
                 .name(dto.getName())
                 .price(dto.getPrice())
@@ -82,11 +79,19 @@ public class ProductFacadeImpl implements ProductFacade {
                 .approxWeightLb(dto.getApproxWeightLb())
                 .approxWidthCm(dto.getApproxWidthCm())
                 .approxHeightCm(dto.getApproxHeightCm())
-                .imageUrl(dto.getImageUrl())
+                .imageUrl("fake-url://etc") // todo: put a def img url
                 .categoryId(dto.getCategoryId())
                 .userId(securityComponent.getCurrentUserId())
                 .build();
         log.debug("CreateProductInput created: {}", res);
         return res;
+    }
+
+    private MultipartFile IfImgIsNotEmpty(MultipartFile imgF) {
+        if (imgF.isEmpty()) {
+            throw new ApplicationImgMultipartFileIsEmptyException();
+        }
+
+        return imgF;
     }
 }

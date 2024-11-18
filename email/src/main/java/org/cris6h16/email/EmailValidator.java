@@ -1,8 +1,8 @@
 package org.cris6h16.email;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.email.Exceptions.InvalidAttributeException.InvalidCodeLengthException;
-import org.cris6h16.email.Exceptions.InvalidAttributeException.InvalidEmailException;
+import org.cris6h16.email.Exceptions.InvalidAttributeException.EmailInvalidCodeLengthException;
+import org.cris6h16.email.Exceptions.InvalidAttributeException.EmailInvalidEmailException;
 import org.springframework.stereotype.Component;
 
 import static org.cris6h16.email.VerificationCodeEntity.EMAIL_LENGTH;
@@ -15,7 +15,7 @@ public class EmailValidator {
         email = email == null ? "" : email.trim();
         if (email.isEmpty() || email.length() > EMAIL_LENGTH || !email.matches("^\\S+@\\S+\\.\\S+$")) {
             log.debug("Invalid email: {}", email);
-            throw new InvalidEmailException();
+            throw new EmailInvalidEmailException();
         }
         log.debug("Valid email: {}", email);
     }
@@ -24,7 +24,7 @@ public class EmailValidator {
         code = code == null ? "" : code.trim();
         if (code.length() != VerificationCodeEntity.CODE_LENGTH) {
             log.debug("Invalid code length: {}", code);
-            throw new InvalidCodeLengthException();
+            throw new EmailInvalidCodeLengthException();
         }
         log.debug("Valid code: {}", code);
     }

@@ -1,0 +1,4 @@
+package org.cris6h16.product.Exceptions.alreadyExists;
+
+public class ProductUserAlreadyHasAProductWithTheSpecifiedNameException extends ProductAlreadyExistsException {
+}
