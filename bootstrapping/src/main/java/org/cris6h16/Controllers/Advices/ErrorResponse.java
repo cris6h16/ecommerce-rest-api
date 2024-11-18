@@ -1,4 +1,4 @@
 package org.cris6h16.Controllers.Advices;
 
-public record ErrorResponse(String message) {
+public record ErrorResponse(String errorCode,String message) {
 }

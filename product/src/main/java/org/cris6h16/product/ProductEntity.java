@@ -40,7 +40,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @ToString
-class ProductEntity {
+public class ProductEntity {
     // todo: se puede centrilizar en un YAML para que los errores se actualizen dinamicamente
     public final static int PRODUCT_MAX_NAME_LENGTH = 255; // si se cambia esto, hay que su error message correspondiente
     public final static int PRODUCT_MAX_DESCRIPTION_LENGTH = 1000; // si se cambia esto, hay que su error message correspondiente

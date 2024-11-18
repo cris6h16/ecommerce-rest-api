@@ -33,7 +33,10 @@ public class ApplicationComponentAdvice {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(properties.getValidVerificationCodeNotFound()));
+                .body(new ErrorResponse(
+                        "VALID_VERIF_CODE_NOT_FOUND",
+                        properties.getValidVerificationCodeNotFound())
+                );
     }
 
 
@@ -43,7 +46,10 @@ public class ApplicationComponentAdvice {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(properties.getEmailNotVerified()));
+                .body(new ErrorResponse(
+                        "EMAIL_NOT_VERIFIED",
+                        properties.getEmailNotVerified()
+                ));
     }
 
 
@@ -53,7 +59,10 @@ public class ApplicationComponentAdvice {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(properties.getInvalidCredentials()));
+                .body(new ErrorResponse(
+                        "INVALID_CREDENTIALS",
+                        properties.getInvalidCredentials()
+                ));
     }
 
 
@@ -63,7 +72,10 @@ public class ApplicationComponentAdvice {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(properties.getImgMultipartFileIsEmpty()));
+                .body(new ErrorResponse(
+                        "IMG_FILE_IS_EMPTY",
+                        properties.getImgMultipartFileIsEmpty()
+                ));
     }
 
 
@@ -73,7 +85,10 @@ public class ApplicationComponentAdvice {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(properties.getEnabledUserNotFound()));
+                .body(new ErrorResponse(
+                        "ENABLED_USER_NOT_FOUND",
+                        properties.getEnabledUserNotFound()
+                ));
     }
 
 }

@@ -1,7 +1,7 @@
 package org.cris6h16.product.Exceptions;
 
 
-public enum ErrorCode {
+public enum ProductErrorCode {
     USER_ID_NULL,
     CATEGORY_ID_NULL,
     IMAGE_URL_NULL,
@@ -11,9 +11,9 @@ public enum ErrorCode {
     APPROX_WEIGHT_LB_NULL,
     STOCK_NEGATIVE,
     APPROX_HEIGHT_CM_NULL,
-    APPROX_HEIGHT_CM_IS_NEGATIVE,
+    APPROX_HEIGHT_CM_NEGATIVE,
     APPROX_WIDTH_CM_NULL,
-    APPROX_WIDTH_CM_IS_NEGATIVE,
+    APPROX_WIDTH_CM_NEGATIVE,
     APPROX_WEIGHT_LB_NEGATIVE,
     DESCRIPTION_NULL,
     DESCRIPTION_TOO_LONG,

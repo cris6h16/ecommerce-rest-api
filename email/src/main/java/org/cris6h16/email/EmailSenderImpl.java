@@ -2,7 +2,7 @@ package org.cris6h16.email;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.email.Exceptions.EmailEmailSendingException;
+import org.cris6h16.email.Exceptions.EmailComponentEmailSendingException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -57,7 +57,7 @@ class EmailSenderImpl implements EmailSender {
 
                 if (attempts == MAX_RETRIES - 1) {
                     log.error("All attempts failed to send email to {}, {}", email, e.toString());
-                    throw new EmailEmailSendingException();
+                    throw new EmailComponentEmailSendingException();
                 }
             }
         }

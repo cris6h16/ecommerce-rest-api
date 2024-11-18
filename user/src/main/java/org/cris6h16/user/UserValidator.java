@@ -1,62 +1,73 @@
 package org.cris6h16.user;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidEmailException;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidFirstnameLengthException;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidUserIdException;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidLastnameLengthException;
-import org.cris6h16.user.Exceptions.InvalidAttributeException.UserInvalidPasswordLengthException;
+import org.cris6h16.user.Exceptions.UserErrorCode;
+import org.cris6h16.user.Exceptions.UserComponentInvalidAttributeException;
 import org.springframework.stereotype.Component;
 
-import static org.cris6h16.user.UserEntity.EMAIL_LENGTH;
-import static org.cris6h16.user.UserEntity.FIRSTNAME_LENGTH;
-import static org.cris6h16.user.UserEntity.LASTNAME_LENGTH;
+import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_NULL;
+import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_REGEX_MISMATCH;
+import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_TOO_LONG;
+import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_NULL;
+import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_TOO_LONG;
+import static org.cris6h16.user.Exceptions.UserErrorCode.LASTNAME_NULL;
+import static org.cris6h16.user.Exceptions.UserErrorCode.LASTNAME_TOO_LONG;
+import static org.cris6h16.user.Exceptions.UserErrorCode.PASSWORD_LESS_THAN_8;
+import static org.cris6h16.user.Exceptions.UserErrorCode.PASSWORD_NULL;
+import static org.cris6h16.user.Exceptions.UserErrorCode.PASSWORD_TOO_LONG;
+import static org.cris6h16.user.Exceptions.UserErrorCode.USER_ID_LESS_THAN_1;
+import static org.cris6h16.user.Exceptions.UserErrorCode.USER_ID_NULL;
+import static org.cris6h16.user.UserEntity.EMAIL_MAX_LENGTH;
+import static org.cris6h16.user.UserEntity.FIRSTNAME_MAX_LENGTH;
+import static org.cris6h16.user.UserEntity.LASTNAME_MAX_LENGTH;
 import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
 
 @Slf4j
 @Component
  public class UserValidator {
-    //todo: eliminar property classes ya que se elimino el parametro string para recibir por el contructor
-
-    public void validateFirstname(String firstname) {
-        firstname = firstname == null ? "" : firstname.trim();
-        if (firstname.isEmpty() || firstname.length() > FIRSTNAME_LENGTH) {
-            throw new UserInvalidFirstnameLengthException();
-        }
-        log.debug("Valid first name: {}", firstname);
+    private void throwE(UserErrorCode errorCode) {
+        throw new UserComponentInvalidAttributeException(errorCode);
     }
 
+
+    public void validateFirstname(String firstname) {
+        if (firstname == null) throwE(FIRSTNAME_NULL);
+        if (firstname.length() > FIRSTNAME_MAX_LENGTH) throwE(FIRSTNAME_TOO_LONG);
+    }
+
+
     public void validateLastname(String lastname) {
-        lastname = lastname == null ? "" : lastname.trim();
-        if (lastname.isEmpty() || lastname.length() > LASTNAME_LENGTH) {
-            throw new UserInvalidLastnameLengthException();
-        }
-        log.debug("Valid last name: {}", lastname);
+        if (lastname == null) throwE(LASTNAME_NULL);
+        if (lastname.length() > LASTNAME_MAX_LENGTH) throwE(LASTNAME_TOO_LONG);
     }
 
 
     public void validatePassword(String password) {
-        password = password == null ? "" : password.trim();
-        if (password.length() < 8 || password.length() > PASSWORD_LENGTH) {
-            throw new UserInvalidPasswordLengthException();
-        }
-        log.debug("Valid password length: {}", password.length());
-        log.debug("Valid password: {}", password);
+        if (password == null) throwE(PASSWORD_NULL);
+        if (password.length() > PASSWORD_LENGTH) throwE(PASSWORD_TOO_LONG);
+        if (password.length() < 8) throwE(PASSWORD_LESS_THAN_8);
     }
 
-    //--> ^ = start of the string, \S = any non-whitespace character, + = one or more, @ = @, \S = any non-whitespace character, + = one or more, \. = ., \S = any non-whitespace character, + = one or more, $ = end of the string
+    /*
+    ^ = starting
+    \S = any non-whitespace character
+    + = one or more
+    @ = @
+    \S = any non-whitespace character
+    + = one or more
+    \. = .
+    \S = any non-whitespace character
+    + = one or more
+    $ = end of the string
+     */
     public void validateEmail(String email) {
-        email = email == null ? "" : email.trim();
-        if (email.isEmpty() || email.length() > EMAIL_LENGTH || !email.matches("^\\S+@\\S+\\.\\S+$")) {
-            throw new UserInvalidEmailException();
-        }
-        log.debug("Valid email: {}", email);
+        if (email == null) throwE(EMAIL_NULL);
+        if (email.length() > EMAIL_MAX_LENGTH) throwE(EMAIL_TOO_LONG);
+        if (!email.matches("^\\S+@\\S+\\.\\S+$")) throwE(EMAIL_REGEX_MISMATCH);
     }
 
     void validateUserId(Long id) {
-        if (id == null || id <= 0) {
-            throw new UserInvalidUserIdException();
-        }
-        log.debug("Valid id: {}", id);
+        if (id==null) throwE(USER_ID_NULL);
+        if (id < 1) throwE(USER_ID_LESS_THAN_1);
     }
 }

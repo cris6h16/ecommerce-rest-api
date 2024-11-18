@@ -3,10 +3,9 @@ package org.cris6h16.Controllers.Advices;
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.Controllers.Advices.Properties.EmailComponentErrorMsgProperties;
 import org.cris6h16.Controllers.Advices.Properties.SystemErrorProperties;
-import org.cris6h16.email.Exceptions.EmailEmailSendingException;
-import org.cris6h16.email.Exceptions.InvalidAttributeException.EmailInvalidAttributeException;
-import org.cris6h16.email.Exceptions.InvalidAttributeException.EmailInvalidCodeLengthException;
-import org.cris6h16.email.Exceptions.InvalidAttributeException.EmailInvalidEmailException;
+import org.cris6h16.email.Exceptions.EmailComponentEmailSendingException;
+import org.cris6h16.email.Exceptions.EmailErrorCode;
+import org.cris6h16.email.Exceptions.EmailComponentInvalidAttributeException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
+
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
@@ -28,20 +28,30 @@ public class EmailComponentAdvice {
         this.systemErrorProperties = systemErrorProperties;
     }
 
-    @ExceptionHandler(EmailInvalidAttributeException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidAttributeException(EmailInvalidAttributeException e) {
+
+    @ExceptionHandler(EmailComponentEmailSendingException.class)
+    public ResponseEntity<ErrorResponse> handleEmailSendingException(EmailComponentEmailSendingException e) {
+        log.debug("EmailSendingException", e);
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .headers(jsonHeaderCons)
+                .body(new ErrorResponse("EMAIL_SENDING_FAIL", this.emailErrorMsgProperties.getEmailSending()));
+    }
+
+    @ExceptionHandler(EmailComponentInvalidAttributeException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidAttributeException(EmailComponentInvalidAttributeException e) {
         log.debug("InvalidAttributeException", e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(getMsg(e)));
+                .body(new ErrorResponse(e.getErrorCode().name(), getMsg(e)));
     }
 
-    private String getMsg(EmailInvalidAttributeException e) {
-        if (e instanceof EmailInvalidEmailException) {
+    private String getMsg(EmailComponentInvalidAttributeException e) {
+        if (e.getErrorCode().equals(EmailErrorCode.EMAIL_REGEX_MISMATCH)) {
             return emailErrorMsgProperties.getEmailInvalid();
         }
-        if (e instanceof EmailInvalidCodeLengthException) {
+        if (e.getErrorCode().equals(EmailErrorCode.CODE_INVALID_LENGTH)) {
             return emailErrorMsgProperties.getInvalidCodeLength();
         }
 
@@ -49,13 +59,5 @@ public class EmailComponentAdvice {
         return systemErrorProperties.getUnexpectedError();
     }
 
-    @ExceptionHandler(EmailEmailSendingException.class)
-    public ResponseEntity<ErrorResponse> handleEmailSendingException(EmailEmailSendingException e) {
-        log.debug("EmailSendingException", e);
-        return ResponseEntity
-                .status(HttpStatus.SERVICE_UNAVAILABLE)
-                .headers(jsonHeaderCons)
-                .body(new ErrorResponse(this.emailErrorMsgProperties.getEmailSending()));
-    }
 
 }

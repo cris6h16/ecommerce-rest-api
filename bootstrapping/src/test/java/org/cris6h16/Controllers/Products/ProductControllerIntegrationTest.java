@@ -130,7 +130,7 @@ public class ProductControllerIntegrationTest {
                         .param("categoryId", String.valueOf(dto.getCategoryId()))
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + output.getAccessToken()))
-                .andExpect(status().isNoContent())
+                .andExpect(status().isCreated())
                 .andExpect(header().exists("Location"))
                 .andReturn().getResponse().getHeader("Location");
 
@@ -139,6 +139,7 @@ public class ProductControllerIntegrationTest {
         assertTrue(location.matches("/api/v1/products/[0-9]+"));
 
         mockMvc.perform(get(location))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.url").value("https://fake.link/etc"));
     }
 

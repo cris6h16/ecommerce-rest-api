@@ -30,7 +30,10 @@ public class CommonControllerAdvice {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(systemErrorProperties.getUnexpectedError()));
+                .body(new ErrorResponse(
+                        "UNEXPECTED_ERROR",
+                        systemErrorProperties.getUnexpectedError())
+                );
     }
 
     private void logIfRelevant(Exception e) {

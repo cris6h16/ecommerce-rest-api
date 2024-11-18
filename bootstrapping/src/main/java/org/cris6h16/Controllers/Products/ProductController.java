@@ -37,7 +37,7 @@ public class ProductController {
     public ResponseEntity<Void> createProduct(@ModelAttribute CreateProductDTO createProductDTO) {
         Long id = productFacade.createProduct(createProductDTO);
         return ResponseEntity.created(
-                        URI.create(PRODUCT_PATH + id))
+                        URI.create(PRODUCT_PATH + "/" + id))
                 .build();
     }
 

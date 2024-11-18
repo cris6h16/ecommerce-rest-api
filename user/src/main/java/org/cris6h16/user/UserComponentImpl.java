@@ -1,13 +1,14 @@
 package org.cris6h16.user;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.user.Exceptions.AlreadyExistsException.UserEmailAlreadyExistsException;
+import org.cris6h16.user.Exceptions.UserComponentAttributeAlreadyExistsException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 import static org.cris6h16.user.EntityMapper.toUserDTO;
 import static org.cris6h16.user.EntityMapper.toUserEntity;
+import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_ALREADY_EXISTS;
 
 @Service
 @Slf4j
@@ -42,7 +43,7 @@ class UserComponentImpl implements UserComponent {
 
     private void checkDuplicates(CreateUserInput user) {
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new UserEmailAlreadyExistsException();
+            throw new UserComponentAttributeAlreadyExistsException(EMAIL_ALREADY_EXISTS);
         }
     }
 
@@ -56,6 +57,7 @@ class UserComponentImpl implements UserComponent {
 
     @Override
     public Optional<UserOutput> findByEmailAndEnabled(String email, boolean enabled) {
+        email = email == null ? "" : email.trim();
         userValidator.validateEmail(email);
 
         UserEntity ue = userRepository.findByEmailAndEnabled(email, enabled).orElse(null);
@@ -65,6 +67,7 @@ class UserComponentImpl implements UserComponent {
 
     @Override
     public void updateEmailVerifiedByEmail(String email, boolean emailVerified) {
+        email = email == null ? "" : email.trim();
         userValidator.validateEmail(email);
 
         userRepository.updateEmailVerifiedByEmail(email, emailVerified);
@@ -72,6 +75,9 @@ class UserComponentImpl implements UserComponent {
 
     @Override
     public void updatePasswordByEmail(String email, String password) {
+        email = email == null ? "" : email.trim();
+        password = password == null ? "" : password.trim();
+
         userValidator.validateEmail(email);
         userValidator.validatePassword(password);
 
@@ -80,6 +86,7 @@ class UserComponentImpl implements UserComponent {
 
     @Override
     public boolean existsByEmail(String email) {
+        email = email == null ? "" : email.trim();
         userValidator.validateEmail(email);
 
         return userRepository.existsByEmail(email);

@@ -1,37 +1,37 @@
 package org.cris6h16.product;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.product.Exceptions.ErrorCode;
-import org.cris6h16.product.Exceptions.ProductInvalidAttributeException;
+import org.cris6h16.product.Exceptions.ProductErrorCode;
+import org.cris6h16.product.Exceptions.ProductComponentInvalidAttributeException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 import static org.cris6h16.product.CategoryEntity.CATEGORY_MAX_NAME_LENGTH;
-import static org.cris6h16.product.Exceptions.ErrorCode.APPROX_HEIGHT_CM_IS_NEGATIVE;
-import static org.cris6h16.product.Exceptions.ErrorCode.APPROX_HEIGHT_CM_NULL;
-import static org.cris6h16.product.Exceptions.ErrorCode.APPROX_WEIGHT_LB_NEGATIVE;
-import static org.cris6h16.product.Exceptions.ErrorCode.APPROX_WEIGHT_LB_NULL;
-import static org.cris6h16.product.Exceptions.ErrorCode.APPROX_WIDTH_CM_IS_NEGATIVE;
-import static org.cris6h16.product.Exceptions.ErrorCode.APPROX_WIDTH_CM_NULL;
-import static org.cris6h16.product.Exceptions.ErrorCode.CATEGORY_ID_LESS_THAN_ONE;
-import static org.cris6h16.product.Exceptions.ErrorCode.CATEGORY_ID_NULL;
-import static org.cris6h16.product.Exceptions.ErrorCode.CATEGORY_NAME_NULL;
-import static org.cris6h16.product.Exceptions.ErrorCode.CATEGORY_NAME_TOO_LONG;
-import static org.cris6h16.product.Exceptions.ErrorCode.DESCRIPTION_NULL;
-import static org.cris6h16.product.Exceptions.ErrorCode.DESCRIPTION_TOO_LONG;
-import static org.cris6h16.product.Exceptions.ErrorCode.IMAGE_URL_NULL;
-import static org.cris6h16.product.Exceptions.ErrorCode.IMAGE_URL_TOO_LONG;
-import static org.cris6h16.product.Exceptions.ErrorCode.PRICE_NEGATIVE;
-import static org.cris6h16.product.Exceptions.ErrorCode.PRICE_NULL;
-import static org.cris6h16.product.Exceptions.ErrorCode.PRODUCT_ID_LESS_THAN_ONE;
-import static org.cris6h16.product.Exceptions.ErrorCode.PRODUCT_ID_NULL;
-import static org.cris6h16.product.Exceptions.ErrorCode.PRODUCT_NAME_NULL;
-import static org.cris6h16.product.Exceptions.ErrorCode.PRODUCT_NAME_TOO_LONG;
-import static org.cris6h16.product.Exceptions.ErrorCode.STOCK_NEGATIVE;
-import static org.cris6h16.product.Exceptions.ErrorCode.STOCK_NULL;
-import static org.cris6h16.product.Exceptions.ErrorCode.USER_ID_LESS_THAN_ONE;
-import static org.cris6h16.product.Exceptions.ErrorCode.USER_ID_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.APPROX_HEIGHT_CM_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.APPROX_HEIGHT_CM_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.APPROX_WEIGHT_LB_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.APPROX_WEIGHT_LB_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.APPROX_WIDTH_CM_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.APPROX_WIDTH_CM_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_ID_LESS_THAN_ONE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_ID_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NAME_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NAME_TOO_LONG;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.DESCRIPTION_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.DESCRIPTION_TOO_LONG;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.IMAGE_URL_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.IMAGE_URL_TOO_LONG;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRICE_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRICE_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_ID_LESS_THAN_ONE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_ID_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NAME_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NAME_TOO_LONG;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.STOCK_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.STOCK_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_ID_LESS_THAN_ONE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_ID_NULL;
 import static org.cris6h16.product.ProductEntity.PRODUCT_MAX_DESCRIPTION_LENGTH;
 import static org.cris6h16.product.ProductEntity.PRODUCT_MAX_IMG_URL_LENGTH;
 import static org.cris6h16.product.ProductEntity.PRODUCT_MAX_NAME_LENGTH;
@@ -72,12 +72,12 @@ class ProductValidator {
 
     public void validateApproxHeightCm(Integer approxHeightCm) {
         if (approxHeightCm == null) throwE(APPROX_HEIGHT_CM_NULL);
-        if (approxHeightCm < 0) throwE(APPROX_HEIGHT_CM_IS_NEGATIVE);
+        if (approxHeightCm < 0) throwE(APPROX_HEIGHT_CM_NEGATIVE);
     }
 
     public void validateApproxWidthCm(Integer approxWidthCm) {
         if (approxWidthCm == null) throwE(APPROX_WIDTH_CM_NULL);
-        if (approxWidthCm < 0) throwE(APPROX_WIDTH_CM_IS_NEGATIVE);
+        if (approxWidthCm < 0) throwE(APPROX_WIDTH_CM_NEGATIVE);
     }
 
     public void validateApproxWeightLb(Integer approxWeightLb) {
@@ -106,8 +106,8 @@ class ProductValidator {
     }
 
 
-    private void throwE(ErrorCode errorCode) {
-        throw new ProductInvalidAttributeException(errorCode);
+    private void throwE(ProductErrorCode errorCode) {
+        throw new ProductComponentInvalidAttributeException(errorCode);
     }
 
     public void validate(CreateCategoryInput input) {

@@ -1,7 +1,7 @@
 package org.cris6h16.product;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.product.Exceptions.ProductAlreadyExistsException;
+import org.cris6h16.product.Exceptions.ProductComponentAlreadyExistsException;
 import org.cris6h16.product.Exceptions.ProductComponentNotFoundException;
 import org.cris6h16.user.UserEntity;
 import org.cris6h16.user.UserRepository;
@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
-import static org.cris6h16.product.Exceptions.ErrorCode.CATEGORY_NOT_FOUND_BY_ID;
-import static org.cris6h16.product.Exceptions.ErrorCode.UNIQUE_USER_ID_PRODUCT_NAME;
-import static org.cris6h16.product.Exceptions.ErrorCode.USER_NOT_FOUND_BY_ID;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NOT_FOUND_BY_ID;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.UNIQUE_USER_ID_PRODUCT_NAME;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_NOT_FOUND_BY_ID;
 
 @Slf4j
 @Component
@@ -40,6 +40,7 @@ public class ProductComponentImpl implements ProductComponent {
 
     @Override
     public Long createCategory(CreateCategoryInput input) {
+        input.prepare();
         productValidator.validate(input);
         CategoryEntity ce = toCategoryEntity(input);
         return categoryRepository.save(ce).getId();
@@ -61,6 +62,8 @@ public class ProductComponentImpl implements ProductComponent {
 
     @Override
     public void updateImageUrlById(Long id, String url) {
+        url = url == null ? "" : url.trim();
+
         productValidator.validateProductId(id);
         productValidator.validateImageUrl(url);
 
@@ -80,7 +83,7 @@ public class ProductComponentImpl implements ProductComponent {
                 pe.getUser().getId());
 
         if (exists) {
-            throw new ProductAlreadyExistsException(UNIQUE_USER_ID_PRODUCT_NAME); // todo: ponerlo el constraint a nivel de entidad
+            throw new ProductComponentAlreadyExistsException(UNIQUE_USER_ID_PRODUCT_NAME); // todo: ponerlo el constraint a nivel de entidad
         }
     }
 

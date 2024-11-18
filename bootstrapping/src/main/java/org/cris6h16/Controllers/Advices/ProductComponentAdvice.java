@@ -3,24 +3,12 @@ package org.cris6h16.Controllers.Advices;
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.Controllers.Advices.Properties.ProductComponentErrorMsgProperties;
 import org.cris6h16.Controllers.Advices.Properties.SystemErrorProperties;
-import org.cris6h16.product.Exceptions.NotFound.ProductCategoryNotFoundException;
+import org.cris6h16.product.CategoryEntity;
+import org.cris6h16.product.Exceptions.ProductComponentAlreadyExistsException;
+import org.cris6h16.product.Exceptions.ProductComponentInvalidAttributeException;
 import org.cris6h16.product.Exceptions.ProductComponentNotFoundException;
-import org.cris6h16.product.Exceptions.NotFound.ProductUserNotFoundException;
-import org.cris6h16.product.Exceptions.ProductAlreadyExistsException;
-import org.cris6h16.product.Exceptions.alreadyExists.ProductUserAlreadyHasAProductWithTheSpecifiedNameException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidApproxHeightCmException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidApproxWeightLbException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidApproxWidthCmException;
-import org.cris6h16.product.Exceptions.ProductInvalidAttributeException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidCategoryIdException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidCategoryNameLengthException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidDescriptionLengthException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidImageUrlLengthException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidPriceException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidProductIdException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidProductNameLengthException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidStockException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidUserIdException;
+import org.cris6h16.product.Exceptions.ProductErrorCode;
+import org.cris6h16.product.ProductEntity;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -34,100 +22,145 @@ import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
 public class ProductComponentAdvice {
-    private final ProductComponentErrorMsgProperties productComponentErrorMsgProperties;
+    private final ProductComponentErrorMsgProperties msgs;
     private final SystemErrorProperties systemErrorProperties;
 
     public ProductComponentAdvice(ProductComponentErrorMsgProperties productErrorMsgProperties, SystemErrorProperties systemErrorProperties) {
-        this.productComponentErrorMsgProperties = productErrorMsgProperties;
+        this.msgs = productErrorMsgProperties;
         this.systemErrorProperties = systemErrorProperties;
     }
 
-    @ExceptionHandler(ProductAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleProductAlreadyExistsException(ProductAlreadyExistsException e) {
-        log.debug("ProductAlreadyExistsException", e);
+    @ExceptionHandler(ProductComponentAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleProductComponentAlreadyExistsException(ProductComponentAlreadyExistsException e) {
+        log.debug("ProductComponentAlreadyExistsException", e);
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(getMsg(e)));
+                .body(new ErrorResponse(e.getErrorCode().name(), getMsg(e.getErrorCode())));
     }
 
-
-    private String getMsg(ProductAlreadyExistsException e) {
-        if (e instanceof ProductUserAlreadyHasAProductWithTheSpecifiedNameException) {
-            return productComponentErrorMsgProperties.getUserAlreadyHasAProductWithTheSpecifiedName();
-        }
-        log.error("A custom exception should have a custom message", e);
-        return systemErrorProperties.getUnexpectedError();
-    }
-
-    @ExceptionHandler(ProductInvalidAttributeException.class)
-    public ResponseEntity<ErrorResponse> handleProductAlreadyExistsException(ProductInvalidAttributeException e) {
-        log.debug("ProductInvalidAttributeException", e);
+    @ExceptionHandler(ProductComponentInvalidAttributeException.class)
+    public ResponseEntity<ErrorResponse> handleProductComponentInvalidAttributeException(ProductComponentInvalidAttributeException e) {
+        log.debug("ProductComponentInvalidAttributeException", e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(getMsg(e)));
+                .body(new ErrorResponse(e.getErrorCode().name(), getMsg(e.getErrorCode())));
     }
 
-    private String getMsg(ProductInvalidAttributeException e) {
-        if (e instanceof ProductInvalidApproxHeightCmException) {
-            return productComponentErrorMsgProperties.getInvalidApproxHeightCm();
-        }
-        if (e instanceof ProductInvalidApproxWeightLbException) {
-            return productComponentErrorMsgProperties.getInvalidApproxWeightLb();
-        }
-        if (e instanceof ProductInvalidApproxWidthCmException) {
-            return productComponentErrorMsgProperties.getInvalidApproxWidthCm();
-        }
-        if (e instanceof ProductInvalidCategoryIdException) {
-            return productComponentErrorMsgProperties.getInvalidCategoryId();
-        }
-
-        if (e instanceof ProductInvalidCategoryNameLengthException) {
-            return productComponentErrorMsgProperties.getInvalidCategoryNameLength();
-        }
-        if (e instanceof ProductInvalidDescriptionLengthException) {
-            return productComponentErrorMsgProperties.getInvalidDescriptionLength();
-        }
-        if (e instanceof ProductInvalidImageUrlLengthException) {
-            return productComponentErrorMsgProperties.getInvalidImageUrlLength();
-        }
-        if (e instanceof ProductInvalidPriceException) {
-            return productComponentErrorMsgProperties.getInvalidPrice();
-        }
-        if (e instanceof ProductInvalidProductIdException) {
-            return productComponentErrorMsgProperties.getInvalidProductId();
-        }
-        if (e instanceof ProductInvalidProductNameLengthException) {
-            return productComponentErrorMsgProperties.getInvalidProductNameLength();
-        }
-        if (e instanceof ProductInvalidStockException) {
-            return productComponentErrorMsgProperties.getInvalidStock();
-        }
-        if (e instanceof ProductInvalidUserIdException) {
-            return productComponentErrorMsgProperties.getInvalidUserId();
-        }
-
-        log.error("A custom exception should have a custom message", e);
-        return systemErrorProperties.getUnexpectedError();
-    }
 
     @ExceptionHandler(ProductComponentNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleProductAlreadyExistsException(ProductComponentNotFoundException e) {
-        log.debug("ProductAlreadyExistsException", e);
+    public ResponseEntity<ErrorResponse> handleProductComponentNotFoundException(ProductComponentNotFoundException e) {
+        log.debug("ProductComponentNotFoundException", e);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(getMsg(e)));
+                .body(new ErrorResponse(e.getErrorCode().name(), getMsg(e.getErrorCode())));
     }
 
-    private String getMsg(ProductComponentNotFoundException e) {
-        if (e instanceof ProductCategoryNotFoundException) {
-            return productComponentErrorMsgProperties.getCategoryNotFound();
+    private String getMsg(ProductErrorCode e) {
+
+        if (e.equals(ProductErrorCode.USER_ID_NULL)) {
+            return msgs.getUserIdNull();
         }
-        if (e instanceof ProductUserNotFoundException) {
-            return productComponentErrorMsgProperties.getUserNotFound();
+        if (e.equals(ProductErrorCode.USER_ID_LESS_THAN_ONE)) {
+            return msgs.getUserIdLessThanOne();
         }
+
+        if (e.equals(ProductErrorCode.CATEGORY_ID_NULL)) {
+            return msgs.getCategoryIdNull();
+        }
+        if (e.equals(ProductErrorCode.CATEGORY_ID_LESS_THAN_ONE)) {
+            return msgs.getCategoryIdLessThanOne();
+        }
+
+        if (e.equals(ProductErrorCode.IMAGE_URL_NULL)) {
+            return msgs.getImageUrlNull();
+        }
+
+        if (e.equals(ProductErrorCode.IMAGE_URL_TOO_LONG)) {
+            return msgs.getImageUrlTooLong().replace("{MAX}", ProductEntity.PRODUCT_MAX_IMG_URL_LENGTH + "");
+        }
+
+        if (e.equals(ProductErrorCode.APPROX_WEIGHT_LB_NULL)) {
+            return msgs.getApproxWeightLbNull();
+        }
+
+        if (e.equals(ProductErrorCode.STOCK_NEGATIVE)) {
+            return msgs.getStockNegative();
+        }
+
+        if (e.equals(ProductErrorCode.APPROX_HEIGHT_CM_NULL)) {
+            return msgs.getApproxHeightCmNull();
+        }
+
+        if (e.equals(ProductErrorCode.APPROX_HEIGHT_CM_NEGATIVE)) {
+            return msgs.getApproxHeightCmNegative();
+        }
+
+        if (e.equals(ProductErrorCode.APPROX_WIDTH_CM_NULL)) {
+            return msgs.getApproxWidthCmNull();
+        }
+
+        if (e.equals(ProductErrorCode.APPROX_WIDTH_CM_NEGATIVE)) {
+            return msgs.getApproxWidthCmNegative();
+        }
+
+        if (e.equals(ProductErrorCode.APPROX_WEIGHT_LB_NEGATIVE)) {
+            return msgs.getApproxWeightLbNegative();
+        }
+        if (e.equals(ProductErrorCode.DESCRIPTION_NULL)) {
+            return msgs.getDescriptionNull();
+        }
+        if (e.equals(ProductErrorCode.DESCRIPTION_TOO_LONG)) {
+            return msgs.getDescriptionTooLong().replace("{MAX}", ProductEntity.PRODUCT_MAX_DESCRIPTION_LENGTH + "");
+        }
+
+        if (e.equals(ProductErrorCode.STOCK_NULL)) {
+            return msgs.getStockNull();
+        }
+
+        if (e.equals(ProductErrorCode.PRICE_NULL)) {
+            return msgs.getPriceNull();
+        }
+        if (e.equals(ProductErrorCode.PRICE_NEGATIVE)) {
+            return msgs.getPriceNegative();
+        }
+        if (e.equals(ProductErrorCode.PRODUCT_NAME_NULL)) {
+            return msgs.getProductNameNull();
+        }
+
+        if (e.equals(ProductErrorCode.PRODUCT_NAME_TOO_LONG)) {
+            return msgs.getProductNameTooLong().replace("{MAX}", ProductEntity.PRODUCT_MAX_NAME_LENGTH + "");
+        }
+
+        if (e.equals(ProductErrorCode.CATEGORY_NAME_TOO_LONG)) {
+            return msgs.getCategoryNameTooLong().replace("{MAX}", ProductEntity.PRODUCT_MAX_DESCRIPTION_LENGTH + "");
+        }
+
+        if (e.equals(ProductErrorCode.PRODUCT_ID_NULL)) {
+            return msgs.getProductIdNull();
+        }
+
+        if (e.equals(ProductErrorCode.PRODUCT_ID_LESS_THAN_ONE)) {
+            return msgs.getProductIdLessThanOne();
+        }
+        if (e.equals(ProductErrorCode.UNIQUE_USER_ID_PRODUCT_NAME)) {
+            return msgs.getUniqueUserIdProductName();
+        }
+
+        if (e.equals(ProductErrorCode.CATEGORY_NAME_NULL)) {
+            return msgs.getCategoryNameNull();
+        }
+
+        if (e.equals(ProductErrorCode.CATEGORY_NOT_FOUND_BY_ID)) {
+            return msgs.getCategoryNotFoundById();
+        }
+
+        if (e.equals(ProductErrorCode.USER_NOT_FOUND_BY_ID)) {
+            return msgs.getUserNotFoundById();
+        }
+
 
         log.error("A custom exception should have a custom message", e);
         return systemErrorProperties.getUnexpectedError();
