@@ -1,25 +1,40 @@
 package org.cris6h16.product;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidApproxHeightCmException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidApproxWeightLbException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidApproxWidthCmException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidCategoryIdException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidCategoryNameLengthException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidDescriptionLengthException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidImageUrlLengthException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidProductIdException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidProductNameLengthException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidPriceException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidStockException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidUserIdException;
+import org.cris6h16.product.Exceptions.ErrorCode;
+import org.cris6h16.product.Exceptions.ProductInvalidAttributeException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
-import static org.cris6h16.product.ProductEntity.PRODUCT_DESCRIPTION_LENGTH;
-import static org.cris6h16.product.ProductEntity.PRODUCT_IMG_URL_LENGTH;
-import static org.cris6h16.product.ProductEntity.PRODUCT_NAME_LENGTH;
+import static org.cris6h16.product.CategoryEntity.CATEGORY_MAX_NAME_LENGTH;
+import static org.cris6h16.product.Exceptions.ErrorCode.APPROX_HEIGHT_CM_IS_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ErrorCode.APPROX_HEIGHT_CM_NULL;
+import static org.cris6h16.product.Exceptions.ErrorCode.APPROX_WEIGHT_LB_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ErrorCode.APPROX_WEIGHT_LB_NULL;
+import static org.cris6h16.product.Exceptions.ErrorCode.APPROX_WIDTH_CM_IS_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ErrorCode.APPROX_WIDTH_CM_NULL;
+import static org.cris6h16.product.Exceptions.ErrorCode.CATEGORY_ID_LESS_THAN_ONE;
+import static org.cris6h16.product.Exceptions.ErrorCode.CATEGORY_ID_NULL;
+import static org.cris6h16.product.Exceptions.ErrorCode.CATEGORY_NAME_NULL;
+import static org.cris6h16.product.Exceptions.ErrorCode.CATEGORY_NAME_TOO_LONG;
+import static org.cris6h16.product.Exceptions.ErrorCode.DESCRIPTION_NULL;
+import static org.cris6h16.product.Exceptions.ErrorCode.DESCRIPTION_TOO_LONG;
+import static org.cris6h16.product.Exceptions.ErrorCode.IMAGE_URL_NULL;
+import static org.cris6h16.product.Exceptions.ErrorCode.IMAGE_URL_TOO_LONG;
+import static org.cris6h16.product.Exceptions.ErrorCode.PRICE_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ErrorCode.PRICE_NULL;
+import static org.cris6h16.product.Exceptions.ErrorCode.PRODUCT_ID_LESS_THAN_ONE;
+import static org.cris6h16.product.Exceptions.ErrorCode.PRODUCT_ID_NULL;
+import static org.cris6h16.product.Exceptions.ErrorCode.PRODUCT_NAME_NULL;
+import static org.cris6h16.product.Exceptions.ErrorCode.PRODUCT_NAME_TOO_LONG;
+import static org.cris6h16.product.Exceptions.ErrorCode.STOCK_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ErrorCode.STOCK_NULL;
+import static org.cris6h16.product.Exceptions.ErrorCode.USER_ID_LESS_THAN_ONE;
+import static org.cris6h16.product.Exceptions.ErrorCode.USER_ID_NULL;
+import static org.cris6h16.product.ProductEntity.PRODUCT_MAX_DESCRIPTION_LENGTH;
+import static org.cris6h16.product.ProductEntity.PRODUCT_MAX_IMG_URL_LENGTH;
+import static org.cris6h16.product.ProductEntity.PRODUCT_MAX_NAME_LENGTH;
 
 @Slf4j
 @Component
@@ -39,131 +54,73 @@ class ProductValidator {
         validateUserId(input.getUserId());
     }
 
-    private void greaterThan(int ref, int value, String fieldName, Class<? extends RuntimeException> e) {
-        if (value > ref) return;
-        log.debug("The value {} is not greater than {}, field: {}", value, ref, fieldName);
-        throw createException(e);
-    }
-
-    private void lessOrEqualsThan(int ref, int value, String fieldName, Class<? extends RuntimeException> e) {
-        if (value <= ref) return;
-        log.debug("The value {} is not less or equals than {}, field: {}", value, ref, fieldName);
-        throw createException(e);
-    }
-
-    private void greaterOrEqualsThan(int ref, int value, String fieldName, Class<? extends RuntimeException> e) {
-        if (value >= ref) return;
-        throw createException(e);
-    }
-
-    private void greaterOrEqualsThan(BigDecimal ref, BigDecimal value, String fieldName, Class<? extends RuntimeException> e) {
-//        if (value >= ref) return;
-        if (value.compareTo(ref) >= 0) return;
-        throw createException(e);
-    }
 
     public void validateUserId(Long userId) {
-        Class<ProductInvalidUserIdException> e = ProductInvalidUserIdException.class;
-
-        validateNotNull(userId, "user ID", e);
-        greaterThan(0, userId.intValue(), "user ID", e);
+        if (userId == null) throwE(USER_ID_NULL);
+        if (userId < 1) throwE(USER_ID_LESS_THAN_ONE);
     }
 
     public void validateCategoryId(Long categoryId) {
-        Class<ProductInvalidCategoryIdException> e = ProductInvalidCategoryIdException.class;
-
-        validateNotNull(categoryId, "category ID", e);
-        greaterThan(0, categoryId.intValue(), "category ID", e);
+        if (categoryId == null) throwE(CATEGORY_ID_NULL);
+        if (categoryId < 1) throwE(CATEGORY_ID_LESS_THAN_ONE);
     }
 
     public void validateImageUrl(String imageUrl) {
-        Class<ProductInvalidImageUrlLengthException> e = ProductInvalidImageUrlLengthException.class;
-
-        validateNotNull(imageUrl, "image URL", e);
-        lessOrEqualsThan(PRODUCT_IMG_URL_LENGTH, imageUrl.length(), "image URL", ProductInvalidImageUrlLengthException.class);
+        if (imageUrl == null) throwE(IMAGE_URL_NULL);
+        if (imageUrl.length() > PRODUCT_MAX_IMG_URL_LENGTH) throwE(IMAGE_URL_TOO_LONG);
     }
 
     public void validateApproxHeightCm(Integer approxHeightCm) {
-        Class<ProductInvalidApproxHeightCmException> e = ProductInvalidApproxHeightCmException.class;
-
-        validateNotNull(approxHeightCm, "approx height (cm)", e);
-        greaterOrEqualsThan(0, approxHeightCm, "approx height (cm)", e);
+        if (approxHeightCm == null) throwE(APPROX_HEIGHT_CM_NULL);
+        if (approxHeightCm < 0) throwE(APPROX_HEIGHT_CM_IS_NEGATIVE);
     }
 
     public void validateApproxWidthCm(Integer approxWidthCm) {
-        Class<ProductInvalidApproxWidthCmException> e = ProductInvalidApproxWidthCmException.class;
-
-        validateNotNull(approxWidthCm, "approx width (cm)", e);
-        greaterOrEqualsThan(0, approxWidthCm, "approx width (cm)", e);
+        if (approxWidthCm == null) throwE(APPROX_WIDTH_CM_NULL);
+        if (approxWidthCm < 0) throwE(APPROX_WIDTH_CM_IS_NEGATIVE);
     }
 
     public void validateApproxWeightLb(Integer approxWeightLb) {
-        Class<ProductInvalidApproxWeightLbException> e = ProductInvalidApproxWeightLbException.class;
-
-        validateNotNull(approxWeightLb, "approx weight (lbs)", e);
-        greaterOrEqualsThan(0, approxWeightLb, "approx weight (lbs)", e);
+        if (approxWeightLb == null) throwE(APPROX_WEIGHT_LB_NULL);
+        if (approxWeightLb < 0) throwE(APPROX_WEIGHT_LB_NEGATIVE);
     }
 
     public void validateDescription(String description) {
-        Class<ProductInvalidDescriptionLengthException> e = ProductInvalidDescriptionLengthException.class;
-
-        validateNotNull(description, "product description", e);
-        lessOrEqualsThan(PRODUCT_DESCRIPTION_LENGTH, description.length(), "product description", e);
+        if (description == null) throwE(DESCRIPTION_NULL);
+        if (description.length() > PRODUCT_MAX_DESCRIPTION_LENGTH) throwE(DESCRIPTION_TOO_LONG);
     }
 
-    // todo: refactor others validators like this component
     public void validateStock(Integer stock) {
-        Class<ProductInvalidStockException> e = ProductInvalidStockException.class;
-
-        validateNotNull(stock, "product stock", e);
-        greaterOrEqualsThan(0, stock, "product stock", e);
+        if (stock == null) throwE(STOCK_NULL);
+        if (stock < 0) throwE(STOCK_NEGATIVE);
     }
 
     public void validatePrice(BigDecimal price) {
-        Class<ProductInvalidPriceException> e = ProductInvalidPriceException.class;
-
-        validateNotNull(price, "product price", e);
-        greaterOrEqualsThan(BigDecimal.ZERO, price, "product price",e);
+        if (price == null) throwE(PRICE_NULL);
+        if (price.compareTo(BigDecimal.ZERO) < 0) throwE(PRICE_NEGATIVE);
     }
 
     public void validateProductName(String name) {
-        Class<ProductInvalidProductNameLengthException> e = ProductInvalidProductNameLengthException.class;
-
-        validateNotNull(name, "product name", e);
-        lessOrEqualsThan(PRODUCT_NAME_LENGTH, name.length(),"product name", e);
+        if (name == null) throwE(PRODUCT_NAME_NULL);
+        if (name.length() > PRODUCT_MAX_NAME_LENGTH) throwE(PRODUCT_NAME_TOO_LONG);
     }
 
 
-    private <E extends RuntimeException> void validateNotNull(Object value, String fieldName, Class<E> exceptionClass) {
-        if (value == null) {
-            log.debug("Invalid {}: {}", fieldName, value);
-            throw createException(exceptionClass);
-        }
+    private void throwE(ErrorCode errorCode) {
+        throw new ProductInvalidAttributeException(errorCode);
     }
 
-    private <E extends RuntimeException> E createException(Class<E> exceptionClass) {
-        try {
-            return exceptionClass.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to instantiate exception: " + exceptionClass, e);
-        }
-    }
-
- public    void validate(CreateCategoryInput input) {
+    public void validate(CreateCategoryInput input) {
         validateCategoryName(input.getName());
     }
 
     private void validateCategoryName(String name) {
-        Class<ProductInvalidCategoryNameLengthException> e = ProductInvalidCategoryNameLengthException.class;
-
-        validateNotNull(name, "category name", e);
-        greaterThan(1, name.length(),"category name", e);
+        if (name == null) throwE (CATEGORY_NAME_NULL);
+        if (name.length() > CATEGORY_MAX_NAME_LENGTH) throwE(CATEGORY_NAME_TOO_LONG);
     }
 
     public void validateProductId(Long id) {
-        Class<ProductInvalidProductIdException> e = ProductInvalidProductIdException.class;
-
-        validateNotNull(id, "product ID", e);
-        greaterThan(0, id.intValue(), "product ID", e);
+        if (id == null) throwE(PRODUCT_ID_NULL);
+        if (id < 1) throwE(PRODUCT_ID_LESS_THAN_ONE);
     }
 }

@@ -31,11 +31,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CategoryEntity {
-    public static final int CATEGORY_NAME_LENGTH = 100;
+    public static final int CATEGORY_MAX_NAME_LENGTH = 100;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = CATEGORY_NAME_LENGTH, unique = true)
+    @Column(nullable = false, length = CATEGORY_MAX_NAME_LENGTH, unique = true)
     private String name;
 }

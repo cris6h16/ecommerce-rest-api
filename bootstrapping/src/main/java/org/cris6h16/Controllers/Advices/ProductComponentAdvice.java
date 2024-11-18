@@ -4,14 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.Controllers.Advices.Properties.ProductComponentErrorMsgProperties;
 import org.cris6h16.Controllers.Advices.Properties.SystemErrorProperties;
 import org.cris6h16.product.Exceptions.NotFound.ProductCategoryNotFoundException;
-import org.cris6h16.product.Exceptions.NotFound.ProductNotFoundException;
+import org.cris6h16.product.Exceptions.ProductComponentNotFoundException;
 import org.cris6h16.product.Exceptions.NotFound.ProductUserNotFoundException;
-import org.cris6h16.product.Exceptions.alreadyExists.ProductAlreadyExistsException;
+import org.cris6h16.product.Exceptions.ProductAlreadyExistsException;
 import org.cris6h16.product.Exceptions.alreadyExists.ProductUserAlreadyHasAProductWithTheSpecifiedNameException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidApproxHeightCmException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidApproxWeightLbException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidApproxWidthCmException;
-import org.cris6h16.product.Exceptions.invalid.ProductInvalidAttributeException;
+import org.cris6h16.product.Exceptions.ProductInvalidAttributeException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidCategoryIdException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidCategoryNameLengthException;
 import org.cris6h16.product.Exceptions.invalid.ProductInvalidDescriptionLengthException;
@@ -112,8 +112,8 @@ public class ProductComponentAdvice {
         return systemErrorProperties.getUnexpectedError();
     }
 
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleProductAlreadyExistsException(ProductNotFoundException e) {
+    @ExceptionHandler(ProductComponentNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleProductAlreadyExistsException(ProductComponentNotFoundException e) {
         log.debug("ProductAlreadyExistsException", e);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
@@ -121,7 +121,7 @@ public class ProductComponentAdvice {
                 .body(new ErrorResponse(getMsg(e)));
     }
 
-    private String getMsg(ProductNotFoundException e) {
+    private String getMsg(ProductComponentNotFoundException e) {
         if (e instanceof ProductCategoryNotFoundException) {
             return productComponentErrorMsgProperties.getCategoryNotFound();
         }

@@ -42,15 +42,15 @@ import java.math.BigDecimal;
 @ToString
 class ProductEntity {
     // todo: se puede centrilizar en un YAML para que los errores se actualizen dinamicamente
-    public final static int PRODUCT_NAME_LENGTH = 255; // si se cambia esto, hay que su error message correspondiente
-    public final static int PRODUCT_DESCRIPTION_LENGTH = 1000; // si se cambia esto, hay que su error message correspondiente
-    public final static int PRODUCT_IMG_URL_LENGTH = 1000;// si se cambia esto, hay que su error message correspondiente
+    public final static int PRODUCT_MAX_NAME_LENGTH = 255; // si se cambia esto, hay que su error message correspondiente
+    public final static int PRODUCT_MAX_DESCRIPTION_LENGTH = 1000; // si se cambia esto, hay que su error message correspondiente
+    public final static int PRODUCT_MAX_IMG_URL_LENGTH = 1000;// si se cambia esto, hay que su error message correspondiente
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = PRODUCT_NAME_LENGTH)
+    @Column(nullable = false, length = PRODUCT_MAX_NAME_LENGTH)
     private String name;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -59,7 +59,7 @@ class ProductEntity {
     @Column(nullable = false)
     private Integer stock;
 
-    @Column(nullable = false, length = PRODUCT_DESCRIPTION_LENGTH)
+    @Column(nullable = false, length = PRODUCT_MAX_DESCRIPTION_LENGTH)
     private String description;
 
     @Column(nullable = false)
@@ -71,7 +71,7 @@ class ProductEntity {
     @Column(nullable = false)
     private Integer approxHeightCm;
 
-    @Column(nullable = false, length = PRODUCT_IMG_URL_LENGTH)
+    @Column(nullable = false, length = PRODUCT_MAX_IMG_URL_LENGTH)
     private String imageUrl;
 
     @ManyToOne(

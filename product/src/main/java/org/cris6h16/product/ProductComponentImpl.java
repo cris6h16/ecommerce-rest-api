@@ -1,16 +1,18 @@
 package org.cris6h16.product;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.product.Exceptions.NotFound.ProductCategoryNotFoundException;
-import org.cris6h16.product.Exceptions.NotFound.ProductUserNotFoundException;
-import org.cris6h16.product.Exceptions.alreadyExists.ProductAlreadyExistsException;
-import org.cris6h16.product.Exceptions.alreadyExists.ProductUserAlreadyHasAProductWithTheSpecifiedNameException;
+import org.cris6h16.product.Exceptions.ProductAlreadyExistsException;
+import org.cris6h16.product.Exceptions.ProductComponentNotFoundException;
 import org.cris6h16.user.UserEntity;
 import org.cris6h16.user.UserRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+
+import static org.cris6h16.product.Exceptions.ErrorCode.CATEGORY_NOT_FOUND_BY_ID;
+import static org.cris6h16.product.Exceptions.ErrorCode.UNIQUE_USER_ID_PRODUCT_NAME;
+import static org.cris6h16.product.Exceptions.ErrorCode.USER_NOT_FOUND_BY_ID;
 
 @Slf4j
 @Component
@@ -75,10 +77,10 @@ public class ProductComponentImpl implements ProductComponent {
     private void checkDuplicates(ProductEntity pe) {
         boolean exists = productRepository.existsByNameAndUserId(
                 pe.getName(),
-                pe.getUser().getId()
-        );
+                pe.getUser().getId());
+
         if (exists) {
-            throw new ProductUserAlreadyHasAProductWithTheSpecifiedNameException();
+            throw new ProductAlreadyExistsException(UNIQUE_USER_ID_PRODUCT_NAME); // todo: ponerlo el constraint a nivel de entidad
         }
     }
 
@@ -101,12 +103,14 @@ public class ProductComponentImpl implements ProductComponent {
     }
 
     private CategoryEntity findCategory(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(ProductCategoryNotFoundException::new);
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ProductComponentNotFoundException(CATEGORY_NOT_FOUND_BY_ID));
     }
 
 
     private UserEntity findUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(ProductUserNotFoundException::new);
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ProductComponentNotFoundException(USER_NOT_FOUND_BY_ID));
     }
 
 
