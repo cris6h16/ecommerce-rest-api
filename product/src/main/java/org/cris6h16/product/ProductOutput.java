@@ -1,24 +1,20 @@
-package org.cris6h16.facades;
+package org.cris6h16.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
+import org.cris6h16.user.UserEntity;
+import org.cris6h16.user.UserOutput;
 
 import java.math.BigDecimal;
 
 @Getter
-@Setter
 @Builder
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
-public class CreateProductDTO {
+@NoArgsConstructor
+public class ProductOutput {
+    private Long id;
     private String name;
     private BigDecimal price;
     private Integer stock;
@@ -26,6 +22,7 @@ public class CreateProductDTO {
     private Integer approxWeightLb;
     private Integer approxWidthCm;
     private Integer approxHeightCm;
-    private MultipartFile image;
-    private Long categoryId;
+    private String imageUrl;
+    private UserOutput user;
+    private CategoryOutput category;
 }

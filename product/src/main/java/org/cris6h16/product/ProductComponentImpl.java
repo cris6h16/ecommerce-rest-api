@@ -11,12 +11,14 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NOT_FOUND_BY_ID;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NOT_FOUND_BY_ID;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.UNIQUE_USER_ID_PRODUCT_NAME;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_NOT_FOUND_BY_ID;
+import static org.cris6h16.user.EntityMapper.toUserDTO;
 
 @Slf4j
 @Component
-public class ProductComponentImpl implements ProductComponent {
+ class ProductComponentImpl implements ProductComponent {
     private final ProductRepository productRepository;
     private final ProductValidator productValidator;
     private final UserRepository userRepository;
@@ -69,6 +71,37 @@ public class ProductComponentImpl implements ProductComponent {
 
         productRepository.updateImageUrlById(id, url);
     }
+
+    @Override
+    public void deleteAll() {
+        productRepository.deleteAll();
+        categoryRepository.deleteAll();
+    }
+
+    @Override
+    public ProductOutput findProductByIdNoEager(Long productId) {
+        productValidator.validateProductId(productId);
+        return productRepository.findById(productId)
+                .map(this::toProductOutputLazy)
+                .orElseThrow(() -> new ProductComponentNotFoundException(PRODUCT_NOT_FOUND_BY_ID));
+    }
+
+    private ProductOutput toProductOutputLazy(ProductEntity productEntity) {
+        return ProductOutput.builder()
+                .id(productEntity.getId())
+                .name(productEntity.getName())
+                .price(productEntity.getPrice())
+                .stock(productEntity.getStock())
+                .description(productEntity.getDescription())
+                .approxWeightLb(productEntity.getApproxWeightLb())
+                .approxWidthCm(productEntity.getApproxWidthCm())
+                .approxHeightCm(productEntity.getApproxHeightCm())
+                .imageUrl(productEntity.getImageUrl())
+                .category(toCategoryOutput(productEntity.getCategory()))
+                .user(null)
+                .build();
+    }
+
 
     private CategoryOutput toCategoryOutput(CategoryEntity category) {
         return CategoryOutput.builder()

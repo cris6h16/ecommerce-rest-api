@@ -30,7 +30,7 @@ import lombok.Setter;
 @EqualsAndHashCode
 @Getter
 @Setter
-public class CategoryEntity {
+ public class CategoryEntity {
     public static final int CATEGORY_MAX_NAME_LENGTH = 100;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

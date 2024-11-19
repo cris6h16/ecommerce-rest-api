@@ -2,16 +2,18 @@ package org.cris6h16.Controllers.Products;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.cris6h16.Controllers.Common;
 import org.cris6h16.Main;
+import org.cris6h16.email.EmailComponent;
 import org.cris6h16.facades.CategoryDTO;
 import org.cris6h16.facades.CreateCategoryDTO;
-import org.cris6h16.facades.LoginDTO;
 import org.cris6h16.facades.SignupDTO;
+import org.cris6h16.product.ProductComponent;
 import org.cris6h16.security.SecurityComponent;
-import org.cris6h16.user.CreateUserInput;
 import org.cris6h16.user.LoginOutput;
 import org.cris6h16.user.UserComponent;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,13 +25,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cris6h16.Controllers.Common.login;
+import static org.cris6h16.Controllers.Common.loginOutputInExpectedState;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -57,31 +56,29 @@ class CategoryControllerIntegrationTest {
             .build();
 
 
-    @BeforeAll
-    static void beforeAll(
-            @Autowired UserComponent userComponent,
-            @Autowired SecurityComponent securityComponent,
+    @Autowired
+    ProductComponent productComponent;
+            @Autowired UserComponent userComponent;
+            @Autowired SecurityComponent securityComponent;
+            @Autowired TransactionTemplate transactionTemplate;
+
+    @BeforeEach
+    void beforeEach(
+            @Autowired EmailComponent emailComponent,
             @Autowired TransactionTemplate transactionTemplate) {
-        transactionTemplate.execute(action -> {
-            userComponent.create(CreateUserInput.builder()
-                    .firstname(sellerDto.getFirstname())
-                    .lastname(sellerDto.getLastname())
-                    .email(sellerDto.getEmail())
-                    .password(securityComponent.encodePassword(sellerDto.getPassword()))
-                    .authorities(new HashSet<>(List.of("ROLE_SELLER")))
-                    .balance(BigDecimal.ZERO)
-                    .enabled(true)
-                    .emailVerified(true)
-                    .build());
-            return null;
-        });
+        Common.removeAll(
+                userComponent,
+                emailComponent,
+                productComponent,
+                transactionTemplate
+        );
     }
 
 
     @Test
     void createCategory_successful() throws Exception {
         // Arrange
-        LoginOutput output = login(sellerDto, mockMvc);
+        LoginOutput output = loginOutputInExpectedState(userComponent,securityComponent,transactionTemplate, "ROLE_SELLER");
         CreateCategoryDTO createCategoryDTO = CreateCategoryDTO.builder()
                 .name("Mobiles")
                 .build();
@@ -106,7 +103,6 @@ class CategoryControllerIntegrationTest {
                 .anySatisfy(category ->
                         assertThat(category).hasFieldOrPropertyWithValue("name", "Mobiles"));
     }
-
 
 
 }

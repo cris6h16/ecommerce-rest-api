@@ -28,7 +28,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @Getter
 @Setter
-public class UserEntity {
+ public class UserEntity {
     // This statics have to be used as a centralize place for validation, not were wrote for make easy for change ( error messages contains this values )
     protected static final int FIRSTNAME_MAX_LENGTH = 30;
     protected static final int LASTNAME_MAX_LENGTH = 30;

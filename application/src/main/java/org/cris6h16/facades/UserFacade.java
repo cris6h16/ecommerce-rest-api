@@ -10,7 +10,7 @@ public interface UserFacade {
     void verifyEmail(VerifyEmailDTO dto);
     void resetPassword(ResetPasswordDTO dto);
 
-    UserOutput me();
+    UserDTO me();
 
     String refreshAccessToken();
 }

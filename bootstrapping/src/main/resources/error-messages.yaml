@@ -47,6 +47,7 @@ error-messages:
       user-id-less-than-one: "El id del usuario no puede ser menor a 1"
       user-id-null: "El id del usuario no puede ser nulo"
       user-not-found-by-id: "No se encontró el usuario con el id especificado"
+      product-not-found-by-id: "No se encontró el producto con el id especificado"
 
     email:
       email-invalid: "El email no es válido"
@@ -59,3 +60,5 @@ error-messages:
       valid-verification-code-not-found: "El código de verificación no es válido o ya ha sido utilizado"
       enabled-user-not-found: "Usuario no encotradi"
       img-multipart-file-is-empty: "La imagen del producto es requerida"
+    file:
+      file-upload-fail: "Ha ocurrido un error al subir el archivo"

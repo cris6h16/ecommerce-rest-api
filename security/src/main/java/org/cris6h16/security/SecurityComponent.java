@@ -11,4 +11,6 @@ public interface SecurityComponent {
     Long getCurrentUserId();
 
     Set<String> getCurrentUserAuthorities();
+
+    boolean isTokenValid(String token);
 }

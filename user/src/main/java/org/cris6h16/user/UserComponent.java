@@ -13,4 +13,6 @@ public interface UserComponent {
     Optional<UserOutput> findByIdAndEnable(Long id, boolean enabled);
 
     boolean existsByIdAndEnabled(Long id, boolean enabled);
+
+    void deleteAll();
 }

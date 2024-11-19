@@ -38,13 +38,14 @@ public class EmailComponentImpl implements EmailComponent {
     }
 
     @Override
-    public void sendEmailVerificationCode(String email) {
+    public String sendEmailVerificationCode(String email) {
         email = IfNullEmptyElseTrimAndLowerCase(email);
         validator.validateEmail(email);
 
         String code = verificationCodeGenerator.genCode();
         repository.save(new VerificationCodeEntity(email, code));
         emailSender.sendEmailVerificationCode(email, code);
+        return code;
     }
 
     @Override
@@ -55,6 +56,11 @@ public class EmailComponentImpl implements EmailComponent {
         validator.validateCode(code);
 
         return repository.existsByEmailAndCodeAndExpiresAtAfter(email, code, LocalDateTime.now());
+    }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
     }
 
 }

@@ -87,7 +87,7 @@ public class ProductEntity {
 
     @ManyToOne(
             cascade = {},
-            fetch = FetchType.LAZY
+            fetch = FetchType.EAGER
     )
     @JoinColumn(
             name = "category_id",

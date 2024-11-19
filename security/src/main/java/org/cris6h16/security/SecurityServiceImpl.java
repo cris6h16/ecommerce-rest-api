@@ -60,5 +60,10 @@ public class SecurityServiceImpl implements SecurityComponent {
         throw new IllegalStateException("Principal is not an instance of UserPrincipal");
     }
 
+    @Override
+    public boolean isTokenValid(String token) {
+        return jwtUtils.validate(token);
+    }
+
 
 }

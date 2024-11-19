@@ -13,6 +13,10 @@ public interface ProductComponent {
 
     void updateImageUrlById(Long id, String url);
 
+    void deleteAll();
+
+    ProductOutput findProductByIdNoEager(Long productId);
+
 //    BrandOutput getBrandByName(String name);
 //    Long createBrand(CreateBrandInput input);
 //    CategoryOutput getCategoryByName(String name);

@@ -104,4 +104,10 @@ class UserComponentImpl implements UserComponent {
         return userRepository.existsByIdAndEnabled(id, enabled);
     }
 
+    @Override
+    public void deleteAll() {
+        userRepository.deleteAll();
+        authorityRepository.deleteAll();
+    }
+
 }

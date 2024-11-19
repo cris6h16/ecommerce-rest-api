@@ -39,4 +39,5 @@ public class ProductComponentErrorMsgProperties {
     private String productIdNull;
     private String productIdLessThanOne;
     private String uniqueUserIdProductName;
+    private String productNotFoundById;
 }

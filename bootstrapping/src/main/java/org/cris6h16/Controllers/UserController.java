@@ -1,5 +1,6 @@
 package org.cris6h16.Controllers;
 
+import org.cris6h16.facades.UserDTO;
 import org.cris6h16.facades.UserFacade;
 import org.cris6h16.user.UserOutput;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class UserController {
             path = "/me",
             produces = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<UserOutput> me() {
+    public ResponseEntity<UserDTO> me() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .headers(jsonHeaderCons)

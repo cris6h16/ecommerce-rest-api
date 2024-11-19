@@ -6,6 +6,8 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
+import lombok.extern.slf4j.Slf4j;
+import org.cris6h16.file.Exceptions.FileComponentFileUploadException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,17 +21,20 @@ import java.nio.file.Files;
 import java.util.UUID;
 
 @Service
-public class FirebaseFileComponentImpl implements FileComponent{
+@Slf4j
+class FirebaseFileComponentImpl implements FileComponent {
+
+    static String bucketName = "ecommerce-de918.firebasestorage.app";
 
     private String uploadFile(File file, String fileName) throws IOException {
-        BlobId blobId = BlobId.of("your-bucket-name", fileName); // Replace with your bucker name
+        BlobId blobId = BlobId.of(bucketName, fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
-        InputStream inputStream = FirebaseFileComponentImpl.class.getClassLoader().getResourceAsStream("firebase-private-key.json"); // change the file name with your one
+        InputStream inputStream = FirebaseFileComponentImpl.class.getClassLoader().getResourceAsStream("firebase-private-key.json");
         Credentials credentials = GoogleCredentials.fromStream(inputStream);
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
 
-        String DOWNLOAD_URL = "https://firebasestorage.googleapis.com/v0/b/<bucket-name>/o/%s?alt=media";
+        String DOWNLOAD_URL = "https://firebasestorage.googleapis.com/v0/b/" + bucketName + "/o/%s?alt=media";
         return String.format(DOWNLOAD_URL, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
     }
 
@@ -46,6 +51,7 @@ public class FirebaseFileComponentImpl implements FileComponent{
     }
 
 
+    // todo: agregar handler de excepciones con mensajes personalizados
     @Override
     public String upload(MultipartFile multipartFile) {
         try {
@@ -57,8 +63,8 @@ public class FirebaseFileComponentImpl implements FileComponent{
             file.delete();
             return URL;
         } catch (Exception e) {
-            e.printStackTrace();
-            return "Image couldn't upload, Something went wrong";
+            log.error("Error in uploading file: ", e);
+            throw new FileComponentFileUploadException();
         }
     }
 

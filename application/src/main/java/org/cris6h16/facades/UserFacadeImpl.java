@@ -143,9 +143,23 @@ class UserFacadeImpl implements UserFacade {
     }
 
     @Override
-    public UserOutput me() {
+    public UserDTO me() {
         Long id = securityComponent.getCurrentUserId();
-        return userComponent.findByIdAndEnable(id, true).orElseThrow(ApplicationEnabledUserNotFoundException::new);
+        UserOutput output =  userComponent.findByIdAndEnable(id, true).orElseThrow(ApplicationEnabledUserNotFoundException::new);
+        return toUserDTO(output);
+    }
+
+    private UserDTO toUserDTO(UserOutput output) {
+        return UserDTO.builder()
+                .id(output.getId())
+                .firstname(output.getFirstname())
+                .lastname(output.getLastname())
+                .email(output.getEmail())
+                .authorities(output.getAuthorities())
+                .enabled(output.isEnabled())
+                .balance(output.getBalance())
+                .emailVerified(output.isEmailVerified())
+                .build();
     }
 
     @Override

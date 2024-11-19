@@ -3,7 +3,6 @@ package org.cris6h16.Controllers.Advices;
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.Controllers.Advices.Properties.ProductComponentErrorMsgProperties;
 import org.cris6h16.Controllers.Advices.Properties.SystemErrorProperties;
-import org.cris6h16.product.CategoryEntity;
 import org.cris6h16.product.Exceptions.ProductComponentAlreadyExistsException;
 import org.cris6h16.product.Exceptions.ProductComponentInvalidAttributeException;
 import org.cris6h16.product.Exceptions.ProductComponentNotFoundException;
@@ -159,6 +158,10 @@ public class ProductComponentAdvice {
 
         if (e.equals(ProductErrorCode.USER_NOT_FOUND_BY_ID)) {
             return msgs.getUserNotFoundById();
+        }
+
+        if (e.equals(ProductErrorCode.PRODUCT_NOT_FOUND_BY_ID)) {
+            return msgs.getProductNotFoundById();
         }
 
 
