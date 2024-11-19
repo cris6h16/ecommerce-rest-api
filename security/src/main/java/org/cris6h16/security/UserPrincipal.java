@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.User;
 import java.util.Collection;
 
 @Getter
-@ToString
 public class UserPrincipal extends User {
     private Long id;
 
@@ -22,4 +21,11 @@ public class UserPrincipal extends User {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "UserPrincipal{" +
+                "id=" + id +
+                "authorities=" + getAuthorities() +
+                '}';
+    }
 }

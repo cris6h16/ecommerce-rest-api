@@ -1,10 +1,14 @@
 package org.cris6h16.Controllers.Products;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cris6h16.Controllers.Common;
 import org.cris6h16.Main;
 import org.cris6h16.email.EmailComponent;
 import org.cris6h16.facades.CreateProductDTO;
 import org.cris6h16.facades.SignupDTO;
+import org.cris6h16.product.CreateCategoryInput;
+import org.cris6h16.product.CreateProductInput;
 import org.cris6h16.product.ProductComponent;
 import org.cris6h16.product.ProductOutput;
 import org.cris6h16.security.SecurityComponent;
@@ -16,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -28,6 +34,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cris6h16.Controllers.Common.defSignupDTO;
 import static org.cris6h16.Controllers.Common.loginOutputInExpectedState;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -49,12 +56,9 @@ public class ProductControllerIntegrationTest {
     @MockBean
     private JavaMailSender mailSender;
 
-    private static final SignupDTO sellerDto = SignupDTO.builder()
-            .firstname("Cristian")
-            .lastname("Herrera")
-            .email("cristianmherrera21@gmail.com")
-            .password("12345678")
-            .build();
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -93,7 +97,7 @@ public class ProductControllerIntegrationTest {
                 "image",
                 "file.txt",
                 MediaType.TEXT_PLAIN_VALUE,
-                "hola" .getBytes()
+                "hola".getBytes()
         );
 
         CreateProductDTO dto = CreateProductDTO.builder()
@@ -152,10 +156,75 @@ public class ProductControllerIntegrationTest {
         String cL = mockMvc.perform(post("/api/v1/products/categories/create-category")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                        .content("{\"name\":\"@@@\"}" .replace("@@@", name)))
+                        .content("{\"name\":\"@@@\"}".replace("@@@", name)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getHeader("Location");
         return Long.valueOf(cL.split(".*/")[1]);
     }
 
+
+    @Test
+    void findMyProducts() throws Exception {
+        // Arrange
+        LoginOutput output = loginOutputInExpectedState(userComponent, securityComponent, transactionTemplate, "ROLE_SELLER");
+        Long categoryId = productComponent.createCategory(CreateCategoryInput.builder().name("category-test").build());
+        Long userId = userComponent.findByEmailAndEnabled(defSignupDTO.getEmail(), true).orElseThrow().getId();
+        saveProducts(10, userId, categoryId);
+
+        // Act
+        String body = mockMvc.perform(get("/api/v1/products/my-products?size=7&page=1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + output.getAccessToken()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(3))
+                .andExpect(jsonPath("$.totalElements").value(10))
+                .andExpect(jsonPath("$.totalPages").value(2))
+                .andExpect(jsonPath("$.size").value(7))
+                .andExpect(jsonPath("$.number").value(1))
+                .andExpect(jsonPath("$.content[0].name").value("product 7"))
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    private void saveProducts(int n, Long userId, Long categoryId) {
+        for (int i = 0; i < n; i++) {
+
+            productComponent.createProduct(CreateProductInput.builder()
+                    .name("product " + i)
+                    .price(BigDecimal.valueOf(100 + i))
+                    .description("description " + i)
+                    .stock(10 + i)
+                    .approxWeightLb(3 + i)
+                    .approxHeightCm(30 + i)
+                    .approxWidthCm(35 + i)
+                    .categoryId(categoryId)
+                    .imageUrl("https://fireba..." + i)
+                    .userId(userId)
+                    .build());
+
+        }
+    }
+
+    @Test
+    void findAllProducts() throws Exception {
+        // Arrange
+        LoginOutput output = loginOutputInExpectedState(userComponent, securityComponent, transactionTemplate, "ROLE_SELLER");
+        Long categoryId = productComponent.createCategory(CreateCategoryInput.builder().name("category-test").build());
+        Long userId = userComponent.findByEmailAndEnabled(defSignupDTO.getEmail(), true).orElseThrow().getId();
+        saveProducts(10, userId, categoryId);
+
+        // Act
+        String body = mockMvc.perform(get("/api/v1/products?size=2&page=1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + output.getAccessToken()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.totalElements").value(10))
+                .andExpect(jsonPath("$.totalPages").value(5))
+                .andExpect(jsonPath("$.size").value(2))
+                .andExpect(jsonPath("$.number").value(1))
+                .andExpect(jsonPath("$.content[0].name").value("product 2"))
+                .andReturn().getResponse().getContentAsString();
+
+
+    }
 }

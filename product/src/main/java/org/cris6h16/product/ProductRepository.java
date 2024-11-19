@@ -1,11 +1,15 @@
 package org.cris6h16.product;
 
 import org.cris6h16.user.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
- interface ProductRepository extends JpaRepository<ProductEntity, Long> {
+import java.nio.channels.FileChannel;
+
+interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 //    boolean existsByNameAndApproxWeightLbAndApproxWidthCmAndApproxHeightCm(
 //            String name,
 //            Integer approxWeightLb,
@@ -18,4 +22,6 @@ import org.springframework.data.jpa.repository.Query;
 void updateImageUrlById(Long id, String url);
 
     boolean existsByNameAndUserId(String productName, Long userId);
-}
+
+     Page<ProductEntity> findByUserId(Long userId, Pageable pageable);
+ }

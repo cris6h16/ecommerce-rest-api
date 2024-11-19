@@ -1,7 +1,9 @@
 package org.cris6h16.product;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.nio.channels.FileChannel;
 import java.util.Set;
 
 public interface ProductComponent {
@@ -16,6 +18,10 @@ public interface ProductComponent {
     void deleteAll();
 
     ProductOutput findProductByIdNoEager(Long productId);
+
+    Page<ProductOutput> findAllProducts(Pageable pageable);
+
+    Page<ProductOutput> findProductByUserId(Long userId, Pageable pageable);
 
 //    BrandOutput getBrandByName(String name);
 //    Long createBrand(CreateBrandInput input);

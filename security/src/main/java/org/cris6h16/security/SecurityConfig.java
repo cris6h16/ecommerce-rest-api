@@ -35,8 +35,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/me").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/api/v1/products/create-category").hasRole("SELLER")
                         .requestMatchers(HttpMethod.POST, "/api/v1/products/create-product").hasRole("SELLER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/products/categories/create-category").hasRole("SELLER")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/products/my-products").hasRole("SELLER")
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh-token").authenticated()
                         .requestMatchers(HttpMethod.GET,
+                                "/api/v1/products",
                                 "/api/v1/products/categories").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/auth/login",
@@ -44,7 +47,7 @@ public class SecurityConfig {
                                 "/api/v1/auth/verify-email",
                                 "/api/v1/auth/reset-password",
                                 "/api/v1/auth/send-email-verification").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().denyAll())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(conf -> conf.configurationSource(this.corsConfigurer()))

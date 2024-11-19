@@ -6,7 +6,9 @@ import org.cris6h16.product.CategoryOutput;
 import org.cris6h16.product.CreateCategoryInput;
 import org.cris6h16.product.CreateProductInput;
 import org.cris6h16.product.ProductComponent;
+import org.cris6h16.product.ProductOutput;
 import org.cris6h16.security.SecurityComponent;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -59,6 +61,16 @@ public class ProductFacadeImpl implements ProductFacade {
         return productComponent.createCategory(toInput(dto));
     }
 
+    @Override
+    public Page<ProductOutput> findAllProducts(Pageable pageable) {
+        return productComponent.findAllProducts(pageable);
+    }
+
+    @Override
+    public Page<ProductOutput> findMyProducts(Pageable pageable) {
+        return productComponent.findProductByUserId(securityComponent.getCurrentUserId(), pageable);
+    }
+
     private CreateCategoryInput toInput(CreateCategoryDTO input) {
         log.debug("Converting CreateCategoryDTO to CreateCategoryInput: {}", input);
         CreateCategoryInput res = CreateCategoryInput.builder()
@@ -70,7 +82,6 @@ public class ProductFacadeImpl implements ProductFacade {
 
     private CreateProductInput toInput(CreateProductDTO dto) {
         log.debug("Converting CreateProductDTO to CreateProductInput: {}", dto);
-        MultipartFile imgF = dto.getImage();
         CreateProductInput res = CreateProductInput.builder()
                 .name(dto.getName())
                 .price(dto.getPrice())

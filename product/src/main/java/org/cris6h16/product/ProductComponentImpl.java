@@ -5,6 +5,7 @@ import org.cris6h16.product.Exceptions.ProductComponentAlreadyExistsException;
 import org.cris6h16.product.Exceptions.ProductComponentNotFoundException;
 import org.cris6h16.user.UserEntity;
 import org.cris6h16.user.UserRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,6 @@ import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NOT_FOUN
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NOT_FOUND_BY_ID;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.UNIQUE_USER_ID_PRODUCT_NAME;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_NOT_FOUND_BY_ID;
-import static org.cris6h16.user.EntityMapper.toUserDTO;
 
 @Slf4j
 @Component
@@ -82,11 +82,24 @@ import static org.cris6h16.user.EntityMapper.toUserDTO;
     public ProductOutput findProductByIdNoEager(Long productId) {
         productValidator.validateProductId(productId);
         return productRepository.findById(productId)
-                .map(this::toProductOutputLazy)
+                .map(this::toProductOutputNotEager)
                 .orElseThrow(() -> new ProductComponentNotFoundException(PRODUCT_NOT_FOUND_BY_ID));
     }
 
-    private ProductOutput toProductOutputLazy(ProductEntity productEntity) {
+    @Override
+    public Page<ProductOutput> findAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(this::toProductOutputNotEager);
+    }
+
+    @Override
+    public Page<ProductOutput> findProductByUserId(Long userId, Pageable pageable) {
+        productValidator.validateUserId(userId);
+        return productRepository.findByUserId(userId, pageable)
+                .map(this::toProductOutputNotEager);
+    }
+
+    private ProductOutput toProductOutputNotEager(ProductEntity productEntity) {
         return ProductOutput.builder()
                 .id(productEntity.getId())
                 .name(productEntity.getName())
