@@ -1,12 +1,10 @@
 package org.cris6h16.Controllers.Products;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cris6h16.Controllers.Common;
 import org.cris6h16.Main;
 import org.cris6h16.email.EmailComponent;
 import org.cris6h16.facades.CreateProductDTO;
-import org.cris6h16.facades.SignupDTO;
 import org.cris6h16.product.CreateCategoryInput;
 import org.cris6h16.product.CreateProductInput;
 import org.cris6h16.product.ProductComponent;
@@ -15,13 +13,12 @@ import org.cris6h16.security.SecurityComponent;
 import org.cris6h16.user.LoginOutput;
 import org.cris6h16.user.UserComponent;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -77,6 +74,11 @@ public class ProductControllerIntegrationTest {
     @Autowired
     private ProductComponent productComponent;
 
+    private LoginOutput output;
+    private Long userId;
+    Long categoryId;
+
+
     @BeforeEach
     void beforeEach(
             @Autowired ProductComponent productComponent) {
@@ -86,12 +88,16 @@ public class ProductControllerIntegrationTest {
                 productComponent,
                 transactionTemplate
         );
+
+        output = loginOutputInExpectedState(userComponent, securityComponent, transactionTemplate, "ROLE_SELLER");
+        userId = userComponent.findByEmailAndEnabled(defSignupDTO.getEmail(), true).orElseThrow().getId();
+        categoryId = productComponent.createCategory(CreateCategoryInput.builder().name("category-test").build());
     }
+
 
     @Test
     void createProduct() throws Exception {
         // Arrange
-        LoginOutput output = loginOutputInExpectedState(userComponent, securityComponent, transactionTemplate, "ROLE_SELLER");
         Long categoryId = createCategory("category-test", output.getAccessToken());
         MockMultipartFile img = new MockMultipartFile(
                 "image",
@@ -103,7 +109,7 @@ public class ProductControllerIntegrationTest {
         CreateProductDTO dto = CreateProductDTO.builder()
                 .name("Laptop Hp Victu 15")
                 .price(BigDecimal.valueOf(1100))
-                .description("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum")
+                .description("Lorem Ipsum is simply dummy")
                 .stock(10)
                 .approxWeightLb(3)
                 .approxHeightCm(30)
@@ -166,10 +172,7 @@ public class ProductControllerIntegrationTest {
     @Test
     void findMyProducts() throws Exception {
         // Arrange
-        LoginOutput output = loginOutputInExpectedState(userComponent, securityComponent, transactionTemplate, "ROLE_SELLER");
-        Long categoryId = productComponent.createCategory(CreateCategoryInput.builder().name("category-test").build());
-        Long userId = userComponent.findByEmailAndEnabled(defSignupDTO.getEmail(), true).orElseThrow().getId();
-        saveProducts(10, userId, categoryId);
+        save10Products(userId, categoryId);
 
         // Act
         String body = mockMvc.perform(get("/api/v1/products/my-products?size=7&page=1")
@@ -181,36 +184,15 @@ public class ProductControllerIntegrationTest {
                 .andExpect(jsonPath("$.totalPages").value(2))
                 .andExpect(jsonPath("$.size").value(7))
                 .andExpect(jsonPath("$.number").value(1))
-                .andExpect(jsonPath("$.content[0].name").value("product 7"))
+                .andExpect(jsonPath("$.content[0].name").value("Tablet Lenovo"))
                 .andReturn().getResponse().getContentAsString();
     }
 
-    private void saveProducts(int n, Long userId, Long categoryId) {
-        for (int i = 0; i < n; i++) {
-
-            productComponent.createProduct(CreateProductInput.builder()
-                    .name("product " + i)
-                    .price(BigDecimal.valueOf(100 + i))
-                    .description("description " + i)
-                    .stock(10 + i)
-                    .approxWeightLb(3 + i)
-                    .approxHeightCm(30 + i)
-                    .approxWidthCm(35 + i)
-                    .categoryId(categoryId)
-                    .imageUrl("https://fireba..." + i)
-                    .userId(userId)
-                    .build());
-
-        }
-    }
 
     @Test
     void findAllProducts_pageable() throws Exception {
         // Arrange
-        LoginOutput output = loginOutputInExpectedState(userComponent, securityComponent, transactionTemplate, "ROLE_SELLER");
-        Long categoryId = productComponent.createCategory(CreateCategoryInput.builder().name("category-test").build());
-        Long userId = userComponent.findByEmailAndEnabled(defSignupDTO.getEmail(), true).orElseThrow().getId();
-        saveProducts(10, userId, categoryId);
+        save10Products(userId, categoryId);
 
         // Act
         String body = mockMvc.perform(get("/api/v1/products?size=2&page=1")
@@ -222,13 +204,168 @@ public class ProductControllerIntegrationTest {
                 .andExpect(jsonPath("$.totalPages").value(5))
                 .andExpect(jsonPath("$.size").value(2))
                 .andExpect(jsonPath("$.number").value(1))
-                .andExpect(jsonPath("$.content[0].name").value("product 2"))
+                .andExpect(jsonPath("$.content[0].name").value("Hp laptop victus 15"))
                 .andReturn().getResponse().getContentAsString();
 
 
     }
-    @Test
-    void findAllProducts_sortSpecifications() {
 
+    @Test
+    void findAllProducts_sortSpecifications() throws Exception {
+        // Arrange
+        save10Products(userId, categoryId);
+
+        // Act
+        String body = mockMvc.perform(get("/api/v1/products?size=9&page=0&sort=price,desc&name=razer Mousepad")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + output.getAccessToken()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.totalPages").value(1))
+                .andExpect(jsonPath("$.size").value(9))
+                .andExpect(jsonPath("$.number").value(0))
+                .andExpect(jsonPath("$.content[0].name").value("Cameramousepad razer Canon"))
+                .andExpect(jsonPath("$.content[0].price").value(400.99))
+                .andExpect(jsonPath("$.content[1].name").value("Mousepad Razer"))
+                .andExpect(jsonPath("$.content[1].price").value(20.99))
+                .andReturn().getResponse().getContentAsString();
+    }
+
+
+    private void save10Products(Long userId, Long categoryId) {
+        transactionTemplate.executeWithoutResult(transactionStatus -> {
+            productComponent.createProduct(CreateProductInput.builder()
+                    .name("Mouse Logitech G502")
+                    .price(BigDecimal.valueOf(50.99))
+                    .description("The logitech mouse is the best")
+                    .stock(17)
+                    .approxWeightLb(2)
+                    .approxHeightCm(20)
+                    .approxWidthCm(10)
+                    .categoryId(categoryId)
+                    .imageUrl("https://fireba..." + "logitech-mouse")
+                    .userId(userId)
+                    .build());
+
+            productComponent.createProduct(CreateProductInput.builder()
+                    .name("Hp laptop victus 15")
+                    .price(BigDecimal.valueOf(1100.99))
+                    .description("A laptop for gaming")
+                    .stock(3)
+                    .approxWeightLb(5)
+                    .approxHeightCm(30)
+                    .approxWidthCm(35)
+                    .categoryId(categoryId)
+                    .imageUrl("https://fireba..." + "hp-laptop")
+                    .userId(userId)
+                    .build());
+
+            productComponent.createProduct(CreateProductInput.builder()
+                    .name("Keyboard Razer")
+                    .price(BigDecimal.valueOf(100.99))
+                    .description("The best keyboard for gaming")
+                    .stock(10)
+                    .approxWeightLb(3)
+                    .approxHeightCm(20)
+                    .approxWidthCm(10)
+                    .categoryId(categoryId)
+                    .imageUrl("https://fireba..." + "razer-keyboard")
+                    .userId(userId)
+                    .build());
+
+            productComponent.createProduct(CreateProductInput.builder()
+                    .name("Monitor LG 24")
+                    .price(BigDecimal.valueOf(200.99))
+                    .description("A monitor for gaming")
+                    .stock(5)
+                    .approxWeightLb(10)
+                    .approxHeightCm(30)
+                    .approxWidthCm(35)
+                    .categoryId(categoryId)
+                    .imageUrl("https://fireba..." + "lg-monitor")
+                    .userId(userId)
+                    .build());
+
+            productComponent.createProduct(CreateProductInput.builder()
+                    .name("Mousepad Razer")
+                    .price(BigDecimal.valueOf(20.99))
+                    .description("The best mousepad for gaming")
+                    .stock(15)
+                    .approxWeightLb(1)
+                    .approxHeightCm(20)
+                    .approxWidthCm(10)
+                    .categoryId(categoryId)
+                    .imageUrl("https://fireba..." + "razer-mousepad")
+                    .userId(userId)
+                    .build());
+
+            productComponent.createProduct(CreateProductInput.builder()
+                    .name("Headset HyperX")
+                    .price(BigDecimal.valueOf(80.99))
+                    .description("The best headset for gaming")
+                    .stock(7)
+                    .approxWeightLb(2)
+                    .approxHeightCm(20)
+                    .approxWidthCm(10)
+                    .categoryId(categoryId)
+                    .imageUrl("https://fireba..." + "hyperx-headset")
+                    .userId(userId)
+                    .build());
+
+            productComponent.createProduct(CreateProductInput.builder()
+                    .name("Mobile phone Samsung A52")
+                    .price(BigDecimal.valueOf(300.99))
+                    .description("A mobile phone for gaming")
+                    .stock(2)
+                    .approxWeightLb(1)
+                    .approxHeightCm(30)
+                    .approxWidthCm(35)
+                    .categoryId(categoryId)
+                    .imageUrl("https://fireba..." + "samsung-a52")
+                    .userId(userId)
+                    .build());
+
+            productComponent.createProduct(CreateProductInput.builder()
+                    .name("Tablet Lenovo")
+                    .price(BigDecimal.valueOf(150.99))
+                    .description("A tablet for gaming")
+                    .stock(4)
+                    .approxWeightLb(2)
+                    .approxHeightCm(20)
+                    .approxWidthCm(10)
+                    .categoryId(categoryId)
+                    .imageUrl("https://fireba..." + "lenovo-tablet")
+                    .userId(userId)
+                    .build());
+
+
+            productComponent.createProduct(CreateProductInput.builder()
+                    .name("Smartwatch Xiaomi")
+                    .price(BigDecimal.valueOf(50.99))
+                    .description("A smartwatch for gaming")
+                    .stock(6)
+                    .approxWeightLb(1)
+                    .approxHeightCm(20)
+                    .approxWidthCm(10)
+                    .categoryId(categoryId)
+                    .imageUrl("https://fireba..." + "xiaomi-smartwatch")
+                    .userId(userId)
+                    .build());
+
+
+            productComponent.createProduct(CreateProductInput.builder()
+                    .name("Cameramousepad razer Canon")
+                    .price(BigDecimal.valueOf(400.99))
+                    .description("A camera for gaming")
+                    .stock(1)
+                    .approxWeightLb(3)
+                    .approxHeightCm(30)
+                    .approxWidthCm(35)
+                    .categoryId(categoryId)
+                    .imageUrl("https://fireba..." + "canon-camera")
+                    .userId(userId)
+                    .build());
+        });
     }
 }

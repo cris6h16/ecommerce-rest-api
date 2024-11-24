@@ -1,1 +1,0 @@
-INSERT INTO test.category (id, name) VALUES (1, 'Category-Test');

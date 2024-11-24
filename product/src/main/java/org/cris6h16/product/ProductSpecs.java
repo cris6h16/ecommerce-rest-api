@@ -17,11 +17,11 @@ public class ProductSpecs {
         log.debug("ProductSpecs.hasNameLike: name={}", name);
         String finalName = name;
         return (root, query, cb) -> {
-            Expression<String> productName = cb.lower(cb.function("unaccent", String.class, root.get("name")));
-            Expression<String> searchName = cb.lower(cb.function("unaccent", String.class, cb.literal(finalName.trim().toLowerCase())));
+            Expression<String> productName = cb.lower(cb.function("public.unaccent", String.class, root.get("name")));
+            Expression<String> searchName = cb.lower(cb.function("public.unaccent", String.class, cb.literal("%" +finalName+ "%")));
 
             log.debug("ProductSpecs.hasNameLike: productName={}, searchName={}", productName.toString(), searchName.toString());
-            return cb.like(productName, "%" + searchName + "%");
+            return cb.like(productName,  searchName );
         };
 //        return ((root, query, cb) -> cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase().trim() + "%"));
     }

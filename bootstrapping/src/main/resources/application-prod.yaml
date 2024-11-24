@@ -25,6 +25,8 @@ spring:
       - classpath:mail.yaml
       - classpath:jwt.yaml
       - classpath:error-messages.yaml
+
+
 logging:
   level:
     root: debug

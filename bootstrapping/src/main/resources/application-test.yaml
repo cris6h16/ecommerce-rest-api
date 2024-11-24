@@ -5,7 +5,7 @@ db:
   username: cris6h16
   password: 12345678
   hikari:
-    schema: prod
+    schema: test
 
 jpa:
   show-sql: true
@@ -22,9 +22,6 @@ spring:
       - classpath:jwt.yaml
       - classpath:error-messages.yaml
 
-logging:
-    level:
-#      org:
-#        hibernate:
-#            SQL: debug
-      root: debug
+#logging:
+#    level:
+#      root: trace
