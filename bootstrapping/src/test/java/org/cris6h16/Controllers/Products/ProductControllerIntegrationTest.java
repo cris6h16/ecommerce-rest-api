@@ -205,7 +205,7 @@ public class ProductControllerIntegrationTest {
     }
 
     @Test
-    void findAllProducts() throws Exception {
+    void findAllProducts_pageable() throws Exception {
         // Arrange
         LoginOutput output = loginOutputInExpectedState(userComponent, securityComponent, transactionTemplate, "ROLE_SELLER");
         Long categoryId = productComponent.createCategory(CreateCategoryInput.builder().name("category-test").build());
@@ -225,6 +225,10 @@ public class ProductControllerIntegrationTest {
                 .andExpect(jsonPath("$.content[0].name").value("product 2"))
                 .andReturn().getResponse().getContentAsString();
 
+
+    }
+    @Test
+    void findAllProducts_sortSpecifications() {
 
     }
 }

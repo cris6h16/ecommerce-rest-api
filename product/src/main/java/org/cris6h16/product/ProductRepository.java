@@ -3,6 +3,7 @@ package org.cris6h16.product;
 import org.cris6h16.user.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,9 +20,11 @@ interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE products p SET p.imageUrl = :url WHERE p.id = :id")
-void updateImageUrlById(Long id, String url);
+    void updateImageUrlById(Long id, String url);
 
     boolean existsByNameAndUserId(String productName, Long userId);
 
-     Page<ProductEntity> findByUserId(Long userId, Pageable pageable);
- }
+    Page<ProductEntity> findByUserId(Long userId, Pageable pageable);
+
+    Page<ProductEntity> findAll(Specification<ProductEntity> spec, Pageable pageable);
+}

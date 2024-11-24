@@ -1,7 +1,9 @@
 package org.cris6h16.Controllers.Products;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.facades.CreateProductDTO;
+import org.cris6h16.facades.ProductDTO;
 import org.cris6h16.facades.ProductFacade;
 import org.cris6h16.product.ProductOutput;
 import org.springframework.data.domain.Page;
@@ -15,15 +17,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.cris6h16.Controllers.HTTPCommons.PATH_PREFIX;
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 
 @RestController
 @RequestMapping(ProductController.PRODUCT_PATH)
+@Slf4j
 public class ProductController {
 
     protected final ProductFacade productFacade;
@@ -50,7 +56,7 @@ public class ProductController {
             path = "/my-products",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Page<ProductOutput>> findMyProducts(Pageable pageable) {
+    public ResponseEntity<Page<ProductDTO>> findMyProducts(Pageable pageable) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .headers(jsonHeaderCons)
@@ -60,11 +66,23 @@ public class ProductController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )// todo: deberia retornar un DTO, no directamente el output
-    public ResponseEntity<Page<ProductOutput>> findAllProducts(Pageable pageable) {
+    public ResponseEntity<Page<ProductDTO>> findAllProducts(
+            @RequestParam Map<String, String> filters,
+            Pageable pageable) {
+
+        Map<String, String> cleanedFilters = new HashMap<>(filters);
+        cleanedFilters.remove("page");
+        cleanedFilters.remove("size");
+        cleanedFilters.remove("sort");
+        filters = cleanedFilters;
+
+        log.debug("filters: {}", filters);
+        log.debug("pageable: {}", pageable);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .headers(jsonHeaderCons)
-                .body(productFacade.findAllProducts(pageable));
+                .body(productFacade.findAllProducts(pageable, filters));
     }
 
 }

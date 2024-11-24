@@ -4,6 +4,7 @@ import org.cris6h16.product.ProductOutput;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Map;
 import java.util.Set;
 
 public interface ProductFacade {
@@ -11,7 +12,7 @@ public interface ProductFacade {
     Set<CategoryDTO> getCategories(); //todo: pageable
     Long createCategory(CreateCategoryDTO dto);
 
-    Page<ProductOutput> findAllProducts(Pageable pageable);
+    Page<ProductDTO> findAllProducts(Pageable pageable, Map<String, String> filters);
 
-    Page<ProductOutput> findMyProducts(Pageable pageable);
+    Page<ProductDTO> findMyProducts(Pageable pageable);
 }

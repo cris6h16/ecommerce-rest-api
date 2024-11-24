@@ -1,21 +1,19 @@
-package org.cris6h16.product;
+package org.cris6h16.facades;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.cris6h16.user.UserEntity;
-import org.cris6h16.user.UserOutput;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class ProductOutput {
+public class ProductDTO {
     private Long id;
     private String name;
     private BigDecimal price;
@@ -25,6 +23,6 @@ public class ProductOutput {
     private Integer approxWidthCm;
     private Integer approxHeightCm;
     private String imageUrl;
-    private UserOutput user;
-    private CategoryOutput category;
+    private UserInProductDTO user;
+    private CategoryDTO category;
 }

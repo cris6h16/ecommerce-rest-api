@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static org.cris6h16.user.EntityMapper.toUserDTO;
+import static org.cris6h16.user.EntityMapper.toUserOutput;
 import static org.cris6h16.user.EntityMapper.toUserEntity;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_ALREADY_EXISTS;
 
@@ -61,7 +61,7 @@ class UserComponentImpl implements UserComponent {
         userValidator.validateEmail(email);
 
         UserEntity ue = userRepository.findByEmailAndEnabled(email, enabled).orElse(null);
-        return Optional.ofNullable(toUserDTO(ue));
+        return Optional.ofNullable(toUserOutput(ue));
     }
 
 
@@ -95,7 +95,7 @@ class UserComponentImpl implements UserComponent {
     @Override
     public Optional<UserOutput> findByIdAndEnable(Long id, boolean enabled) {
         userValidator.validateUserId(id);
-        return userRepository.findByIdAndEnabled(id, enabled).map(EntityMapper::toUserDTO);
+        return userRepository.findByIdAndEnabled(id, enabled).map(EntityMapper::toUserOutput);
     }
 
     @Override

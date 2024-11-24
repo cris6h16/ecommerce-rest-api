@@ -8,6 +8,7 @@ import org.cris6h16.product.CreateProductInput;
 import org.cris6h16.product.ProductComponent;
 import org.cris6h16.product.ProductOutput;
 import org.cris6h16.security.SecurityComponent;
+import org.cris6h16.user.UserOutput;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -44,11 +46,13 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     public Set<CategoryDTO> getCategories() {
         return productComponent.findAllCategories(Pageable.unpaged()).stream()
-                .map(this::toDTO)
+                .map(this::toProductDTO)
                 .collect(toSet());
     }
 
-    private CategoryDTO toDTO(CategoryOutput output) {
+    private CategoryDTO toProductDTO(CategoryOutput output) {
+        log.debug("Converting CategoryOutput to CategoryDTO: {}", output);
+        if (output == null) return CategoryDTO.builder().build();
         return CategoryDTO.builder()
                 .id(output.getId())
                 .name(output.getName())
@@ -62,13 +66,42 @@ public class ProductFacadeImpl implements ProductFacade {
     }
 
     @Override
-    public Page<ProductOutput> findAllProducts(Pageable pageable) {
-        return productComponent.findAllProducts(pageable);
+    public Page<ProductDTO> findAllProducts(Pageable pageable, Map<String, String> filters) {
+        log.debug("Finding all products with pageable: {} and filters: {}", pageable, filters);
+        return productComponent.findAllProducts(pageable, filters)
+                .map(this::toProductDTO);
+    }
+
+    private ProductDTO toProductDTO(ProductOutput productOutput) {
+        log.debug("Converting ProductOutput to ProductDTO: {}", productOutput);
+        return ProductDTO.builder()
+                .id(productOutput.getId())
+                .name(productOutput.getName())
+                .price(productOutput.getPrice())
+                .stock(productOutput.getStock())
+                .description(productOutput.getDescription())
+                .approxWeightLb(productOutput.getApproxWeightLb())
+                .approxWidthCm(productOutput.getApproxWidthCm())
+                .approxHeightCm(productOutput.getApproxHeightCm())
+                .imageUrl(productOutput.getImageUrl())
+                .category(toProductDTO(productOutput.getCategory()))
+                .user(toUserInProductDTO(productOutput.getUser()))
+                .build();
+    }
+
+    private UserInProductDTO toUserInProductDTO(UserOutput user) {
+        if (user == null) return UserInProductDTO.builder().build();
+        return UserInProductDTO.builder()
+                .id(user.getId())
+                .firstname(user.getFirstname())
+                .lastname(user.getLastname())
+                .build();
     }
 
     @Override
-    public Page<ProductOutput> findMyProducts(Pageable pageable) {
-        return productComponent.findProductByUserId(securityComponent.getCurrentUserId(), pageable);
+    public Page<ProductDTO> findMyProducts(Pageable pageable) {
+        return productComponent.findProductByUserId(securityComponent.getCurrentUserId(), pageable)
+                .map(this::toProductDTO);
     }
 
     private CreateCategoryInput toInput(CreateCategoryDTO input) {

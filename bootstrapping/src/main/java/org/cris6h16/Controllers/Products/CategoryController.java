@@ -1,5 +1,6 @@
 package org.cris6h16.Controllers.Products;
 
+import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.facades.CategoryDTO;
 import org.cris6h16.facades.CreateCategoryDTO;
 import org.cris6h16.facades.ProductFacade;
@@ -21,6 +22,7 @@ import static org.cris6h16.Controllers.Products.CategoryController.CATEGORY_PATH
 
 @RestController
 @RequestMapping(CATEGORY_PATH)
+@Slf4j
 public class CategoryController {
     public static final String CATEGORY_PATH = ProductController.PRODUCT_PATH + "/categories";
     protected final ProductFacade productFacade;
@@ -34,9 +36,11 @@ public class CategoryController {
             consumes = "application/json"
     )
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
-    public ResponseEntity<Void> createCategory(@RequestBody CreateCategoryDTO createCategoryDTO) {
+    public ResponseEntity<Long> createCategory(@RequestBody CreateCategoryDTO createCategoryDTO) {
         Long id = productFacade.createCategory(createCategoryDTO);
-        return ResponseEntity.created(URI.create(CATEGORY_PATH + "/" + id)).build();
+        ResponseEntity<Long> res = ResponseEntity.created(URI.create(CATEGORY_PATH + "/" + id)).body(id);
+        log.debug("Category created: {}", res);
+        return res;
     }
 
     @GetMapping(produces = "application/json")

@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class EntityMapper {
-    public   static UserOutput toUserDTO(UserEntity userEntity) {
+    public   static UserOutput toUserOutput(UserEntity userEntity) {
         if (userEntity == null) return null;
         return UserOutput.builder()
                 .id(userEntity.getId())

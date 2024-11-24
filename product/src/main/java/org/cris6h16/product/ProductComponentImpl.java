@@ -2,23 +2,31 @@ package org.cris6h16.product;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.product.Exceptions.ProductComponentAlreadyExistsException;
+import org.cris6h16.product.Exceptions.ProductComponentInvalidAttributeException;
 import org.cris6h16.product.Exceptions.ProductComponentNotFoundException;
+import org.cris6h16.product.Exceptions.ProductErrorCode;
 import org.cris6h16.user.UserEntity;
 import org.cris6h16.user.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 
 import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NOT_FOUND_BY_ID;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NOT_FOUND_BY_ID;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.UNIQUE_USER_ID_PRODUCT_NAME;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_NOT_FOUND_BY_ID;
+import static org.cris6h16.product.ProductSpecs.hasNameLike;
+import static org.cris6h16.product.ProductSpecs.hasPrice;
 
 @Slf4j
 @Component
- class ProductComponentImpl implements ProductComponent {
+class ProductComponentImpl implements ProductComponent {
     private final ProductRepository productRepository;
     private final ProductValidator productValidator;
     private final UserRepository userRepository;
@@ -87,10 +95,56 @@ import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_NOT_FOUND_BY
     }
 
     @Override
-    public Page<ProductOutput> findAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable)
+    public Page<ProductOutput> findAllProducts(Pageable pageable, Map<String, String> filters) {
+        if (filters.isEmpty()) {
+            log.debug("No filters, returning all products(pageable: {})", pageable);
+            return productRepository.findAll(pageable)
+                    .map(this::toProductOutputNotEager);
+        }
+
+        Specification<ProductEntity> spec = createSpecification(filters);
+
+
+        return productRepository.findAll(spec, pageable)
                 .map(this::toProductOutputNotEager);
     }
+
+    // jakarta.persistence.criteria.Root<ProductEntity>
+    // jakarta.persistence.criteria.CriteriaQuery<?>
+    // jakarta.persistence.criteria.CriteriaBuilder
+    private Specification<ProductEntity> createSpecification(Map<String, String> filters) {
+        Specification<ProductEntity> spec = Specification.where(null);
+
+        for (Map.Entry<String, String> entry : filters.entrySet()) {
+            String property = entry.getKey();
+            String value = entry.getValue();
+            log.debug("Creating filter specification for property: {} with value: {}", property, value);
+            spec = spec.and(createFilterSpecification(property, value));
+        }
+
+        return spec;
+    }
+
+    private Specification<ProductEntity> createFilterSpecification(String property, String value) {
+        if (property.equals("name")) {
+            String[] split = Arrays.stream(value.split(" ")).map(String::trim).toArray(String[]::new);
+            Specification<ProductEntity> spec = Specification.where(null);
+            for (String s : split) {
+                log.debug("Adding name filter: {}", s);
+                spec = spec.and(hasNameLike(s));
+            }
+
+            return spec;
+        }
+
+        if (property.equals("price")) {
+            return hasPrice(value);
+        }
+
+        log.error("Invalid filter attribute: {}", property);
+        throw new ProductComponentInvalidAttributeException(ProductErrorCode.INVALID_FILTER_ATTRIBUTE);
+    }
+
 
     @Override
     public Page<ProductOutput> findProductByUserId(Long userId, Pageable pageable) {

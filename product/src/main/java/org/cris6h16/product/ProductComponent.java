@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.nio.channels.FileChannel;
+import java.util.Map;
 import java.util.Set;
 
 public interface ProductComponent {
@@ -19,7 +20,7 @@ public interface ProductComponent {
 
     ProductOutput findProductByIdNoEager(Long productId);
 
-    Page<ProductOutput> findAllProducts(Pageable pageable);
+    Page<ProductOutput> findAllProducts(Pageable pageable, Map<String, String> filters);
 
     Page<ProductOutput> findProductByUserId(Long userId, Pageable pageable);
 

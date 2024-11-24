@@ -12,7 +12,7 @@ jpa:
   properties:
     hibernate:
       format_sql: true
-      ddl-auto: create
+      ddl-auto: update
 
 mail:
   username: ${MAIL_USER}

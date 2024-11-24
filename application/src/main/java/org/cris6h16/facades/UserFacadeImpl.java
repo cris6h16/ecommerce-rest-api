@@ -149,7 +149,8 @@ class UserFacadeImpl implements UserFacade {
         return toUserDTO(output);
     }
 
-    private UserDTO toUserDTO(UserOutput output) {
+
+    public static UserDTO toUserDTO(UserOutput output) {
         return UserDTO.builder()
                 .id(output.getId())
                 .firstname(output.getFirstname())
@@ -161,7 +162,6 @@ class UserFacadeImpl implements UserFacade {
                 .emailVerified(output.isEmailVerified())
                 .build();
     }
-
     @Override
     public String refreshAccessToken() {
         Long id = securityComponent.getCurrentUserId();

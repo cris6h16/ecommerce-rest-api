@@ -23,3 +23,7 @@ spring:
     hikari:
       schema: ${db.hikari.schema}
 
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
