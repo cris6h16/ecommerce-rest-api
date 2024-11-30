@@ -21,6 +21,7 @@ import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NOT_FOUN
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NOT_FOUND_BY_ID;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.UNIQUE_USER_ID_PRODUCT_NAME;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_NOT_FOUND_BY_ID;
+import static org.cris6h16.product.ProductSpecs.hasCategoryId;
 import static org.cris6h16.product.ProductSpecs.hasNameLike;
 import static org.cris6h16.product.ProductSpecs.hasPrice;
 
@@ -139,6 +140,10 @@ class ProductComponentImpl implements ProductComponent {
 
         if (property.equals("price")) {
             return hasPrice(value);
+        }
+
+        if (property.equals("categoryId")) {
+            return hasCategoryId(value);
         }
 
         log.error("Invalid filter attribute: {}", property);

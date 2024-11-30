@@ -67,9 +67,10 @@ public class ProductController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )// todo: deberia retornar un DTO, no directamente el output
     public ResponseEntity<Page<ProductDTO>> findAllProducts(
-            @RequestParam Map<String, String> filters,
+            @RequestParam(required = false) Map<String, String> filters,
             Pageable pageable) {
 
+        filters = filters == null ? new HashMap<>() : filters;
         Map<String, String> cleanedFilters = new HashMap<>(filters);
         cleanedFilters.remove("page");
         cleanedFilters.remove("size");

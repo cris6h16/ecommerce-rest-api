@@ -98,7 +98,6 @@ public class ProductControllerIntegrationTest {
     @Test
     void createProduct() throws Exception {
         // Arrange
-        Long categoryId = createCategory("category-test", output.getAccessToken());
         MockMultipartFile img = new MockMultipartFile(
                 "image",
                 "file.txt",
@@ -195,7 +194,7 @@ public class ProductControllerIntegrationTest {
         save10Products(userId, categoryId);
 
         // Act
-        String body = mockMvc.perform(get("/api/v1/products?size=2&page=1")
+        String body = mockMvc.perform(get("/api/v1/products?size=2&page=1&sort=id,asc")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + output.getAccessToken()))
                 .andExpect(status().isOk())
@@ -204,7 +203,7 @@ public class ProductControllerIntegrationTest {
                 .andExpect(jsonPath("$.totalPages").value(5))
                 .andExpect(jsonPath("$.size").value(2))
                 .andExpect(jsonPath("$.number").value(1))
-                .andExpect(jsonPath("$.content[0].name").value("Hp laptop victus 15"))
+                .andExpect(jsonPath("$.content[0].name").value("Keyboard Razer"))
                 .andReturn().getResponse().getContentAsString();
 
 

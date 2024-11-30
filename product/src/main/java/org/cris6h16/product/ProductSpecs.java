@@ -26,6 +26,10 @@ public class ProductSpecs {
 //        return ((root, query, cb) -> cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase().trim() + "%"));
     }
 
+    public static Specification<ProductEntity> hasCategoryId(String categoryId) {
+        return (root, query, cb) -> cb.equal(root.get("category").get("id"), categoryId);
+    }
+
     public static Specification<ProductEntity> hasPrice(String priceStr) {
         return ((root, query, cb) -> {
 
