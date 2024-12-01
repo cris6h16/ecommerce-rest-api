@@ -18,4 +18,6 @@ public interface ProductFacade {
     ProductDTO getProductById(Long id);
 
     void putProduct(Long id, CreateProductDTO createProductDTO);
+
+    void deleteProduct(Long id);
 }

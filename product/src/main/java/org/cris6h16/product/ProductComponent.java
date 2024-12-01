@@ -29,6 +29,10 @@ public interface ProductComponent {
 
     boolean existProductById(Long id);
 
+    boolean existProductByIdAndUserId(Long productId, Long userId);
+
+    void deleteProductByIdAndUserId(Long productId, Long userId);
+
 
 //    BrandOutput getBrandByName(String name);
 //    Long createBrand(CreateBrandInput input);

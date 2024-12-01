@@ -22,7 +22,6 @@
         <developer/>
     </developers>
     <modules>
-<!--        <module>user</module>-->
         <module>user</module>
         <module>email</module>
         <module>product</module>
@@ -34,6 +33,7 @@
         <module>address</module>
         <module>application</module>
         <module>file</module>
+        <module>cart</module>
     </modules>
     <scm>
         <connection/>

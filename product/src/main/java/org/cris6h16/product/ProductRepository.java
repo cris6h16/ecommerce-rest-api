@@ -18,4 +18,8 @@ interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     @Query("SELECT COUNT(p) > 0 FROM products p WHERE p.id != :productId AND p.name = :name AND p.user = :userId")
     boolean existsByNameAndUserIdAndIdNot(String name, Long userId, Long productId);
+
+    boolean existsByIdAndUserId(Long productId, Long userId);
+
+    void deleteByIdAndUserId(Long productId, Long userId);
 }

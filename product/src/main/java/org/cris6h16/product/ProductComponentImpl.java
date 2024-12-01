@@ -185,6 +185,22 @@ class ProductComponentImpl implements ProductComponent {
         return false;
     }
 
+    @Override
+    public boolean existProductByIdAndUserId(Long productId, Long userId) {
+        productValidator.validateProductId(productId);
+        productValidator.validateUserId(userId);
+
+        return this.productRepository.existsByIdAndUserId(productId, userId);
+    }
+
+    @Override
+    public void deleteProductByIdAndUserId(Long productId, Long userId) {
+        productValidator.validateProductId(productId);
+        productValidator.validateUserId(userId);
+
+        productRepository.deleteByIdAndUserId(productId, userId);
+    }
+
     private ProductOutput toProductOutput(ProductEntity productEntity) {
         return ProductOutput.builder()
                 .id(productEntity.getId())
