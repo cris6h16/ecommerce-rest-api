@@ -1,9 +1,7 @@
 package org.cris6h16.product;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.product.Exceptions.ProductComponentAlreadyExistsException;
-import org.cris6h16.product.Exceptions.ProductComponentInvalidAttributeException;
-import org.cris6h16.product.Exceptions.ProductComponentNotFoundException;
+import org.cris6h16.product.Exceptions.ProductComponentException;
 import org.cris6h16.product.Exceptions.ProductErrorCode;
 import org.cris6h16.user.UserEntity;
 import org.cris6h16.user.UserRepository;
@@ -12,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +21,7 @@ import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_NOT_FOUND_BY
 import static org.cris6h16.product.ProductSpecs.hasCategoryId;
 import static org.cris6h16.product.ProductSpecs.hasNameLike;
 import static org.cris6h16.product.ProductSpecs.hasPrice;
+import static org.cris6h16.user.EntityMapper.toUserOutput;
 
 @Slf4j
 @Component
@@ -41,11 +39,26 @@ class ProductComponentImpl implements ProductComponent {
     }
 
     @Override
+    public void updateProductById(Long id, CreateProductInput input) {
+        input.prepare();
+        productValidator.validate(input);
+        productValidator.validateProductId(id);
+
+        ProductEntity pe = toProductEntity(input);
+        pe.setId(id);
+        checkDuplicates(pe, id);
+
+        productRepository.save(pe);
+    }
+
+    @Override
     public Long createProduct(CreateProductInput input) {
         input.prepare();
         productValidator.validate(input);
+
         ProductEntity pe = toProductEntity(input);
-        checkDuplicates(pe);
+        checkDuplicates(pe, null);
+
         return productRepository.save(pe).getId();
     }
 
@@ -72,13 +85,13 @@ class ProductComponentImpl implements ProductComponent {
     }
 
     @Override
-    public void updateImageUrlById(Long id, String url) {
-        url = url == null ? "" : url.trim();
-
+    public void updateImagesById(Long id, Set<String> urls) {
+        urls = productValidator.validateImagesUrl(urls);
         productValidator.validateProductId(id);
-        productValidator.validateImageUrl(url);
 
-        productRepository.updateImageUrlById(id, url);
+        ProductEntity pe = productRepository.findById(id).orElseThrow(() -> new ProductComponentException(PRODUCT_NOT_FOUND_BY_ID));
+        pe.setImageUrls(urls);
+        productRepository.save(pe);
     }
 
     @Override
@@ -92,7 +105,7 @@ class ProductComponentImpl implements ProductComponent {
         productValidator.validateProductId(productId);
         return productRepository.findById(productId)
                 .map(this::toProductOutputNotEager)
-                .orElseThrow(() -> new ProductComponentNotFoundException(PRODUCT_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new ProductComponentException(PRODUCT_NOT_FOUND_BY_ID));
     }
 
     @Override
@@ -146,8 +159,8 @@ class ProductComponentImpl implements ProductComponent {
             return hasCategoryId(value);
         }
 
-        log.error("Invalid filter attribute: {}", property);
-        throw new ProductComponentInvalidAttributeException(ProductErrorCode.INVALID_FILTER_ATTRIBUTE);
+        log.error("Unsupported filter attribute: {}", property);
+        throw new ProductComponentException(ProductErrorCode.UNSUPPORTED_FILTER_ATTRIBUTE);
     }
 
 
@@ -156,6 +169,36 @@ class ProductComponentImpl implements ProductComponent {
         productValidator.validateUserId(userId);
         return productRepository.findByUserId(userId, pageable)
                 .map(this::toProductOutputNotEager);
+    }
+
+    @Override
+    public ProductOutput findProductById(Long id) {
+        productValidator.validateProductId(id);
+        return productRepository.findById(id)
+                .map(this::toProductOutput)
+                .orElseThrow(() -> new ProductComponentException(PRODUCT_NOT_FOUND_BY_ID));
+    }
+
+
+    @Override
+    public boolean existProductById(Long id) {
+        return false;
+    }
+
+    private ProductOutput toProductOutput(ProductEntity productEntity) {
+        return ProductOutput.builder()
+                .id(productEntity.getId())
+                .name(productEntity.getName())
+                .price(productEntity.getPrice())
+                .stock(productEntity.getStock())
+                .description(productEntity.getDescription())
+                .approxWeightLb(productEntity.getApproxWeightLb())
+                .approxWidthCm(productEntity.getApproxWidthCm())
+                .approxHeightCm(productEntity.getApproxHeightCm())
+                .imageUrls(productEntity.getImageUrls())
+                .category(toCategoryOutput(productEntity.getCategory()))
+                .user(toUserOutput(productEntity.getUser()))
+                .build();
     }
 
     private ProductOutput toProductOutputNotEager(ProductEntity productEntity) {
@@ -168,7 +211,7 @@ class ProductComponentImpl implements ProductComponent {
                 .approxWeightLb(productEntity.getApproxWeightLb())
                 .approxWidthCm(productEntity.getApproxWidthCm())
                 .approxHeightCm(productEntity.getApproxHeightCm())
-                .imageUrl(productEntity.getImageUrl())
+                .imageUrls(productEntity.getImageUrls())
                 .category(toCategoryOutput(productEntity.getCategory()))
                 .user(null)
                 .build();
@@ -182,13 +225,23 @@ class ProductComponentImpl implements ProductComponent {
                 .build();
     }
 
-    private void checkDuplicates(ProductEntity pe) {
-        boolean exists = productRepository.existsByNameAndUserId(
-                pe.getName(),
-                pe.getUser().getId());
+    private void checkDuplicates(ProductEntity pe, Long productId) {
+        boolean exists;
+
+        if (productId == null) {// is creating  aproduct
+            exists = productRepository.existsByNameAndUserId(
+                    pe.getName(),
+                    pe.getUser().getId());
+
+        } else { // is updating a product
+            exists = productRepository.existsByNameAndUserIdAndIdNot(
+                    pe.getName(),
+                    pe.getUser().getId(),
+                    productId);
+        }
 
         if (exists) {
-            throw new ProductComponentAlreadyExistsException(UNIQUE_USER_ID_PRODUCT_NAME); // todo: ponerlo el constraint a nivel de entidad
+            throw new ProductComponentException(UNIQUE_USER_ID_PRODUCT_NAME); // todo: ponerlo el constraint a nivel de entidad
         }
     }
 
@@ -202,7 +255,7 @@ class ProductComponentImpl implements ProductComponent {
                 .approxWeightLb(input.getApproxWeightLb())
                 .approxWidthCm(input.getApproxWidthCm())
                 .approxHeightCm(input.getApproxHeightCm())
-                .imageUrl(input.getImageUrl())
+                .imageUrls(input.getImageUrls())
                 .category(findCategory(input.getCategoryId()))
                 .user(findUser(input.getUserId()))
                 .build();
@@ -212,13 +265,13 @@ class ProductComponentImpl implements ProductComponent {
 
     private CategoryEntity findCategory(Long categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ProductComponentNotFoundException(CATEGORY_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new ProductComponentException(CATEGORY_NOT_FOUND_BY_ID));
     }
 
 
     private UserEntity findUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new ProductComponentNotFoundException(USER_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new ProductComponentException(USER_NOT_FOUND_BY_ID));
     }
 
 

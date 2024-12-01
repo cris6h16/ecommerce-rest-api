@@ -42,14 +42,14 @@ public class EntityMapper {
                 .build();
     }
 
-    private static Set<AuthorityEntity> getOrCreateAuthorities(Set<String> authorities, AuthorityRepository authorityRepository) {
+     static Set<AuthorityEntity> getOrCreateAuthorities(Set<String> authorities, AuthorityRepository authorityRepository) {
         return authorities.stream()
                 .map(authority -> getOrCreateAuthority(authority, authorityRepository))
                 .collect(Collectors.toSet());
     }
 
 
-    private static AuthorityEntity getOrCreateAuthority(String authority, AuthorityRepository authorityRepository) {
+     static AuthorityEntity getOrCreateAuthority(String authority, AuthorityRepository authorityRepository) {
         Supplier<AuthorityEntity> saved = () ->
                 authorityRepository.save(AuthorityEntity.builder().name(authority).build());
 

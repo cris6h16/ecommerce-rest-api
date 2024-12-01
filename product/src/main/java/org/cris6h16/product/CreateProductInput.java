@@ -6,12 +6,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Getter
 @Setter
 @Builder
 @ToString
-public class CreateProductInput implements Prepareable{
+public class CreateProductInput implements Prepareable {
     private String name;
     private BigDecimal price;
     private Integer stock;
@@ -19,7 +20,7 @@ public class CreateProductInput implements Prepareable{
     private Integer approxWeightLb;
     private Integer approxWidthCm;
     private Integer approxHeightCm;
-    private String imageUrl;
+    private Set<String> imageUrls;
     private Long categoryId;
     private Long userId;
 
@@ -27,7 +28,7 @@ public class CreateProductInput implements Prepareable{
     public void trim() {
         name = name.trim();
         description = description.trim();
-        imageUrl = imageUrl.trim();
+        imageUrls = Set.copyOf(imageUrls.stream().map(String::trim).toList());
     }
 
     @Override
@@ -39,6 +40,6 @@ public class CreateProductInput implements Prepareable{
         approxWeightLb = approxWeightLb == null ? 0 : approxWeightLb;
         approxWidthCm = approxWidthCm == null ? 0 : approxWidthCm;
         approxHeightCm = approxHeightCm == null ? 0 : approxHeightCm;
-        imageUrl = imageUrl == null ? "" : imageUrl;
+        imageUrls = imageUrls == null ? Set.of() : imageUrls;
     }
 }

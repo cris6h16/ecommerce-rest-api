@@ -1,5 +1,7 @@
 package org.cris6h16.facades;
 
+import lombok.extern.slf4j.Slf4j;
+import org.cris6h16.SendEmailVerificationDTO;
 import org.cris6h16.email.EmailComponent;
 import org.cris6h16.user.UserComponent;
 import org.springframework.stereotype.Component;
@@ -7,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Slf4j
 public class EmailFacadeImpl implements EmailFacade {
 
     private final EmailComponent emailComponent;
@@ -19,10 +22,16 @@ public class EmailFacadeImpl implements EmailFacade {
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
-    public void sendEmailVerificationCodeIfExists(String email) {
-        if (!existsUserByEmail(email)) return; //todo: logs this kind of omissions
-        emailComponent.removeOldCodesByEmail(email);
-        emailComponent.sendEmailVerificationCode(email);
+    public void sendEmailVerificationCodeIfExists(SendEmailVerificationDTO dto) {
+        String email = dto.getEmail();
+        String actionType = dto.getActionType().name();
+
+        if (!existsUserByEmail(email)) {
+            log.debug("User with email {} does not exist", email);
+            return;
+        }
+        emailComponent.removeByEmailAndActionType(email, actionType);
+        emailComponent.sendEmailVerificationCode(email, actionType);
     }
 
     private boolean existsUserByEmail(String email) {

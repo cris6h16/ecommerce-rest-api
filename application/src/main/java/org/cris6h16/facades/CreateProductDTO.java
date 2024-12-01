@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,6 +27,6 @@ public class CreateProductDTO {
     private Integer approxWeightLb;
     private Integer approxWidthCm;
     private Integer approxHeightCm;
-    private MultipartFile image;
+    private List<MultipartFile> images;
     private Long categoryId;
 }

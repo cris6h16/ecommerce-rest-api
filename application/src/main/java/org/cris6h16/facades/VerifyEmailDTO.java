@@ -8,4 +8,5 @@ import lombok.Getter;
 public class VerifyEmailDTO {
     private String email;
     private String code;
+    private String actionType;
 }

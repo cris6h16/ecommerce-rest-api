@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,7 +23,7 @@ public class ProductDTO {
     private Integer approxWeightLb;
     private Integer approxWidthCm;
     private Integer approxHeightCm;
-    private String imageUrl;
+    private Set<String> imageUrls;
     private UserInProductDTO user;
     private CategoryDTO category;
 }

@@ -1,8 +1,8 @@
 package org.cris6h16.user;
 
 import lombok.extern.slf4j.Slf4j;
+import org.cris6h16.user.Exceptions.UserComponentException;
 import org.cris6h16.user.Exceptions.UserErrorCode;
-import org.cris6h16.user.Exceptions.UserComponentInvalidAttributeException;
 import org.springframework.stereotype.Component;
 
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_NULL;
@@ -26,26 +26,29 @@ import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
 @Component
  public class UserValidator {
     private void throwE(UserErrorCode errorCode) {
-        throw new UserComponentInvalidAttributeException(errorCode);
+        throw new UserComponentException(errorCode);
     }
 
 
-    public void validateFirstname(String firstname) {
+    public String validateFirstname(String firstname) {
         if (firstname == null) throwE(FIRSTNAME_NULL);
-        if (firstname.length() > FIRSTNAME_MAX_LENGTH) throwE(FIRSTNAME_TOO_LONG);
+        if ((firstname.trim()).length() > FIRSTNAME_MAX_LENGTH) throwE(FIRSTNAME_TOO_LONG);
+        return firstname;
     }
 
 
-    public void validateLastname(String lastname) {
+    public String validateLastname(String lastname) {
         if (lastname == null) throwE(LASTNAME_NULL);
-        if (lastname.length() > LASTNAME_MAX_LENGTH) throwE(LASTNAME_TOO_LONG);
+        if ((lastname.trim()).length() > LASTNAME_MAX_LENGTH) throwE(LASTNAME_TOO_LONG);
+        return lastname;
     }
 
 
-    public void validatePassword(String password) {
+    public String validatePassword(String password) {
         if (password == null) throwE(PASSWORD_NULL);
-        if (password.length() > PASSWORD_LENGTH) throwE(PASSWORD_TOO_LONG);
+        if ((password.trim()).length() > PASSWORD_LENGTH) throwE(PASSWORD_TOO_LONG);
         if (password.length() < 8) throwE(PASSWORD_LESS_THAN_8);
+        return password;
     }
 
     /*
@@ -60,10 +63,11 @@ import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
     + = one or more
     $ = end of the string
      */
-    public void validateEmail(String email) {
+    public String validateEmail(String email) {
         if (email == null) throwE(EMAIL_NULL);
-        if (email.length() > EMAIL_MAX_LENGTH) throwE(EMAIL_TOO_LONG);
+        if ((email.trim()).length() > EMAIL_MAX_LENGTH) throwE(EMAIL_TOO_LONG);
         if (!email.matches("^\\S+@\\S+\\.\\S+$")) throwE(EMAIL_REGEX_MISMATCH);
+        return email.toLowerCase();
     }
 
     void validateUserId(Long id) {

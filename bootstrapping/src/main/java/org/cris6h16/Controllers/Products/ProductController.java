@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,7 +58,7 @@ public class ProductController {
             path = "/my-products",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Page<ProductDTO>> findMyProducts(Pageable pageable) {
+    public ResponseEntity<Page<org.cris6h16.facades.ProductDTO>> findMyProducts(Pageable pageable) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .headers(jsonHeaderCons)
@@ -65,8 +67,8 @@ public class ProductController {
 
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
-    )// todo: deberia retornar un DTO, no directamente el output
-    public ResponseEntity<Page<ProductDTO>> findAllProducts(
+    )
+    public ResponseEntity<Page<org.cris6h16.facades.ProductDTO>> findAllProducts(
             @RequestParam(required = false) Map<String, String> filters,
             Pageable pageable) {
 
@@ -85,5 +87,27 @@ public class ProductController {
                 .headers(jsonHeaderCons)
                 .body(productFacade.findAllProducts(pageable, filters));
     }
+
+    @GetMapping(
+            path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .headers(jsonHeaderCons)
+                .body(productFacade.getProductById(id));
+    }
+
+
+    @PutMapping(
+            path = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Void> updateProduct(@PathVariable Long id, @ModelAttribute CreateProductDTO createProductDTO) {
+        productFacade.putProduct(id, createProductDTO);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

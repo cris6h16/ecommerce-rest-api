@@ -15,4 +15,6 @@ public class EmailComponentErrorMsgProperties {
     private String invalidCodeLength;
     private String emailInvalid;
     private String emailSending;
+    private String invalidActionTypeLength;
+
 }

@@ -1,6 +1,12 @@
 package org.cris6h16.user;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.math.BigDecimal;
+import java.nio.channels.FileChannel;
 import java.util.Optional;
+import java.util.Set;
 
 public interface UserComponent {
     Long create(CreateUserInput user);
@@ -15,4 +21,12 @@ public interface UserComponent {
     boolean existsByIdAndEnabled(Long id, boolean enabled);
 
     void deleteAll();
+
+    boolean existsByEmailAndEnabled(String email, boolean enabled);
+
+    Page<UserOutput> findAll(Pageable pageable);
+
+    void updateAuthoritiesById(Long id, Set<String> authorities);
+
+    void updateBalanceById(Long id, BigDecimal balance);
 }

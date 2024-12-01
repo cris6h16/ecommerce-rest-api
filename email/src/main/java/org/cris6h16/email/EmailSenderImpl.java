@@ -2,7 +2,7 @@ package org.cris6h16.email;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.email.Exceptions.EmailComponentEmailSendingException;
+import org.cris6h16.email.Exceptions.EmailComponentException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -11,6 +11,8 @@ import org.thymeleaf.context.Context;
 
 import java.time.Year;
 import java.util.Arrays;
+
+import static org.cris6h16.email.Exceptions.EmailErrorCode.EMAIL_SENDING_MAX_RETRIES_ERROR;
 
 @Slf4j
 @Component
@@ -50,17 +52,18 @@ class EmailSenderImpl implements EmailSender {
                 mailSender.send(message);
 
                 log.debug("Email successfully sent to {} on attempt {}", email, attempts);
-                success = true;
+                return;
 
             } catch (Exception e) {
-                log.warn("Attempt {}: Failed to send email to {}", attempts, email, e);
-
                 if (attempts == MAX_RETRIES - 1) {
                     log.error("All attempts failed to send email to {}, {}", email, e.toString());
-                    throw new EmailComponentEmailSendingException();
+                } else {
+                    log.warn("Attempt {}: Failed to send email to {}", attempts, email, e);
                 }
             }
         }
+
+        throw new EmailComponentException(EMAIL_SENDING_MAX_RETRIES_ERROR);
     }
 
     @Override

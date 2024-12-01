@@ -17,4 +17,5 @@ public class ApplicationComponentErrorMsgProperties {
     private String invalidCredentials;
     private String imgMultipartFileIsEmpty;
     private String enabledUserNotFound;
+    private String productNotFoundById;
 }

@@ -1,6 +1,5 @@
 package org.cris6h16.facades;
 
-import org.cris6h16.product.ProductOutput;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,4 +14,8 @@ public interface ProductFacade {
     Page<ProductDTO> findAllProducts(Pageable pageable, Map<String, String> filters);
 
     Page<ProductDTO> findMyProducts(Pageable pageable);
+
+    ProductDTO getProductById(Long id);
+
+    void putProduct(Long id, CreateProductDTO createProductDTO);
 }

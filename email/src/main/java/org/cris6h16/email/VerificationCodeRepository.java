@@ -9,4 +9,6 @@ import java.time.LocalDateTime;
     // expiresAt > comparisonTime
     boolean existsByEmailAndCodeAndExpiresAtAfter(String email, String code, LocalDateTime comparisonTime);
     int deleteByEmail(String email);
-}
+
+     void deleteByEmailAndActionType(String email, String actionType);
+ }

@@ -1,13 +1,14 @@
 package org.cris6h16.product;
 
 import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Predicate;
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.product.Exceptions.ProductComponentInvalidAttributeException;
-import org.cris6h16.product.Exceptions.ProductErrorCode;
+import org.cris6h16.product.Exceptions.ProductComponentException;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
+
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRICE_FILTER_ERROR_PARSING_STR_TO_BIGDECIMAL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRICE_FILTER_INVALID_FORMAT;
 
 @Slf4j
 public class ProductSpecs {
@@ -50,7 +51,7 @@ public class ProductSpecs {
             }
 
             log.debug("Invalid price filter format: {}", priceStr);
-            throw new ProductComponentInvalidAttributeException(ProductErrorCode.PRICE_FILTER_INVALID_FORMAT);
+            throw new ProductComponentException(PRICE_FILTER_INVALID_FORMAT);
         });
     }
 
@@ -59,7 +60,7 @@ public class ProductSpecs {
             return new BigDecimal(priceStr.substring(offset));
         } catch (NumberFormatException e) {
             log.error("Error parsing price filter: {}", priceStr);
-            throw new ProductComponentInvalidAttributeException(ProductErrorCode.PRICE_FILTER_ERROR_PARSING);
+            throw new ProductComponentException(PRICE_FILTER_ERROR_PARSING_STR_TO_BIGDECIMAL);
         }
     }
 

@@ -11,4 +11,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileComponentErrorMsgProperty {
     private String fileUploadFail;
+    private String deleteByUrlError;
+    private String uploadError;
+    private String uploadAllRetriesError;
+    private String isEmpty;
+    private String sizeExceeded;
+    private String contentTypeIsNotImage;
+
 }

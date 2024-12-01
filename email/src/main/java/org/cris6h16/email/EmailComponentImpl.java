@@ -24,36 +24,21 @@ public class EmailComponentImpl implements EmailComponent {
     }
 
 
-    private String IfNullEmptyElseTrimAndLowerCase(String str) {
-        return str == null ? "" : str.trim().toLowerCase();
-    }
-
-
     @Override
-    public void removeOldCodesByEmail(String email) {
-        email = IfNullEmptyElseTrimAndLowerCase(email);
-        validator.validateEmail(email);
-
-        repository.deleteByEmail(email);
-    }
-
-    @Override
-    public String sendEmailVerificationCode(String email) {
-        email = IfNullEmptyElseTrimAndLowerCase(email);
-        validator.validateEmail(email);
+    public String sendEmailVerificationCode(String email, String actionType) {
+        email = validator.validateEmail(email);
+        actionType = validator.validateActionType(actionType);
 
         String code = verificationCodeGenerator.genCode();
-        repository.save(new VerificationCodeEntity(email, code));
+        repository.save(new VerificationCodeEntity(email, code, actionType));
         emailSender.sendEmailVerificationCode(email, code);
         return code;
     }
 
     @Override
-    public boolean isCodeValid(String email, String code) {
-        email = IfNullEmptyElseTrimAndLowerCase(email);
-        code = IfNullEmptyElseTrimAndLowerCase(code);
-        validator.validateEmail(email);
-        validator.validateCode(code);
+    public boolean isCodeValid(String email, String code, String actionType) {
+        email = validator.validateEmail(email);
+        code = validator.validateCode(code);
 
         return repository.existsByEmailAndCodeAndExpiresAtAfter(email, code, LocalDateTime.now());
     }
@@ -61,6 +46,14 @@ public class EmailComponentImpl implements EmailComponent {
     @Override
     public void deleteAll() {
         repository.deleteAll();
+    }
+
+    @Override
+    public void removeByEmailAndActionType(String email, String actionType) {
+        email = validator.validateEmail(email);
+        actionType = validator.validateActionType(actionType);
+
+        repository.deleteByEmailAndActionType(email, actionType);
     }
 
 }

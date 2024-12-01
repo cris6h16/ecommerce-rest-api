@@ -1,6 +1,7 @@
 package org.cris6h16.facades;
 
 import lombok.extern.slf4j.Slf4j;
+import org.cris6h16.facades.Exceptions.ApplicationException;
 import org.cris6h16.file.FileComponent;
 import org.cris6h16.product.CategoryOutput;
 import org.cris6h16.product.CreateCategoryInput;
@@ -14,12 +15,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
+import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.PRODUCT_NOT_FOUND_BY_ID;
 
 @Slf4j
 @Component // todo: should be a custom annotation @Facade -> @Service
@@ -38,8 +40,8 @@ public class ProductFacadeImpl implements ProductFacade {
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public Long createProduct(CreateProductDTO dto) {
         Long id = productComponent.createProduct(toInput(dto));
-        String url = fileComponent.upload(IfImgIsNotEmpty(dto.getImage()));
-        productComponent.updateImageUrlById(id, url);
+        Set<String> url = fileComponent.uploadImages(dto.getImages());
+        productComponent.updateImagesById(id, url);
         return id;
     }
 
@@ -83,7 +85,7 @@ public class ProductFacadeImpl implements ProductFacade {
                 .approxWeightLb(productOutput.getApproxWeightLb())
                 .approxWidthCm(productOutput.getApproxWidthCm())
                 .approxHeightCm(productOutput.getApproxHeightCm())
-                .imageUrl(productOutput.getImageUrl())
+                .imageUrls(productOutput.getImageUrls())
                 .category(toProductDTO(productOutput.getCategory()))
                 .user(toUserInProductDTO(productOutput.getUser()))
                 .build();
@@ -102,6 +104,23 @@ public class ProductFacadeImpl implements ProductFacade {
     public Page<ProductDTO> findMyProducts(Pageable pageable) {
         return productComponent.findProductByUserId(securityComponent.getCurrentUserId(), pageable)
                 .map(this::toProductDTO);
+    }
+
+    @Override
+    public ProductDTO getProductById(Long id) {
+        return toProductDTO(productComponent.findProductById(id));
+    }
+
+    @Override
+    public void putProduct(Long id, CreateProductDTO createProductDTO) {
+        existProductById(id); // avoid creation complexity again
+        productComponent.updateProductById(id, toInput(createProductDTO));
+    }
+
+    private void existProductById(Long id) {
+        if (!productComponent.existProductById(id)) {
+            throw new ApplicationException(PRODUCT_NOT_FOUND_BY_ID);
+        }
     }
 
     private CreateCategoryInput toInput(CreateCategoryDTO input) {
@@ -123,19 +142,11 @@ public class ProductFacadeImpl implements ProductFacade {
                 .approxWeightLb(dto.getApproxWeightLb())
                 .approxWidthCm(dto.getApproxWidthCm())
                 .approxHeightCm(dto.getApproxHeightCm())
-                .imageUrl("fake-url://etc") // todo: put a def img url
+                .imageUrls(new HashSet<>(0)) // todo: put a def img url
                 .categoryId(dto.getCategoryId())
                 .userId(securityComponent.getCurrentUserId())
                 .build();
         log.debug("CreateProductInput created: {}", res);
         return res;
-    }
-
-    private MultipartFile IfImgIsNotEmpty(MultipartFile imgF) {
-        if (imgF.isEmpty()) {
-            throw new ApplicationImgMultipartFileIsEmptyException();
-        }
-
-        return imgF;
     }
 }

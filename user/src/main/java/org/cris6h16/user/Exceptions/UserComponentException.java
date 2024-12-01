@@ -3,10 +3,10 @@ package org.cris6h16.user.Exceptions;
 import lombok.Getter;
 
 @Getter
-public  class UserComponentInvalidAttributeException extends RuntimeException {
+public  class UserComponentException extends RuntimeException {
     private final UserErrorCode errorCode;
 
-    public UserComponentInvalidAttributeException(UserErrorCode errorCode) {
+    public UserComponentException(UserErrorCode errorCode) {
         this.errorCode = errorCode;
     }
 }

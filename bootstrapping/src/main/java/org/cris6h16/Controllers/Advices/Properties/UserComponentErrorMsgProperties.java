@@ -14,8 +14,7 @@ import org.springframework.stereotype.Component;
 public class UserComponentErrorMsgProperties {
     private String emailAlreadyExists;
     private String emailNull;
-    private String userIdNull;
-    private String userIdLessThan1;
+    private String userIdInvalid;
     private String lastnameNull;
     private String lastnameTooLong;
     private String emailTooLong;

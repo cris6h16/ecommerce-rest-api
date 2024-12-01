@@ -14,7 +14,7 @@ import org.cris6h16.user.CreateUserInput;
 import org.cris6h16.user.LoginOutput;
 import org.cris6h16.user.ResetPasswordDTO;
 import org.cris6h16.user.UserComponent;
-import org.cris6h16.user.UserOutput;
+import org.cris6h16.user.UserDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -115,7 +115,7 @@ class AuthenticationControllerIntegrationTest {
     }
 
     private void afterSignupExpectedState(SignupDTO dto) {
-        UserOutput output = userComponent.findByEmailAndEnabled(dto.getEmail(), true).orElseThrow();
+        UserDTO output = userComponent.findByEmailAndEnabled(dto.getEmail(), true).orElseThrow();
         assertEquals(0, output.getBalance().compareTo(BigDecimal.ZERO));
         assertTrue(output.getId() > 0);
         assertTrue(output.getPassword().startsWith("{bcrypt}"));
@@ -166,7 +166,7 @@ class AuthenticationControllerIntegrationTest {
     }
 
     private void hasEmailVerified(String email) {
-        UserOutput output = userComponent.findByEmailAndEnabled(email, true).orElseThrow();
+        UserDTO output = userComponent.findByEmailAndEnabled(email, true).orElseThrow();
         assertTrue(output.isEmailVerified());
     }
 
@@ -206,7 +206,7 @@ class AuthenticationControllerIntegrationTest {
                 .andExpect(status().isNoContent());
 
         // Assert
-        UserOutput output = userComponent.findByEmailAndEnabled(resetPasswordDTO.getEmail(), true).orElseThrow();
+        UserDTO output = userComponent.findByEmailAndEnabled(resetPasswordDTO.getEmail(), true).orElseThrow();
         assertTrue(securityComponent.matches(resetPasswordDTO.getPassword(), output.getPassword()));
     }
 

@@ -1,11 +1,13 @@
 package org.cris6h16.product;
 
 import lombok.extern.slf4j.Slf4j;
+import org.cris6h16.product.Exceptions.ProductComponentException;
 import org.cris6h16.product.Exceptions.ProductErrorCode;
-import org.cris6h16.product.Exceptions.ProductComponentInvalidAttributeException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.cris6h16.product.CategoryEntity.CATEGORY_MAX_NAME_LENGTH;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.APPROX_HEIGHT_CM_NEGATIVE;
@@ -42,14 +44,14 @@ class ProductValidator {
 
 
     public void validate(CreateProductInput input) {
-        validateProductName(input.getName());
+        input.setName(validateProductName(input.getName()));
+        input.setDescription(validateDescription(input.getDescription()));
+        input.setImageUrls(validateImagesUrl(input.getImageUrls()));
         validatePrice(input.getPrice());
         validateStock(input.getStock());
-        validateDescription(input.getDescription());
         validateApproxWeightLb(input.getApproxWeightLb());
         validateApproxWidthCm(input.getApproxWidthCm());
         validateApproxHeightCm(input.getApproxHeightCm());
-        validateImageUrl(input.getImageUrl());
         validateCategoryId(input.getCategoryId());
         validateUserId(input.getUserId());
     }
@@ -65,9 +67,10 @@ class ProductValidator {
         if (categoryId < 1) throwE(CATEGORY_ID_LESS_THAN_ONE);
     }
 
-    public void validateImageUrl(String imageUrl) {
+    public String validateImageUrl(String imageUrl) {
         if (imageUrl == null) throwE(IMAGE_URL_NULL);
-        if (imageUrl.length() > PRODUCT_MAX_IMG_URL_LENGTH) throwE(IMAGE_URL_TOO_LONG);
+        if ((imageUrl.trim()).length() > PRODUCT_MAX_IMG_URL_LENGTH) throwE(IMAGE_URL_TOO_LONG);
+        return imageUrl;
     }
 
     public void validateApproxHeightCm(Integer approxHeightCm) {
@@ -85,9 +88,10 @@ class ProductValidator {
         if (approxWeightLb < 0) throwE(APPROX_WEIGHT_LB_NEGATIVE);
     }
 
-    public void validateDescription(String description) {
+    public String validateDescription(String description) {
         if (description == null) throwE(DESCRIPTION_NULL);
-        if (description.length() > PRODUCT_MAX_DESCRIPTION_LENGTH) throwE(DESCRIPTION_TOO_LONG);
+        if ((description.trim()).length() > PRODUCT_MAX_DESCRIPTION_LENGTH) throwE(DESCRIPTION_TOO_LONG);
+        return description;
     }
 
     public void validateStock(Integer stock) {
@@ -100,14 +104,15 @@ class ProductValidator {
         if (price.compareTo(BigDecimal.ZERO) < 0) throwE(PRICE_NEGATIVE);
     }
 
-    public void validateProductName(String name) {
+    public String validateProductName(String name) {
         if (name == null) throwE(PRODUCT_NAME_NULL);
-        if (name.length() > PRODUCT_MAX_NAME_LENGTH) throwE(PRODUCT_NAME_TOO_LONG);
+        if ((name.trim()).length() > PRODUCT_MAX_NAME_LENGTH) throwE(PRODUCT_NAME_TOO_LONG);
+        return name;
     }
 
 
     private void throwE(ProductErrorCode errorCode) {
-        throw new ProductComponentInvalidAttributeException(errorCode);
+        throw new ProductComponentException(errorCode);
     }
 
     public void validate(CreateCategoryInput input) {
@@ -115,12 +120,22 @@ class ProductValidator {
     }
 
     private void validateCategoryName(String name) {
-        if (name == null) throwE (CATEGORY_NAME_NULL);
+        if (name == null) throwE(CATEGORY_NAME_NULL);
         if (name.length() > CATEGORY_MAX_NAME_LENGTH) throwE(CATEGORY_NAME_TOO_LONG);
     }
 
     public void validateProductId(Long id) {
         if (id == null) throwE(PRODUCT_ID_NULL);
         if (id < 1) throwE(PRODUCT_ID_LESS_THAN_ONE);
+    }
+
+    Set<String> validateImagesUrl(Set<String> urls) {
+        Set<String> l = new HashSet<>();
+        if (urls == null) throwE(ProductErrorCode.PRODUCT_LIST_IMG_IS_NULL);
+        if (urls.isEmpty()) throwE(ProductErrorCode.PRODUCT_LIST_IMG_IS_EMPTY);
+
+        for (String url : urls) l.add(validateImageUrl(url));
+
+        return l;
     }
 }

@@ -16,8 +16,7 @@ error-messages:
       password-less-than8: "La contraseña debe tener al menos 8 caracteres"
       password-null: "La contraseña no puede ser nula"
       password-too-long: "La contraseña es demasiado larga"
-      user-id-less-than1: "El id del usuario no puede ser menor a 1"
-      user-id-null: "El id del usuario no puede ser nulo"
+      user-id-invalid: "El id del usuario no es válido"
 
     product:
       approx-height-cm-negative: "La altura aproximada en centimetros del producto no puede ser negativa"
@@ -48,11 +47,16 @@ error-messages:
       user-id-null: "El id del usuario no puede ser nulo"
       user-not-found-by-id: "No se encontró el usuario con el id especificado"
       product-not-found-by-id: "No se encontró el producto con el id especificado"
+      price-filter-error-parsing-str-to-big-decimal: "Ha ocurrido un error al parsear el precio a un número decimal"
+      price-filter-invalid-format: "El formato del precio es inválido"
+      product-list-img-is-empty: "La lista de imagenes del producto no puede estar vacía"
+      unsupported-filter-attribute: "El atributo de filtrado no es soportado"
 
     email:
       email-invalid: "El email no es válido"
       email-sending: "Ha ocurrido un error al enviar el email de verificación"
       invalid-code-length: "El código de verificación tiene una longitud inválida"
+      invalid-action-type-length: "El tipo de acción tiene una longitud inválida"
 
     application:
       email-not-verified: "Su email no ha sido verificado, por favor revisa tu bandeja de entrada"
@@ -60,5 +64,8 @@ error-messages:
       valid-verification-code-not-found: "El código de verificación no es válido o ya ha sido utilizado"
       enabled-user-not-found: "Usuario no encotradi"
       img-multipart-file-is-empty: "La imagen del producto es requerida"
+      product-not-found-by-id: "No se encontró el producto con el id especificado"
+
+
     file:
       file-upload-fail: "Ha ocurrido un error al subir el archivo"

@@ -40,4 +40,8 @@ public class ProductComponentErrorMsgProperties {
     private String productIdLessThanOne;
     private String uniqueUserIdProductName;
     private String productNotFoundById;
+    private String priceFilterInvalidFormat;
+    private String unsupportedFilterAttribute;
+    private String productListImgIsEmpty;
+    private String priceFilterErrorParsingStrToBigDecimal;
 }

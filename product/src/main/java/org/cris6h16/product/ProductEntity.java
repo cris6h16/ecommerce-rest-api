@@ -1,6 +1,8 @@
 package org.cris6h16.product;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
@@ -21,6 +23,7 @@ import lombok.ToString;
 import org.cris6h16.user.UserEntity;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 // todo: agregar indexes en entities
 @Entity(name = "products")
@@ -28,8 +31,8 @@ import java.math.BigDecimal;
         name = "products",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        columnNames = {"name", "approxWeightLb", "approxWidthCm", "approxHeightCm"},
-                        name = "product_unique_name_weight_width_height"
+                        columnNames = {"name", "user_id"},
+                        name = "products_unique_name_user_id"
                 )
         }
 )
@@ -71,8 +74,20 @@ public class ProductEntity {
     @Column(nullable = false)
     private Integer approxHeightCm;
 
-    @Column(nullable = false, length = PRODUCT_MAX_IMG_URL_LENGTH)
-    private String imageUrl;
+    @ElementCollection
+    @CollectionTable(
+            name = "product_images",
+            joinColumns = @JoinColumn(name = "entity_id"),
+            foreignKey = @ForeignKey(name = "fk_product_images_products"),
+            uniqueConstraints = {
+                    @UniqueConstraint(
+                            columnNames = {"entity_id", "url"},
+                            name = "product_images_unique_entity_id_url"
+                    )
+            }
+    )
+    @Column(name = "url", nullable = false, length = PRODUCT_MAX_IMG_URL_LENGTH) // collection table
+    private Set<String> imageUrls;
 
     @ManyToOne(
             cascade = {},

@@ -1,5 +1,6 @@
 package org.cris6h16.Controllers;
 
+import org.cris6h16.SendEmailVerificationDTO;
 import org.cris6h16.facades.EmailFacade;
 import org.cris6h16.facades.LoginDTO;
 import org.cris6h16.facades.SignupDTO;
@@ -110,8 +111,8 @@ public class AuthenticationController {
             rollbackFor = Exception.class,
             isolation = Isolation.READ_COMMITTED
     )
-    public ResponseEntity<Void> sendEmailVerification(@RequestBody String email) {
-        this.emailFacade.sendEmailVerificationCodeIfExists(email);
+    public ResponseEntity<Void> sendEmailVerification(@RequestBody SendEmailVerificationDTO dto) {
+        this.emailFacade.sendEmailVerificationCodeIfExists(dto);
         return ResponseEntity.ok().build();
     }
 
@@ -123,4 +124,7 @@ public class AuthenticationController {
         String accessToken = userFacade.refreshAccessToken(); // todo: organizar mejor aqui no es user facade es authentication facade
         return ResponseEntity.ok(accessToken);
     }
+
+
+
 }

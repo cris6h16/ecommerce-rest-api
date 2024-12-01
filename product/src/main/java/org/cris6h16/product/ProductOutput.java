@@ -5,10 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.cris6h16.user.UserEntity;
 import org.cris6h16.user.UserOutput;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -24,7 +24,7 @@ public class ProductOutput {
     private Integer approxWeightLb;
     private Integer approxWidthCm;
     private Integer approxHeightCm;
-    private String imageUrl;
+    private Set<String> imageUrls;
     private UserOutput user;
     private CategoryOutput category;
 }

@@ -1,11 +1,16 @@
 package org.cris6h16.user;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.user.Exceptions.UserComponentAttributeAlreadyExistsException;
+import org.cris6h16.user.Exceptions.UserComponentException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.Set;
 
+import static org.cris6h16.user.EntityMapper.getOrCreateAuthorities;
 import static org.cris6h16.user.EntityMapper.toUserOutput;
 import static org.cris6h16.user.EntityMapper.toUserEntity;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_ALREADY_EXISTS;
@@ -30,7 +35,7 @@ class UserComponentImpl implements UserComponent {
     @Override
     public Long create(CreateUserInput input) {
         input.prepare();
-        isValid(input);
+        validate(input);
         checkDuplicates(input);
         UserEntity entity = toUserEntity(input, authorityRepository);
         entity = userRepository.save(entity);
@@ -40,25 +45,23 @@ class UserComponentImpl implements UserComponent {
     //todo: agregar license & author
 
 
-
     private void checkDuplicates(CreateUserInput user) {
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new UserComponentAttributeAlreadyExistsException(EMAIL_ALREADY_EXISTS);
+            throw new UserComponentException(EMAIL_ALREADY_EXISTS);
         }
     }
 
-    private void isValid(CreateUserInput user) {
-        userValidator.validateFirstname(user.getFirstname());
-        userValidator.validateLastname(user.getLastname());
-        userValidator.validateEmail(user.getEmail());
-        userValidator.validatePassword(user.getPassword());
+    private void validate(CreateUserInput user) {
+        user.setFirstname(userValidator.validateFirstname(user.getFirstname()));
+        user.setLastname(userValidator.validateLastname(user.getLastname()));
+        user.setEmail(userValidator.validateEmail(user.getEmail()));
+        user.setPassword(userValidator.validatePassword(user.getPassword()));
     }
 
 
     @Override
     public Optional<UserOutput> findByEmailAndEnabled(String email, boolean enabled) {
-        email = email == null ? "" : email.trim();
-        userValidator.validateEmail(email);
+        email = userValidator.validateEmail(email);
 
         UserEntity ue = userRepository.findByEmailAndEnabled(email, enabled).orElse(null);
         return Optional.ofNullable(toUserOutput(ue));
@@ -67,28 +70,22 @@ class UserComponentImpl implements UserComponent {
 
     @Override
     public void updateEmailVerifiedByEmail(String email, boolean emailVerified) {
-        email = email == null ? "" : email.trim();
-        userValidator.validateEmail(email);
+        email = userValidator.validateEmail(email);
 
         userRepository.updateEmailVerifiedByEmail(email, emailVerified);
     }
 
     @Override
     public void updatePasswordByEmail(String email, String password) {
-        email = email == null ? "" : email.trim();
-        password = password == null ? "" : password.trim();
-
-        userValidator.validateEmail(email);
-        userValidator.validatePassword(password);
+        email = userValidator.validateEmail(email);
+        password = userValidator.validatePassword(password);
 
         userRepository.updatePasswordByEmail(email, password);
     }
 
     @Override
     public boolean existsByEmail(String email) {
-        email = email == null ? "" : email.trim();
-        userValidator.validateEmail(email);
-
+        email = userValidator.validateEmail(email);
         return userRepository.existsByEmail(email);
     }
 
@@ -108,6 +105,31 @@ class UserComponentImpl implements UserComponent {
     public void deleteAll() {
         userRepository.deleteAll();
         authorityRepository.deleteAll();
+    }
+
+    @Override
+    public boolean existsByEmailAndEnabled(String email, boolean enabled) {
+        email = userValidator.validateEmail(email);
+
+        return userRepository.existsByEmailAndEnabled(email, enabled);
+    }
+
+    @Override
+    public Page<UserOutput> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable).map(EntityMapper::toUserOutput);
+    }
+
+    @Override
+    public void updateAuthoritiesById(Long id, Set<String> authorities) {
+        userValidator.validateUserId(id);
+        Set<AuthorityEntity> set = getOrCreateAuthorities(authorities, authorityRepository);
+        userRepository.updateAuthoritiesById(id, set);
+    }
+
+    @Override
+    public void updateBalanceById(Long id, BigDecimal balance) {
+        userValidator.validateUserId(id);
+        userRepository.updateBalanceById(id, balance);
     }
 
 }
