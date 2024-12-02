@@ -7,12 +7,13 @@ import org.cris6h16.cart.CreateCartItemInput;
 import org.cris6h16.facades.Exceptions.ApplicationException;
 import org.cris6h16.security.SecurityComponent;
 import org.cris6h16.user.UserComponent;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.CART_ITEM_NOT_FOUND;
 import static org.cris6h16.facades.FacadesCommon.isUserEnabled;
-
+@Component
 public class CartFacadeImpl implements CartFacade{
     private final CartComponent cartComponent;
     private final SecurityComponent securityComponent;
