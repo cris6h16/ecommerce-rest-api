@@ -31,12 +31,12 @@ public class CartController {
     }
 
     @PostMapping(
-            value = "/add",
+            value = "/item/add",
             consumes = "application/json"
     )
     public ResponseEntity<Void> addProductToCart(@RequestBody CreateCartItemDTO dto, UriComponentsBuilder ucb) {
         URI uri = ucb
-                .path(CART_PATH + "/{id}")
+                .path(CART_PATH + "/item" + "/{id}")
                 .buildAndExpand(cartFacade.addItemToCart(dto))
                 .toUri();
         return ResponseEntity.created(uri).build();
@@ -47,21 +47,21 @@ public class CartController {
             produces = "application/json"
     )
     public ResponseEntity<CartDTO> getCart() {
-        return ResponseEntity.ok(cartFacade.getMyCart());
+        return ResponseEntity.ok(cartFacade.getOrCreateMyCart());
     }
 
     @PutMapping(
-            value = "/{itemId}",
+            value = "/item/{itemId}/amount",
             consumes = "application/json"
     )
-    public ResponseEntity<Void> updateCartItem(@PathVariable Long itemId, @RequestBody CreateCartItemDTO dto) {
-        cartFacade.updateCartItem(itemId, dto);
+    public ResponseEntity<Void> updateCartItem(@PathVariable Long itemId, @RequestBody Integer quantity) {
+        cartFacade.updateCartItemQuantity(itemId, quantity);
         return ResponseEntity.noContent().build();
     }
 
 
     @DeleteMapping(
-            value = "/{itemId}"
+            value = "/item/{itemId}"
     )
     public ResponseEntity<Void> deleteCartItem(@PathVariable Long itemId) {
         cartFacade.deleteCartItem(itemId);

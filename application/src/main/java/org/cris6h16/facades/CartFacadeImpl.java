@@ -1,10 +1,16 @@
 package org.cris6h16.facades;
 
 import org.cris6h16.cart.CartComponent;
+import org.cris6h16.cart.CartItemOutput;
+import org.cris6h16.cart.CartOutput;
 import org.cris6h16.cart.CreateCartItemInput;
+import org.cris6h16.facades.Exceptions.ApplicationException;
 import org.cris6h16.security.SecurityComponent;
 import org.cris6h16.user.UserComponent;
 
+import java.util.stream.Collectors;
+
+import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.CART_ITEM_NOT_FOUND;
 import static org.cris6h16.facades.FacadesCommon.isUserEnabled;
 
 public class CartFacadeImpl implements CartFacade{
@@ -20,9 +26,9 @@ public class CartFacadeImpl implements CartFacade{
 
     @Override
     public Long addItemToCart(CreateCartItemDTO dto) {
-        Long id = securityComponent.getCurrentUserId();
-        isUserEnabled(id, userComponent);
-        return cartComponent.addItemToCart(toInput(dto), id);
+        Long userId = securityComponent.getCurrentUserId();
+        isUserEnabled(userId, userComponent);
+        return cartComponent.addItemToCart(toInput(dto), userId);
     }
 
     private CreateCartItemInput toInput(CreateCartItemDTO dto) {
@@ -33,17 +39,50 @@ public class CartFacadeImpl implements CartFacade{
     }
 
     @Override
-    public CartDTO getMyCart() {
-        return null;
+    public CartDTO getOrCreateMyCart() {
+        Long userId = securityComponent.getCurrentUserId();
+        isUserEnabled(userId, userComponent);
+        return toDTO(cartComponent.getOrCreateCartByUserId(userId));
     }
 
-    @Override
-    public void updateCartItem(Long itemId, CreateCartItemDTO dto) {
+    private CartDTO toDTO(CartOutput output) {
+        return new CartDTO(
+                output.getId(),
+                output.getItems().stream().map(this::toDTO).collect(Collectors.toSet())
+        );
+    }
 
+    private CartItemDTO toDTO(CartItemOutput output) {
+        return CartItemDTO.builder()
+                .id(output.getId())
+                .productId(output.getProductId())
+                .productName(output.getProductName())
+                .productImgUrl(output.getProductImgUrl())
+                .quantity(output.getQuantity())
+                .price(output.getPrice())
+                .total(output.getTotal())
+                .build();
+    }
+
+
+
+    @Override
+    public void updateCartItemQuantity(Long itemId, Integer quantity) {
+        isUserEnabled(securityComponent.getCurrentUserId(), userComponent);
+        cartComponent.updateCartItemQuantityById(quantity, itemId);
     }
 
     @Override
     public void deleteCartItem(Long itemId) {
+        Long userId = securityComponent.getCurrentUserId();
+        isUserEnabled(userId, userComponent);
+        isOwnerOfCart(userId, itemId);
+        cartComponent.deleteCartItemById(itemId);
+    }
 
+    private void isOwnerOfCart(Long userId, Long itemId) {
+        if (!cartComponent.isOwnerOfCartItem(userId, itemId)) {
+            throw new ApplicationException(CART_ITEM_NOT_FOUND);
+        }
     }
 }

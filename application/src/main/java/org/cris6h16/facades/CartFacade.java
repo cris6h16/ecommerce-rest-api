@@ -3,9 +3,9 @@ package org.cris6h16.facades;
 public interface CartFacade {
     Long addItemToCart(CreateCartItemDTO dto);
 
-    CartDTO getMyCart();
+    CartDTO getOrCreateMyCart();
 
-    void updateCartItem(Long itemId, CreateCartItemDTO dto);
+    void updateCartItemQuantity(Long itemId, Integer quantity);
 
     void deleteCartItem(Long itemId);
 }
