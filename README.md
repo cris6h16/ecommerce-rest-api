@@ -18,19 +18,16 @@ Este proyecto es una API REST en desarrollo para un sistema de e-commerce.
   - **Spring Boot Test**: Framework para realizar pruebas de integración.
 
 ## Estructura del proyecto
-```plantuml
-@startuml
-package "Business Logic" {
-    class Order
-    class Payment
-    Order --> Payment
-}
 
-package "Data Access" {
-    class Database
-    class Repository
-    Repository --> Database
-}
 
-"Business Logic" --> "Data Access"
-@enduml
+```mermaid
+graph TD
+    A[Cliente] --> B[Controlador]
+    B --> C[Servicio]
+    C --> D[Repositorio]
+    D --> E[Base de datos]
+    E --> D
+    D --> C
+    C --> B
+    B --> A
+```
