@@ -1,10 +1,13 @@
 package org.cris6h16.payment;
 
+import org.springframework.stereotype.Component;
+
 import static org.cris6h16.payment.PaymentErrorCode.NEGATIVE_ORDER_ID;
 import static org.cris6h16.payment.PaymentErrorCode.NEGATIVE_USER_ID;
 import static org.cris6h16.payment.PaymentErrorCode.NULL_ORDER_ID;
 import static org.cris6h16.payment.PaymentErrorCode.NULL_USER_ID;
 
+@Component
 public class PaymentValidator {
     void validate(AppCreditsPaymentRequestInput input) {
         validateOrderId(input.getOrderId());
