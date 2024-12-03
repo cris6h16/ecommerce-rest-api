@@ -24,22 +24,11 @@ import static org.cris6h16.Controllers.HTTPCommons.PATH_PREFIX;
 @Slf4j
 public class CartController {
     public static final String CART_PATH = PATH_PREFIX + "/cart";
+    public static final String CART_ITEM_SUB_PATH =  "/item";
     private final CartFacade cartFacade;
 
     public CartController(CartFacade cartFacade) {
         this.cartFacade = cartFacade;
-    }
-
-    @PostMapping(
-            value = "/item/add",
-            consumes = "application/json"
-    )
-    public ResponseEntity<Void> addProductToCart(@RequestBody CreateCartItemDTO dto, UriComponentsBuilder ucb) {
-        URI uri = ucb
-                .path(CART_PATH + "/item" + "/{id}")
-                .buildAndExpand(cartFacade.addItemToCart(dto))
-                .toUri();
-        return ResponseEntity.created(uri).build();
     }
 
     @GetMapping(
@@ -50,8 +39,21 @@ public class CartController {
         return ResponseEntity.ok(cartFacade.getOrCreateMyCart());
     }
 
+    @PostMapping(
+            value = CART_ITEM_SUB_PATH + "/add",
+            consumes = "application/json"
+    )
+    public ResponseEntity<Void> addProductToCart(@RequestBody CreateCartItemDTO dto, UriComponentsBuilder ucb) {
+        URI uri = ucb
+                .path(CART_ITEM_SUB_PATH + "/{id}")
+                .buildAndExpand(cartFacade.addItemToCart(dto))
+                .toUri();
+        return ResponseEntity.created(uri).build();
+    }
+
+
     @PutMapping(
-            value = "/item/{itemId}/amount",
+            value = CART_ITEM_SUB_PATH + "/{itemId}/amount",
             consumes = "application/json"
     )
     public ResponseEntity<Void> updateCartItem(@PathVariable Long itemId, @RequestBody Integer quantity) {
@@ -61,10 +63,13 @@ public class CartController {
 
 
     @DeleteMapping(
-            value = "/item/{itemId}"
+            value = CART_ITEM_SUB_PATH + "/{itemId}",
+            consumes = "application/json"
     )
     public ResponseEntity<Void> deleteCartItem(@PathVariable Long itemId) {
         cartFacade.deleteCartItem(itemId);
         return ResponseEntity.noContent().build();
     }
+
+
 }

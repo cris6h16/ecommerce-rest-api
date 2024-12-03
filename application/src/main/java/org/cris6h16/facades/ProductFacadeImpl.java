@@ -25,6 +25,7 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.PRODUCT_NOT_FOUND_BY_ID;
+import static org.cris6h16.facades.FacadesCommon.isUserEnabled;
 
 @Slf4j
 @Component // todo: should be a custom annotation @Facade -> @Service
@@ -44,7 +45,8 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public Long createProduct(CreateProductDTO dto) {
-        isUserEnabled(securityComponent.getCurrentUserId());
+        Long userId = securityComponent.getCurrentUserId();
+        isUserEnabled(userId, );
         Long id = productComponent.createProduct(toInput(dto));
         Set<String> url = fileComponent.uploadImages(dto.getImages());
         productComponent.updateImagesById(id, url);

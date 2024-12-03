@@ -163,14 +163,6 @@ class UserFacadeImpl implements UserFacade {
         emailComponent.removeByEmailAndActionType(dto.getEmail(), actionType);
     }
 
-    @Override
-    public UserDTO me() {
-        Long id = securityComponent.getCurrentUserId();
-        return userComponent.findByIdAndEnable(id, true)
-                .map(UserFacadeImpl::toUserDTO)
-                .orElseThrow(()->new ApplicationException(ENABLED_USER_NOT_FOUND_BY_ID));
-    }
-
 
     public static UserDTO toUserDTO(UserOutput output) {
         return UserDTO.builder()
@@ -205,10 +197,26 @@ class UserFacadeImpl implements UserFacade {
         userComponent.updateAuthoritiesById(id, authorities);
     }
 
+//    @Override
+//    public UserDTO me() {
+//        Long id = securityComponent.getCurrentUserId();
+//        return userComponent.findByIdAndEnable(id, true)
+//                .map(UserFacadeImpl::toUserDTO)
+//                .orElseThrow(()->new ApplicationException(ENABLED_USER_NOT_FOUND_BY_ID));
+//    }
+
     @Override
-    public void updateBalance(Long id, BigDecimal balance) {
+    public UserDTO findById(Long id) {
         existsEnabledUser(id);
-        userComponent.updateBalanceById(id, balance);
+        return userComponent.findByIdAndEnable(id, true)
+                .map(UserFacadeImpl::toUserDTO)
+                .orElseThrow(() -> new ApplicationException(ENABLED_USER_NOT_FOUND_BY_ID));
+    }
+
+    @Override
+    public void adjustBalance(Long id, BigDecimal delta) {
+        existsEnabledUser(id);
+        userComponent.adjustBalanceById(id, delta);
     }
 
     private void existsEnabledUser(Long id) {

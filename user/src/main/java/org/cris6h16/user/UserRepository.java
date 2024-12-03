@@ -1,5 +1,6 @@
 package org.cris6h16.user;
 
+import aj.org.objectweb.asm.commons.InstructionAdapter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -37,4 +38,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Modifying(clearAutomatically = true)
     @Query("UPDATE users u SET u.balance = ?2 WHERE u.id = ?1")
     void updateBalanceById(Long id, BigDecimal balance);
+
+    @Query("SELECT u.balance FROM users u WHERE u.id = ?1")
+    Optional<BigDecimal> findBalanceById(Long id);
+
 }

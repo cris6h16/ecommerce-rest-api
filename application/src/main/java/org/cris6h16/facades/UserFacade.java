@@ -14,13 +14,14 @@ public interface UserFacade {
     void verifyEmail(VerifyEmailDTO dto);
     void resetPassword(ResetPasswordDTO dto);
 
-    UserDTO me();
-
     String refreshAccessToken();
 
     Page<UserDTO> findAll(Pageable pageable);
 
     void updateRoles(Long id, Set<String> authorities);
 
-    void updateBalance(Long id, BigDecimal balance);
+
+    UserDTO findById(Long id);
+
+    void adjustBalance(Long id, BigDecimal delta);
 }

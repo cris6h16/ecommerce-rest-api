@@ -5,6 +5,10 @@ import org.cris6h16.user.Exceptions.UserComponentException;
 import org.cris6h16.user.Exceptions.UserErrorCode;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
+import static org.cris6h16.user.Exceptions.UserErrorCode.BALANCE_NEGATIVE;
+import static org.cris6h16.user.Exceptions.UserErrorCode.BALANCE_NULL;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_NULL;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_REGEX_MISMATCH;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_TOO_LONG;
@@ -73,5 +77,10 @@ import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
     void validateUserId(Long id) {
         if (id==null) throwE(USER_ID_NULL);
         if (id < 1) throwE(USER_ID_LESS_THAN_1);
+    }
+
+    void validateBalance(BigDecimal balance) {
+        if (balance == null) throwE(BALANCE_NULL);
+        if (balance.compareTo(BigDecimal.ZERO) < 0) throwE(BALANCE_NEGATIVE);
     }
 }

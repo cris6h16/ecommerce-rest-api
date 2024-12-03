@@ -1,6 +1,6 @@
 package org.cris6h16.Controllers;
 
-import org.cris6h16.SendEmailVerificationDTO;
+import org.cris6h16.facades.SendEmailVerificationDTO;
 import org.cris6h16.facades.EmailFacade;
 import org.cris6h16.facades.LoginDTO;
 import org.cris6h16.facades.SignupDTO;

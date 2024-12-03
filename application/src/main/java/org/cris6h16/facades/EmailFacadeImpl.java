@@ -1,7 +1,6 @@
 package org.cris6h16.facades;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cris6h16.SendEmailVerificationDTO;
 import org.cris6h16.email.EmailComponent;
 import org.cris6h16.user.UserComponent;
 import org.springframework.stereotype.Component;

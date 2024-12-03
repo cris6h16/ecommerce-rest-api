@@ -1,9 +1,8 @@
-package org.cris6h16;
+package org.cris6h16.facades;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.cris6h16.facades.EmailCodeActionType;
 
 @NoArgsConstructor
 @AllArgsConstructor

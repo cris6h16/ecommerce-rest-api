@@ -2,6 +2,7 @@ package org.cris6h16.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.user.Exceptions.UserComponentException;
+import org.cris6h16.user.Exceptions.UserErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import static org.cris6h16.user.EntityMapper.getOrCreateAuthorities;
 import static org.cris6h16.user.EntityMapper.toUserOutput;
 import static org.cris6h16.user.EntityMapper.toUserEntity;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_ALREADY_EXISTS;
+import static org.cris6h16.user.Exceptions.UserErrorCode.USER_NOT_FOUND_BY_ID;
 
 @Service
 @Slf4j
@@ -127,8 +129,13 @@ class UserComponentImpl implements UserComponent {
     }
 
     @Override
-    public void updateBalanceById(Long id, BigDecimal balance) {
+    public void adjustBalanceById(Long id, BigDecimal delta) {
         userValidator.validateUserId(id);
+
+        BigDecimal balance = userRepository.findBalanceById(id).orElseThrow(() -> new UserComponentException(USER_NOT_FOUND_BY_ID));
+        balance = balance.add(delta);
+        userValidator.validateBalance(balance);
+
         userRepository.updateBalanceById(id, balance);
     }
 

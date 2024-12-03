@@ -34,5 +34,4 @@ public class CartEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = {})
     @JoinColumn(name = "user_id")
     private UserEntity user;
-
 }
