@@ -111,41 +111,49 @@ classDiagram
         - UserFacade facade
     }
 
+    class UserDTO {
+    }
+
     class UserFacade {
         <<interface>>
     }
-    
+
     class UserFacadeImpl {
-        - EmailComponent email
-        - UserComponent user
-        - SecurityComponent security
-        - UserValidator userValidator
     }
-    
+
     class EmailComponent {
         <<interface>>
     }
-    
+
     class EmailComponentImpl {
     }
-    
+
     class UserComponent {
         <<interface>>
     }
-    
+
     class UserComponentImpl {
     }
-    
+
     class SecurityComponent {
         <<interface>>
     }
-    
+
     class SecurityComponentImpl {
     }
-    
+
     class UserValidator {
     }
-    
+
+    class EmailSender {
+    }
+    class EmailValidator {
+    }
+    class VerificationCodeRepository {
+    }
+    class VerificationCodeGenerator {
+    }
+
     UserController --> UserFacade
     UserFacade <|-- UserFacadeImpl
     UserFacadeImpl --> EmailComponent
@@ -155,6 +163,12 @@ classDiagram
     EmailComponent <|-- EmailComponentImpl
     UserComponent <|-- UserComponentImpl
     SecurityComponent <|-- SecurityComponentImpl
+    UserFacadeImpl --> UserDTO
+    UserController --> UserDTO
+    EmailComponentImpl --> EmailSender
+    EmailComponentImpl --> EmailValidator
+    EmailComponentImpl --> VerificationCodeRepository
+    EmailComponentImpl --> VerificationCodeGenerator
 ```
 
 <hr>
