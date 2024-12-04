@@ -27,4 +27,11 @@ public interface UserComponent {
     void updateAuthoritiesById(Long id, Set<String> authorities);
 
     void adjustBalanceById(Long id, BigDecimal delta);
+
+    /**
+     * Usado para validar y limpiar la contrasena, unico metodo de validacion incluido, ya que al componente la contrasena siempre llega encriptada, lo cual las validaciones de contrasena pierden sentido
+     * @param password
+     * @return la contrasena limpia ( trim, etc ) solo si es valida, de otro modo lanzara una exception
+     */
+    String isPassValidElseThrow(String password);
 }

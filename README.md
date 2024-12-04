@@ -103,15 +103,40 @@ Este proyecto es una API REST en desarrollo para un sistema de e-commerce.
 - **_cart_**:
     - Gestion de carritos de compras
 
-### Completa
+### Ejemplo de flujo de aplicacion
+
+- Diagrama de clases de [EmailController](bootstrapping/src/main/java/org/cris6h16/Controllers/EmailController.java)
+
+```mermaid
+classDiagram
+    class EmailController {
+    }
+    class EmailFacade {
+        <<interface>>
+    }
+    class EmailFacadeImpl {
+    }
+    class EmailComponent {
+        <<interface>>
+    }
+    class UserComponent {
+        <<interface>>
+    }
+
+    EmailController --> EmailFacade
+    EmailFacade <|-- EmailFacadeImpl
+    EmailFacadeImpl --> UserComponent
+    EmailFacadeImpl --> EmailComponent
+```
+
+
+- Diagrama de clases de [UserController](bootstrapping/src/main/java/org/cris6h16/Controllers/UserController.java) & [AuthenticationController](bootstrapping/src/main/java/org/cris6h16/Controllers/AuthenticationController.java) (completo)
 
 ```mermaid
 classDiagram
     class UserController {
-        - UserFacade facade
     }
-
-    class UserDTO {
+    class AuthenticationController {
     }
 
     class UserFacade {
@@ -150,63 +175,60 @@ classDiagram
     class EmailValidator {
     }
     class VerificationCodeRepository {
+        <<interface>>
     }
     class VerificationCodeGenerator {
     }
 
-    class SignupDTO {
-    }
-    class LoginOutput {
-    }
-    class LoginDTO {
-    }
-    class VerifyEmailDTO {
-    }
-
-    class ResetPasswordDTO {
-    }
     class VerificationCodeEntity {
     }
-    class CreateUserInput {
-    }
 
-    class UserOutput {
-    }
-    
     class UserRepository {
+        <<interface>>
     }
 
     class AuthorityRepository {
+        <<interface>>
     }
 
+    class UserEntity {
+    }
+    class AuthorityEntity {
+    }
+    class PasswordEncoder {
+    }
+    class JwtUtils {
+    }
     UserController --> UserFacade
+    AuthenticationController --> UserFacade
     UserFacadeImpl --> EmailComponent
     UserFacadeImpl --> UserComponent
     UserFacadeImpl --> SecurityComponent
-    UserFacadeImpl --> UserValidator
     EmailComponent <|-- EmailComponentImpl
     UserComponent <|-- UserComponentImpl
-    UserComponent --> CreateUserInput
-    UserComponent --> UserOutput
     UserComponentImpl --> UserRepository
     UserComponentImpl --> AuthorityRepository
     UserComponentImpl --> UserValidator
+    UserComponentImpl --> UserEntity
+    UserComponentImpl --> AuthorityEntity
     SecurityComponent <|-- SecurityComponentImpl
-    UserController --> UserDTO
+    SecurityComponentImpl --> JwtUtils
+    SecurityComponentImpl --> PasswordEncoder
     EmailComponentImpl --> EmailSender
     EmailComponentImpl --> EmailValidator
     EmailComponentImpl --> VerificationCodeRepository
     EmailComponentImpl --> VerificationCodeGenerator
     EmailComponentImpl --> VerificationCodeEntity
     UserFacade <|-- UserFacadeImpl
-    UserFacade --> SignupDTO
-    UserFacade --> LoginOutput
-    UserFacade --> LoginDTO
-    UserFacade --> VerifyEmailDTO
-    UserFacade --> ResetPasswordDTO
-    UserFacade --> UserDTO
-
 ```
+
+
+PD:
+
+- Por hacerlo mas legible, Estos diagramas excluyen:
+    - _DTOs_: Objetos de entrada y salida HTTP
+    - _Inputs_: Objetos de entradas a componentes
+    - _Outputs_:Objetos de salida de componentes
 
 <hr>
 DOCS INCOMPLETOS desde aqui
@@ -222,8 +244,8 @@ DOCS INCOMPLETOS desde aqui
 2. ¿Si no se integram pasarelas de pago como se realizan los pagos?
    // explcair creditos internos de app
 
-// todo: explicar alta escalabilidad y porque es facilemnte migrable a microservicios
-
+3. como integrar asarelas de pago
+// todo: explicar extension de la clase abstracta base y impl en el componente mediante una interface
 ### Desarrollo
 
 <hr>

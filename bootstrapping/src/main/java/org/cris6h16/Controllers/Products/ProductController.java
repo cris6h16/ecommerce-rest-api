@@ -2,6 +2,8 @@ package org.cris6h16.Controllers.Products;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.cris6h16.facades.CategoryDTO;
+import org.cris6h16.facades.CreateCategoryDTO;
 import org.cris6h16.facades.CreateProductDTO;
 import org.cris6h16.facades.ProductDTO;
 import org.cris6h16.facades.ProductFacade;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static org.cris6h16.Controllers.HTTPCommons.PATH_PREFIX;
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
@@ -116,6 +120,35 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productFacade.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+
+    public static final String CATEGORY_PATH = ProductController.PRODUCT_PATH + "/categories";
+    protected final ProductFacade productFacade;
+
+    public CategoryController(ProductFacade productFacade) {
+        this.productFacade = productFacade;
+    }
+
+    @PostMapping(
+            path = "/create-category",
+            consumes = "application/json"
+    )
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
+    public ResponseEntity<Long> createCategory(@RequestBody CreateCategoryDTO createCategoryDTO) {
+        Long id = productFacade.createCategory(createCategoryDTO);
+        ResponseEntity<Long> res = ResponseEntity.created(URI.create(CATEGORY_PATH + "/" + id)).body(id);
+        log.debug("Category created: {}", res);
+        return res;
+    }
+
+    @GetMapping(produces = "application/json")
+    public ResponseEntity<Set<CategoryDTO>> getCategories() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .headers(jsonHeaderCons)
+                .body(productFacade.getCategories());
     }
 
 }

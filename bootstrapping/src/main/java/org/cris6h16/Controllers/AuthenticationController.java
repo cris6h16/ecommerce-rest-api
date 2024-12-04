@@ -1,8 +1,8 @@
 package org.cris6h16.Controllers;
 
-import org.cris6h16.facades.SendEmailVerificationDTO;
 import org.cris6h16.facades.EmailFacade;
 import org.cris6h16.facades.LoginDTO;
+import org.cris6h16.facades.SendEmailVerificationDTO;
 import org.cris6h16.facades.SignupDTO;
 import org.cris6h16.facades.UserFacade;
 import org.cris6h16.facades.VerifyEmailDTO;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 
 import static org.cris6h16.Controllers.AuthenticationController.BASE_PATH;
-import static org.cris6h16.Controllers.HTTPCommons.PATH_PREFIX;
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
@@ -29,14 +28,12 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 @RestController
 @RequestMapping(BASE_PATH)
 public class AuthenticationController {
+     static final String BASE_PATH = "/api/v1/auth";
 
-     static final String BASE_PATH = PATH_PREFIX + "/auth";
     private final UserFacade userFacade;
-    private final EmailFacade emailFacade;
 
-    public AuthenticationController(UserFacade userFacade, EmailFacade emailFacade) {
+    public AuthenticationController(UserFacade userFacade) {
         this.userFacade = userFacade;
-        this.emailFacade = emailFacade;
     }
 
     @PostMapping(
@@ -72,6 +69,7 @@ public class AuthenticationController {
                 .body(output);
     }
 
+    // todo: talvez deberia estar en otro endpoint y no en /auth, si se mueve verificar sync con docs
     @PostMapping(
             path = "/verify-email",
             consumes = APPLICATION_JSON_VALUE
@@ -100,20 +98,6 @@ public class AuthenticationController {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
-    }
-
-
-    @PostMapping(
-            path = "/send-email-verification",
-            consumes = MediaType.TEXT_PLAIN_VALUE
-    )
-    @Transactional(
-            rollbackFor = Exception.class,
-            isolation = Isolation.READ_COMMITTED
-    )
-    public ResponseEntity<Void> sendEmailVerification(@RequestBody SendEmailVerificationDTO dto) {
-        this.emailFacade.sendEmailVerificationCodeIfExists(dto);
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping(

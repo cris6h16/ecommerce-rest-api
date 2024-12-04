@@ -10,7 +10,6 @@ import org.cris6h16.user.LoginOutput;
 import org.cris6h16.user.ResetPasswordDTO;
 import org.cris6h16.user.UserComponent;
 import org.cris6h16.user.UserOutput;
-import org.cris6h16.user.UserValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -33,16 +32,14 @@ class UserFacadeImpl implements UserFacade {
     private final EmailComponent emailComponent;
     private final UserComponent userComponent;
     private final SecurityComponent securityComponent;
-    private final UserValidator userValidator;
 
     public UserFacadeImpl(EmailComponent emailComponent,
                           UserComponent userComponent,
-                          SecurityComponent securityComponent,
-                          UserValidator userValidator) {
+                          SecurityComponent securityComponent
+                          ) {
         this.emailComponent = emailComponent;
         this.userComponent = userComponent;
         this.securityComponent = securityComponent;
-        this.userValidator = userValidator;
     }
 
     @Override
@@ -62,12 +59,11 @@ class UserFacadeImpl implements UserFacade {
     }
 
     private void processPassword(CreateUserInput input) {
-        // replicacion de la logica de validacion de contrasena, esto lo hace el componente, pero al yo mandar la contrasena al componente ya encriptada la validacion de contrasena siempre sera exitosa ( length > 8 ) es por eso que es la unica validacion afuera del componente
-        input.prepare();
-        String passwoed = userValidator.validatePassword(input.getPassword()); // el validador del componente fue expuesto al exterior para evitar reescribir la logica de validacion de contrasena
+        // validacion temprana de contrasena, la unica validacion afuera del componente ya que la contrasena al componente llega ya encriptada la validacion de contrasena siempre sera exitosa ( length > 8 ) es por eso que es la unica validacion afuera del componente
+        String validPass = userComponent.isPassValidElseThrow(input.getPassword());
 
         // encriptacion de la contrasena
-        String encodedPass = securityComponent.encodePassword(passwoed);
+        String encodedPass = securityComponent.encodePassword(validPass);
         input.setPassword(encodedPass);
     }
 

@@ -28,7 +28,7 @@ import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
 
 @Slf4j
 @Component
- public class UserValidator {
+  class UserValidator {
     private void throwE(UserErrorCode errorCode) {
         throw new UserComponentException(errorCode);
     }

@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class SecurityServiceImpl implements SecurityComponent {
+public class SecurityComponentImpl implements SecurityComponent {
 
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 
-     SecurityServiceImpl(PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
+     SecurityComponentImpl(PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
     }
