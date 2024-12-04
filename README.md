@@ -97,13 +97,65 @@ Este proyecto es una API REST en desarrollo para un sistema de e-commerce.
 
 - **_deposit_**:
     - Gestion de depositos
-      - Recarga de creditos internos por transferencia bancaria
+        - Recarga de creditos internos por transferencia bancaria
 
 
 - **_cart_**:
     - Gestion de carritos de compras
 
+### Completa
 
+```mermaid
+classDiagram
+    class UserController {
+        - UserFacade facade
+    }
+
+    class UserFacade {
+        <<interface>>
+    }
+    
+    class UserFacadeImpl {
+        - EmailComponent email
+        - UserComponent user
+        - SecurityComponent security
+        - UserValidator userValidator
+    }
+    
+    class EmailComponent {
+        <<interface>>
+    }
+    
+    class EmailComponentImpl {
+    }
+    
+    class UserComponent {
+        <<interface>>
+    }
+    
+    class UserComponentImpl {
+    }
+    
+    class SecurityComponent {
+        <<interface>>
+    }
+    
+    class SecurityComponentImpl {
+    }
+    
+    class UserValidator {
+    }
+    
+    UserController --> UserFacade
+    UserFacade <|-- UserFacadeImpl
+    UserFacadeImpl --> EmailComponent
+    UserFacadeImpl --> UserComponent
+    UserFacadeImpl --> SecurityComponent
+    UserFacadeImpl --> UserValidator
+    EmailComponent <|-- EmailComponentImpl
+    UserComponent <|-- UserComponentImpl
+    SecurityComponent <|-- SecurityComponentImpl
+```
 
 <hr>
 DOCS INCOMPLETOS desde aqui
@@ -118,6 +170,8 @@ DOCS INCOMPLETOS desde aqui
 
 2. ¿Si no se integram pasarelas de pago como se realizan los pagos?
    // explcair creditos internos de app
+
+// todo: explicar alta escalabilidad y porque es facilemnte migrable a microservicios
 
 ### Desarrollo
 
