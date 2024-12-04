@@ -154,21 +154,58 @@ classDiagram
     class VerificationCodeGenerator {
     }
 
+    class SignupDTO {
+    }
+    class LoginOutput {
+    }
+    class LoginDTO {
+    }
+    class VerifyEmailDTO {
+    }
+
+    class ResetPasswordDTO {
+    }
+    class VerificationCodeEntity {
+    }
+    class CreateUserInput {
+    }
+
+    class UserOutput {
+    }
+    
+    class UserRepository {
+    }
+
+    class AuthorityRepository {
+    }
+
     UserController --> UserFacade
-    UserFacade <|-- UserFacadeImpl
     UserFacadeImpl --> EmailComponent
     UserFacadeImpl --> UserComponent
     UserFacadeImpl --> SecurityComponent
     UserFacadeImpl --> UserValidator
     EmailComponent <|-- EmailComponentImpl
     UserComponent <|-- UserComponentImpl
+    UserComponent --> CreateUserInput
+    UserComponent --> UserOutput
+    UserComponentImpl --> UserRepository
+    UserComponentImpl --> AuthorityRepository
+    UserComponentImpl --> UserValidator
     SecurityComponent <|-- SecurityComponentImpl
-    UserFacadeImpl --> UserDTO
     UserController --> UserDTO
     EmailComponentImpl --> EmailSender
     EmailComponentImpl --> EmailValidator
     EmailComponentImpl --> VerificationCodeRepository
     EmailComponentImpl --> VerificationCodeGenerator
+    EmailComponentImpl --> VerificationCodeEntity
+    UserFacade <|-- UserFacadeImpl
+    UserFacade --> SignupDTO
+    UserFacade --> LoginOutput
+    UserFacade --> LoginDTO
+    UserFacade --> VerifyEmailDTO
+    UserFacade --> ResetPasswordDTO
+    UserFacade --> UserDTO
+
 ```
 
 <hr>
