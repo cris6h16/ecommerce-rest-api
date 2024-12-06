@@ -1,0 +1,49 @@
+openapi: 3.1.0
+info:
+  title: Ecommerce API REST
+  version: 1.0.0
+  description: API para un sistema ecommerce siguiendo los principos REST
+  contact:
+    name: Cristian Manuel Herrera Guallo
+    email: cristianmherrera21@gmail.com
+    url: https://github.com/cris6h16
+
+servers:
+  - url: http://localhost:8080
+    description: Dev Server
+
+paths:
+  /api/v1/auth/signup:
+    post:
+      operationId: signup
+      summary: _Path_ o Ruta para registro de Usuarios
+      description: "Ruta para crearse una cuenta de usuario, PD: despues de la creacion es necesario verificar el email para poder iniciar secion"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+            $ref: '#/components/schemas/SignupDTO'
+      responses:
+        201:
+
+
+components:
+  schemas:
+    SignupDTO:
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+
+
+

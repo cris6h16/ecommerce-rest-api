@@ -129,8 +129,9 @@ classDiagram
     EmailFacadeImpl --> EmailComponent
 ```
 
-
-- Diagrama de clases de [UserController](bootstrapping/src/main/java/org/cris6h16/Controllers/UserController.java) & [AuthenticationController](bootstrapping/src/main/java/org/cris6h16/Controllers/AuthenticationController.java) (completo)
+- Diagrama de clases
+  de [UserController](bootstrapping/src/main/java/org/cris6h16/Controllers/UserController.java) & [AuthenticationController](bootstrapping/src/main/java/org/cris6h16/Controllers/AuthenticationController.java) (
+  completo)
 
 ```mermaid
 classDiagram
@@ -222,13 +223,42 @@ classDiagram
     UserFacade <|-- UserFacadeImpl
 ```
 
-
 PD:
 
 - Por hacerlo mas legible, Estos diagramas excluyen:
     - _DTOs_: Objetos de entrada y salida HTTP
     - _Inputs_: Objetos de entradas a componentes
     - _Outputs_:Objetos de salida de componentes
+
+## Testing
+
+### ENDPOINTS antes
+
+| Path                                           | Metodo   | Descripcion                                                                                          |
+|------------------------------------------------|----------|------------------------------------------------------------------------------------------------------|
+| `/auth/signup`                                 | `POST`   | Crear una cuenta de usuario                                                                          |
+| `/auth/login`                                  | `POST`   | Iniciar sesion <br/>(obtener tokens de acceso)                                                       |
+| `/auth/verify-email`                           | `POST`   | Verificar email ( necesario codigo de email )                                                        |
+| `/auth/reset-password`                         | `POST`   | Resetar password ( necesario codigo de email )                                                       |
+| `/auth/refresh-token`                          | `POST`   | refrescar token de accesso                                                                           |
+| `/users/{id}`                                  | `GET`    | Obtener un usuario por id                                                                            |
+| `/users/{id}/products`                         | `GET`    | Obtener productos de un usuario por id<br/>(Spring pageable), probablemente no indispensable         |
+| `/users/{id}/balance`                          | `PATCH`  | Ajustar balance (sumar o restar el _delta_ (Δ))                                                      |
+| `/users/{id}/authorities`                      | `PUT`    | Actualizar roles (PUT)                                                                               |
+| `/carts/{id}`                                  | `GET`    | Obtener my carro de compras (NO IMPLEMENTADO AUN)                                                    |
+| `/carts/{id}/items/add`                        | `POST`   | Agregar un item al carrito de ompras                                                                 |
+| `/carts/{id}/items/{id}/amount`                | `PUT`    | Actualizar cantidad de un item de carrito                                                            |
+| `/carts/{id}/items/{id}`                       | `DELETE` | Borrar un item de carrito                                                                            |
+| `/email/send-email-verification`               | `POST`   | Enviar un email de verificacio<br/>necesario especificar que tipo<br/>de permiso se esta concediendo |
+| `/payments`                                    | `POST`   | Procesar un pago                                                                                     |
+| `/products/create-product`                     | `POST`   | Crear un producto                                                                                    |
+| `/products/{id}`                               | `GET`    | Obteber un producto                                                                                  |
+| `/products/{id}`                               | `PUT`    | actualizar un producto                                                                               |
+| `/products/{id}`                               | `DELETE` | borrae un producto                                                                                   |
+| `/products/categories//create-category`        | `POST`   | crear categoria                                                                                      |
+| `/products/categories`                         | `GET`    | obtener categoria ( no pageable )                                                                    |
+| `/products`<br/>`?page=0&size=10&sort=id,desc` | `GET`    | Obtener todos los productos<br/>(Spring pageable)                                                    |
+
 
 <hr>
 DOCS INCOMPLETOS desde aqui
@@ -245,7 +275,8 @@ DOCS INCOMPLETOS desde aqui
    // explcair creditos internos de app
 
 3. como integrar asarelas de pago
-// todo: explicar extension de la clase abstracta base y impl en el componente mediante una interface
+   // todo: explicar extension de la clase abstracta base y impl en el componente mediante una interface
+
 ### Desarrollo
 
 <hr>
