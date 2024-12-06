@@ -260,7 +260,9 @@ El sistema permitirá a cualquier persona registrarse como usuario, creando una 
 #### Respuesta esperada:
 
 Si el registro es exitoso, el sistema responderá con un mensaje de confirmación y creará el usuario en la base de
-datos.
+datos, ademas enviara un correo electrónico con un código de verificación, con el cual se le concederan los permisos
+necesarios para poder verificar su correo electrónico.
+
 En caso de error, el sistema devolverá un mensaje detallado con el código de error correspondiente (por ejemplo, 400
 Bad Request para datos inválidos o 409 Conflict para email duplicado) basado en los estandares de la especificación _RFC
 9110_.
@@ -269,20 +271,73 @@ Bad Request para datos inválidos o 409 Conflict para email duplicado) basado en
 
 ### Funcional
 
+Las pruebas se inizializaran con un usuario en la base de datos
+
 #### Registro de usuario
 
-1. Caso de prueba: Registro exitoso
+Registro de usuario es basicamente la creacion de un nuevo recurso en el servidor.
+[RFC 9110 establece](https://www.rfc-editor.org/rfc/rfc9110.html#name-post) que para esta operacion
+el metodo http debe ser `POST`.
 
-- En una creacion segun [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html#name-post)
-  - **Http Method**: POST
-  - **Http Status**: 201 Created
-  - **Http Headers**: `Location: ...`
+##### Caso de prueba 1: Registro exitoso
+
+- **Http Method**: `POST`
+- **Http Status**: `201 Created`
+- **Http Headers**: `Location: ...`
 
 - Por mi parte:
-  - mockear la dependencia de envio de email para no enviar emails reales en las pruebas funcionales.
+    - mockear la dependencia de envio de email para no enviar emails reales en las pruebas funcionales.
 
+##### Caso de prueba 2: Duplicidad
+
+[segun RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html#name-409-conflict) se debe indicar un `409 Conflict`
+para indicar que una solicitud (HTTP Request) no se pudo completar debido a un conflicto con el estado actual del
+recurso a procesar.
+Y se debe incluir suficiente información para que el usuario pueda reconocer la fuente del conflicto, y de este modo
+el usuario pueda resolver el conflicto reenviado la solicitud.
+
+1. Correo duplicado
+
+- **Http Method**: `POST`
+- **Http Status**: `409 Conflict`
+- **Http Body**: `{"message": "Correo ya registrado...", "code": "EMAIL_ALREADY_EXISTS"}`
+
+##### Caso de prueba 2: Datos invalidos
+
+segun [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) se debe indicar
+un [400 Bad Request](https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request)
+para indicar que la solicitud (HTTP Request) no se puede o no será procesada debido
+a algo que se percibe como un error del cliente, aunque esta especificacion no establece
+acerca de dar mas informacion acerca del error, yo lo hare.
+
+1. Primer nombre vacio
+
+- **Http Method**: `POST`
+- **Http Status**: `400 Bad Request`
+- **Http Body**: `{"message": "Primer nombre es obligatorio", "code": "FIRST_NAME_REQUIRED"}`
+
+2. Primer apellido vacio
+
+    - **Http Method**: `POST`
+    - **Http Status**: `400 Bad Request`
+    - **Http Body**: `{"message": "Primer apellido es obligatorio", "code": "LAST_NAME_REQUIRED"}`
+
+
+3. Correo invalido (no cumple con la expresion regular)
+
+    - **Http Method**: `POST`
+    - **Http Status**: `400 Bad Request`
+    - **Http Body**: `{"message": "Correo invalido", "code": "INVALID_EMAIL"}`   
+
+
+4. Contraseña invalida (menos de 8 caracteres)
+
+    - **Http Method**: `POST`
+    - **Http Status**: `400 Bad Request`
+    - **Http Body**: `{"message": "Contraseña invalida", "code": "INVALID_PASSWORD"}`
 
 ### ENDPOINTS antes
+
 > PD: Esto es temporaneo mientras termine mi OpenAPI Description
 
 | Path                                           | Metodo   | Descripcion                                                                                          |
