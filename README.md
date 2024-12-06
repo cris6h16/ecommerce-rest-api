@@ -230,6 +230,41 @@ PD:
     - _Inputs_: Objetos de entradas a componentes
     - _Outputs_:Objetos de salida de componentes
 
+## Kanban
+
+| por hacer           | En progreso | Terminado |
+|---------------------|-------------|-----------|
+| Registro de usuario |             |           |
+
+## Requisitos Funcionales
+
+### 1. Registro de usuario
+
+#### Descripción:
+
+El sistema permitirá a cualquier persona registrarse como usuario, creando una cuenta en la plataforma.
+
+| Datos obligatorios | Desc                                                    |
+|--------------------|---------------------------------------------------------|
+| Primer nombre      | Campo alfanumérico obligatorio.                         |
+| Primer apellido    | Campo alfanumérico obligatorio.                         |
+| Correo electrónico | Debe cumplir con la expresión regular: `^\S+@\S+\.\S+$` |
+| Contraseña         | mínimode 8 caracteres                                   |
+
+#### Reglas de negocio adicionales:
+
+- El correo electrónico debe ser único dentro del sistema; no se permitirán registros con correos ya existentes.
+  Restricciones:
+- En caso de error, el sistema debe informar claramente al usuario la causa del rechazo, y el código de error unico.
+
+#### Respuesta esperada:
+
+Si el registro es exitoso, el sistema responderá con un mensaje de confirmación y creará el usuario en la base de
+datos.
+En caso de error, el sistema devolverá un mensaje detallado con el código de error correspondiente (por ejemplo, 400
+Bad Request para datos inválidos o 409 Conflict para email duplicado) basado en los estandares de la especificación _RFC
+9110_.
+
 ## Testing
 
 ### ENDPOINTS antes
@@ -260,7 +295,6 @@ PD:
 | `/products/categories//create-category`        | `POST`   | crear categoria                                                                                      |
 | `/products/categories`                         | `GET`    | obtener categoria ( no pageable )                                                                    |
 | `/products`<br/>`?page=0&size=10&sort=id,desc` | `GET`    | Obtener todos los productos<br/>(Spring pageable)                                                    |
-
 
 <hr>
 DOCS INCOMPLETOS desde aqui
