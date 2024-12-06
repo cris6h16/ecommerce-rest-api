@@ -234,6 +234,8 @@ PD:
 
 ### ENDPOINTS antes
 
+> PD: Esto es temporaneo mientras termine mi OpenAPI Description
+
 | Path                                           | Metodo   | Descripcion                                                                                          |
 |------------------------------------------------|----------|------------------------------------------------------------------------------------------------------|
 | `/auth/signup`                                 | `POST`   | Crear una cuenta de usuario                                                                          |
