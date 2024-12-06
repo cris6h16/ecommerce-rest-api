@@ -267,8 +267,22 @@ Bad Request para datos inválidos o 409 Conflict para email duplicado) basado en
 
 ## Testing
 
-### ENDPOINTS antes
+### Funcional
 
+#### Registro de usuario
+
+1. Caso de prueba: Registro exitoso
+
+- En una creacion segun [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html#name-post)
+  - **Http Method**: POST
+  - **Http Status**: 201 Created
+  - **Http Headers**: `Location: ...`
+
+- Por mi parte:
+  - mockear la dependencia de envio de email para no enviar emails reales en las pruebas funcionales.
+
+
+### ENDPOINTS antes
 > PD: Esto es temporaneo mientras termine mi OpenAPI Description
 
 | Path                                           | Metodo   | Descripcion                                                                                          |
