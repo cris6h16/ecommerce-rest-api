@@ -34,4 +34,6 @@ public interface UserComponent {
      * @return la contrasena limpia ( trim, etc ) solo si es valida, de otro modo lanzara una exception
      */
     String isPassValidElseThrow(String password);
+
+    void deleteByEmail(String email);
 }

@@ -46,7 +46,7 @@ public class ProductFacadeImpl implements ProductFacade {
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public Long createProduct(CreateProductDTO dto) {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabled(userId, );
+        isUserEnabled(userId, userComponent);
         Long id = productComponent.createProduct(toInput(dto));
         Set<String> url = fileComponent.uploadImages(dto.getImages());
         productComponent.updateImagesById(id, url);
@@ -73,7 +73,7 @@ public class ProductFacadeImpl implements ProductFacade {
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public Long createCategory(CreateCategoryDTO dto) {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabled(userId);
+        isUserEnabled(userId,userComponent);
         return productComponent.createCategory(toInput(dto));
     }
 
@@ -113,7 +113,7 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     public Page<ProductDTO> findMyProducts(Pageable pageable) {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabled(userId);
+        isUserEnabled(userId,userComponent);
         return productComponent.findProductByUserId(userId, pageable)
                 .map(this::toProductDTO);
     }
@@ -132,7 +132,7 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     public void deleteProduct(Long productId) {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabled(userId);
+        isUserEnabled(userId,userComponent);
         productComponent.deleteProductByIdAndUserId(productId, userId);
     }
 
@@ -155,7 +155,7 @@ public class ProductFacadeImpl implements ProductFacade {
     private CreateProductInput toInput(CreateProductDTO dto) {
         log.debug("Converting CreateProductDTO to CreateProductInput: {}", dto);
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabled(userId);
+        isUserEnabled(userId,userComponent);
         CreateProductInput res = CreateProductInput.builder()
                 .name(dto.getName())
                 .price(dto.getPrice())

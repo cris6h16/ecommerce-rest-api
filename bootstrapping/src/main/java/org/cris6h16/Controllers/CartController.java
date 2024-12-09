@@ -17,13 +17,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
-import static org.cris6h16.Controllers.HTTPCommons.PATH_PREFIX;
 
 @RestController
 @RequestMapping(CartController.CART_PATH)
 @Slf4j
 public class CartController {
-    public static final String CART_PATH = PATH_PREFIX + "/cart";
+    public static final String CART_PATH =  "api/v1/cart";
     public static final String CART_ITEM_SUB_PATH =  "/item";
     private final CartFacade cartFacade;
 

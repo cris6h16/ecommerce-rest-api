@@ -68,9 +68,8 @@ class UserFacadeImpl implements UserFacade {
     }
 
     private void processPassword(ResetPasswordDTO input) {
-        // replicacion de la logica de validacion de contrasena, esto lo hace el componente, pero al yo mandar la contrasena al componente ya encriptada la validacion de contrasena siempre sera exitosa ( length > 8 ) es por eso que es la unica validacion afuera del componente
-        input.prepare();
-        String passwoed = userValidator.validatePassword(input.getPassword()); // el validador del componente fue expuesto al exterior para evitar reescribir la logica de validacion de contrasena
+        // validacion temprana de contrasena, la unica validacion afuera del componente ya que la contrasena al componente llega ya encriptada la validacion de contrasena siempre sera exitosa ( length > 8 ) es por eso que es la unica validacion afuera del componente
+        String passwoed = userComponent.isPassValidElseThrow(input.getPassword());
 
         // encriptacion de la contrasena
         String encodedPass = securityComponent.encodePassword(passwoed);
@@ -213,6 +212,11 @@ class UserFacadeImpl implements UserFacade {
     public void adjustBalance(Long id, BigDecimal delta) {
         existsEnabledUser(id);
         userComponent.adjustBalanceById(id, delta);
+    }
+
+    @Override
+    public void deleteByEmail(String email) {
+        userComponent.deleteByEmail(email);
     }
 
     private void existsEnabledUser(Long id) {

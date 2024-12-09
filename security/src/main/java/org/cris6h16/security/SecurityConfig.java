@@ -32,21 +32,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/me").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/products/create-category").hasRole("SELLER")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/products/create-product").hasRole("SELLER")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/products/categories/create-category").hasRole("SELLER")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/products/my-products").hasRole("SELLER")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh-token").authenticated()
-                        .requestMatchers(HttpMethod.GET,
-                                "/api/v1/products",
-                                "/api/v1/products/categories").permitAll()
-                        .requestMatchers(HttpMethod.POST,
-                                "/api/v1/auth/login",
-                                "/api/v1/auth/signup",
-                                "/api/v1/auth/verify-email",
-                                "/api/v1/auth/reset-password",
-                                "/api/v1/auth/send-email-verification").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/signup").permitAll()
                         .anyRequest().denyAll())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
@@ -57,7 +43,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
     static RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.withDefaultRolePrefix()
                 .role("ADMIN").implies("SELLER")

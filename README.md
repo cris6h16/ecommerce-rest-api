@@ -45,6 +45,7 @@ Este proyecto es una API REST en desarrollo para un sistema de e-commerce.
         - pruebas
     - Mapeo de codigos de error
     - Entrada y salida HTTP
+    - Pruebas Funcionales
 
 
 - **_application_**:
@@ -232,109 +233,89 @@ PD:
 
 ## Kanban
 
-| por hacer           | En progreso | Terminado |
-|---------------------|-------------|-----------|
-| Registro de usuario |             |           |
+| por hacer | En progreso                                | Terminado |
+|-----------|--------------------------------------------|-----------|
+|           | Registro de usuario                        |           |
+|           | Borrar usuario por email<br/>(hard delete) |           |
+|           | Inicio de Sesion                           |           |
 
 ## Requisitos Funcionales
 
-### 1. Registro de usuario
+
+### 1. Inicio de Sesion
 
 #### Descripción:
 
-El sistema permitirá a cualquier persona registrarse como usuario, creando una cuenta en la plataforma.
+El sistema permitirá a los usuarios registrados iniciar sesión en la plataforma
+proporcionando su email y contraseña.
 
-| Datos obligatorios | Desc                                                    |
-|--------------------|---------------------------------------------------------|
-| Primer nombre      | Campo alfanumérico obligatorio.                         |
-| Primer apellido    | Campo alfanumérico obligatorio.                         |
-| Correo electrónico | Debe cumplir con la expresión regular: `^\S+@\S+\.\S+$` |
-| Contraseña         | mínimode 8 caracteres                                   |
+#### Entradas:
 
-#### Reglas de negocio adicionales:
+- email
+- contraseña
 
-- El correo electrónico debe ser único dentro del sistema; no se permitirán registros con correos ya existentes.
-  Restricciones:
-- En caso de error, el sistema debe informar claramente al usuario la causa del rechazo, y el código de error unico.
+#### Flujo principal:
 
-#### Respuesta esperada:
+n/a
 
-Si el registro es exitoso, el sistema responderá con un mensaje de confirmación y creará el usuario en la base de
-datos, ademas enviara un correo electrónico con un código de verificación, con el cual se le concederan los permisos
-necesarios para poder verificar su correo electrónico.
+#### Reglas de negocio:
 
-En caso de error, el sistema devolverá un mensaje detallado con el código de error correspondiente (por ejemplo, 400
-Bad Request para datos inválidos o 409 Conflict para email duplicado) basado en los estandares de la especificación _RFC
-9110_.
+- `email`:
+    - Debe cumplir con la expresión regular: `^\S+@\S+\.\S+$`
+    - Debe ser un email registrado en el sistema.
+
+- `contraseña`:
+    - Debe ser la contraseña del usuario registrado con el email ingresado.
+
+#### Criterios de aceptación:
+
+- Dado que:
+    - se ingresa un email válido
+    - se encuentra un usuario con este email
+    - la contrasena coincide con este usuario encontrado
+    - el usuario encontrado esta habilitado
+    - el usuario encontrado tiene su email verificado
+    - entonces, el sistema debe responder con un token de acceso y un token de refresco.
+
+- Dado que:
+  - se ingresa un email invalido
+  - entonces, el sistema debe responder con un mensaje indicando que el email es invalido, ademas debe contener un codigo de error unico.
+
+- Dado que:
+    - se ingresa un email válido
+    - no se encuentra un usuario con este email
+    - entonces, el sistema debe responder con un mensaje indicando que las credenciales son invalidas, ademas debe contener un codigo de error unico.
+
+
+- Ddao que:
+    - se ingresa un email válido
+    - se encuentra un usuario con este email
+    - la contrasena no coincide con este usuario encontrado
+    - entonces, el sistema debe responder con un mensaje indicando que las credenciales son invalidas,, ademas debe contener un codigo de error unico.
+
+
+- Dado que:
+    - se ingresa un email válido
+    - se encuentra un usuario con este email
+    - la contrasena coincide con este usuario encontrado
+    - el usuario encontrado esta deshabilitado
+    - entonces, el sistema debe responder con un mensaje indicando que las credenciales son invalidas, ademas debe contener un codigo de error unico.
+
+
+- Dado que:
+    - se ingresa un email válido
+    - se encuentra un usuario con este email
+    - la contrasena coincide con este usuario encontrado
+    - el usuario encontrado esta habilitado
+    - el usuario encontrado no tiene su email verificado
+    - entonces, el sistema debe:
+        - Enviar un nuevo email de verificacion.
+        - responder con un mensaje indicando que el email no esta verificado y que se ha enviado un nuevo email de verificacion, ademas debe contener un codigo de error unico.
+
 
 ## Testing
 
-### Funcional
 
-Las pruebas se inizializaran con un usuario en la base de datos
-
-#### Registro de usuario
-
-Registro de usuario es basicamente la creacion de un nuevo recurso en el servidor.
-[RFC 9110 establece](https://www.rfc-editor.org/rfc/rfc9110.html#name-post) que para esta operacion
-el metodo http debe ser `POST`.
-
-##### Caso de prueba 1: Registro exitoso
-
-- **Http Method**: `POST`
-- **Http Status**: `201 Created`
-- **Http Headers**: `Location: ...`
-
-- Por mi parte:
-    - mockear la dependencia de envio de email para no enviar emails reales en las pruebas funcionales.
-
-##### Caso de prueba 2: Duplicidad
-
-[segun RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html#name-409-conflict) se debe indicar un `409 Conflict`
-para indicar que una solicitud (HTTP Request) no se pudo completar debido a un conflicto con el estado actual del
-recurso a procesar.
-Y se debe incluir suficiente información para que el usuario pueda reconocer la fuente del conflicto, y de este modo
-el usuario pueda resolver el conflicto reenviado la solicitud.
-
-1. Correo duplicado
-
-- **Http Method**: `POST`
-- **Http Status**: `409 Conflict`
-- **Http Body**: `{"message": "Correo ya registrado...", "code": "EMAIL_ALREADY_EXISTS"}`
-
-##### Caso de prueba 2: Datos invalidos
-
-segun [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) se debe indicar
-un [400 Bad Request](https://www.rfc-editor.org/rfc/rfc9110.html#name-400-bad-request)
-para indicar que la solicitud (HTTP Request) no se puede o no será procesada debido
-a algo que se percibe como un error del cliente, aunque esta especificacion no establece
-acerca de dar mas informacion acerca del error, yo lo hare.
-
-1. Primer nombre vacio
-
-- **Http Method**: `POST`
-- **Http Status**: `400 Bad Request`
-- **Http Body**: `{"message": "Primer nombre es obligatorio", "code": "FIRST_NAME_REQUIRED"}`
-
-2. Primer apellido vacio
-
-    - **Http Method**: `POST`
-    - **Http Status**: `400 Bad Request`
-    - **Http Body**: `{"message": "Primer apellido es obligatorio", "code": "LAST_NAME_REQUIRED"}`
-
-
-3. Correo invalido (no cumple con la expresion regular)
-
-    - **Http Method**: `POST`
-    - **Http Status**: `400 Bad Request`
-    - **Http Body**: `{"message": "Correo invalido", "code": "INVALID_EMAIL"}`   
-
-
-4. Contraseña invalida (menos de 8 caracteres)
-
-    - **Http Method**: `POST`
-    - **Http Status**: `400 Bad Request`
-    - **Http Body**: `{"message": "Contraseña invalida", "code": "INVALID_PASSWORD"}`
 
 ### ENDPOINTS antes
 

@@ -7,7 +7,6 @@ import org.cris6h16.facades.CreateCategoryDTO;
 import org.cris6h16.facades.CreateProductDTO;
 import org.cris6h16.facades.ProductDTO;
 import org.cris6h16.facades.ProductFacade;
-import org.cris6h16.product.ProductOutput;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,7 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.cris6h16.Controllers.HTTPCommons.PATH_PREFIX;
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 
 @RestController
@@ -40,7 +38,8 @@ import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 public class ProductController {
 
     protected final ProductFacade productFacade;
-    static final String PRODUCT_PATH = PATH_PREFIX + "/products";
+    static final String PRODUCT_PATH = "api/v1/products";
+    public static final String CATEGORY_PATH = ProductController.PRODUCT_PATH + "/categories";
 
     public ProductController(ProductFacade productFacade) {
         this.productFacade = productFacade;
@@ -59,16 +58,6 @@ public class ProductController {
                 .build();
     }
 
-    @GetMapping(
-            path = "/my-products",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<Page<org.cris6h16.facades.ProductDTO>> findMyProducts(Pageable pageable) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .headers(jsonHeaderCons)
-                .body(productFacade.findMyProducts(pageable));
-    }
 
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -122,17 +111,8 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-
-
-    public static final String CATEGORY_PATH = ProductController.PRODUCT_PATH + "/categories";
-    protected final ProductFacade productFacade;
-
-    public CategoryController(ProductFacade productFacade) {
-        this.productFacade = productFacade;
-    }
-
     @PostMapping(
-            path = "/create-category",
+            path = CATEGORY_PATH + "/create-category",
             consumes = "application/json"
     )
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
@@ -143,7 +123,10 @@ public class ProductController {
         return res;
     }
 
-    @GetMapping(produces = "application/json")
+    @GetMapping(
+            path = CATEGORY_PATH,
+            produces = "application/json"
+    )
     public ResponseEntity<Set<CategoryDTO>> getCategories() {
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -1,5 +1,7 @@
 package org.cris6h16.cart;
 
+import org.springframework.stereotype.Component;
+
 import static org.cris6h16.cart.CartComponentErrorCode.CART_ITEM_ID_LESS_THAN_ONE;
 import static org.cris6h16.cart.CartComponentErrorCode.INVALID_USER_ID;
 import static org.cris6h16.cart.CartComponentErrorCode.NULL_CART_ITEM_ID;
@@ -10,6 +12,7 @@ import static org.cris6h16.cart.CartComponentErrorCode.PRODUCT_ID_LESS_THAN_ONE;
 import static org.cris6h16.cart.CartComponentErrorCode.QUANTITY_LESS_THAN_ONE;
 import static org.cris6h16.cart.CartComponentErrorCode.USER_ID_LESS_THAN_ONE;
 
+@Component
 public class CartValidator {
      void validate(CreateCartItemInput input) {
         validateProductId(input.getProductId());

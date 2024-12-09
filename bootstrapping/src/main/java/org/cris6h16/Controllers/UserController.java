@@ -6,12 +6,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -26,7 +28,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 @RequestMapping(BASE_PATH)
 public class UserController {
 
-     static final String BASE_PATH = "/api/v1/users";
+    static final String BASE_PATH = "/api/v1/users";
 
 
     private final UserFacade userFacade;
@@ -34,8 +36,6 @@ public class UserController {
     public UserController(UserFacade userFacade) {
         this.userFacade = userFacade;
     }
-
-
 
 
     @GetMapping(
@@ -79,5 +79,10 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping(path = "/hard-delete")
+    public ResponseEntity<Void> deleteById(@RequestParam String email) {
+        userFacade.deleteByEmail(email);
+        return ResponseEntity.noContent().build();
+    }
 
 }

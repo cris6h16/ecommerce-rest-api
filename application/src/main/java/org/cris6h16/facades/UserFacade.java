@@ -24,4 +24,6 @@ public interface UserFacade {
     UserDTO findById(Long id);
 
     void adjustBalance(Long id, BigDecimal delta);
+
+    void deleteByEmail(String email);
 }

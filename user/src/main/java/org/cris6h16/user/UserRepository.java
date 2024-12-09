@@ -42,4 +42,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u.balance FROM users u WHERE u.id = ?1")
     Optional<BigDecimal> findBalanceById(Long id);
 
+    void deleteByEmail(String email);
 }

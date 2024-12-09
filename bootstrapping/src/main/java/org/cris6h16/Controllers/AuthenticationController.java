@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
@@ -28,7 +29,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 @RestController
 @RequestMapping(BASE_PATH)
 public class AuthenticationController {
-     static final String BASE_PATH = "/api/v1/auth";
+    static final String BASE_PATH = "/api/v1/auth";
 
     private final UserFacade userFacade;
 
@@ -36,19 +37,20 @@ public class AuthenticationController {
         this.userFacade = userFacade;
     }
 
-    @PostMapping(
-            path = "/signup",
-            consumes = APPLICATION_JSON_VALUE
-    )
     @Transactional(
             rollbackFor = Exception.class,
             isolation = Isolation.READ_COMMITTED
     )
-    public ResponseEntity<Void> signUp(@RequestBody SignupDTO dto) {
-        Long id = userFacade.signup(dto);
-        return ResponseEntity
-                .created(URI.create(UserController.BASE_PATH + "/me"))
-                .build();
+    @PostMapping(
+            path = "/signup",
+            consumes = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Void> signUp(@RequestBody SignupDTO dto, UriComponentsBuilder ucb) {
+        URI uri = ucb.path(UserController.BASE_PATH + "/{id}").
+                buildAndExpand(userFacade.signup(dto)).
+                toUri();
+
+        return ResponseEntity.created(uri).build();
     }
 
     @PostMapping(
@@ -108,7 +110,6 @@ public class AuthenticationController {
         String accessToken = userFacade.refreshAccessToken(); // todo: organizar mejor aqui no es user facade es authentication facade
         return ResponseEntity.ok(accessToken);
     }
-
 
 
 }

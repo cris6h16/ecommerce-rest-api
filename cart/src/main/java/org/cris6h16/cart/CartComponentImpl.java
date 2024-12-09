@@ -1,17 +1,17 @@
 package org.cris6h16.cart;
 
-import org.antlr.v4.runtime.misc.LogManager;
 import org.cris6h16.product.ProductRepository;
 import org.cris6h16.user.UserRepository;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static org.cris6h16.cart.CartComponentErrorCode.CART_ITEM_NOT_FOUND_BY_ID;
 import static org.cris6h16.cart.CartComponentErrorCode.PRODUCT_NOT_FOUND_BY_ID;
 import static org.cris6h16.cart.CartComponentErrorCode.USER_NOT_FOUND_BY_ID;
 
+@Component
 public class CartComponentImpl implements CartComponent {
     private final CartRepository cartRepository;
     private final UserRepository userRepository;

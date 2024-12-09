@@ -107,13 +107,13 @@ class UserComponentImpl implements UserComponent {
         userRepository.deleteAll();
         authorityRepository.deleteAll();
     }
-
-    @Override
-    public boolean existsByEmailAndEnabled(String email, boolean enabled) {
-        email = userValidator.validateEmail(email);
-
-        return userRepository.existsByEmailAndEnabled(email, enabled);
-    }
+//
+//    @Override
+//    public boolean existsByEmailAndEnabled(String email, boolean enabled) {
+//        email = userValidator.validateEmail(email);
+//
+//        return userRepository.existsByEmailAndEnabled(email, enabled);
+//    }
 
     @Override
     public Page<UserOutput> findAll(Pageable pageable) {
@@ -141,6 +141,12 @@ class UserComponentImpl implements UserComponent {
     @Override
     public String isPassValidElseThrow(String password) {
         return userValidator.validatePassword(password);
+    }
+
+    @Override
+    public void deleteByEmail(String email) {
+        email = userValidator.validateEmail(email);
+        userRepository.deleteByEmail(email);
     }
 
 }
