@@ -18,6 +18,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -32,17 +34,26 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/signup").permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/signup",
+                                "/api/v1/email/send-email-verification").permitAll()
+                        .requestMatchers(HttpMethod.PATCH,
+                                "/api/v1/users/verify-email").permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/tests/reset-functional-testing-db").permitAll()
                         .anyRequest().denyAll())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(conf -> conf.configurationSource(this.corsConfigurer()))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .logout(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
+    // @Bean
     static RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.withDefaultRolePrefix()
                 .role("ADMIN").implies("SELLER")

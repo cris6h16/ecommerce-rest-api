@@ -141,7 +141,7 @@ class UserFacadeImpl implements UserFacade {
     public void verifyEmail(VerifyEmailDTO dto) {
         String actionType = EmailCodeActionType.VERIFY_EMAIL.name();
 
-        isCodeValid(dto.getEmail(), dto.getCode(), actionType, EMAIL_NOT_VERIFIED);
+        isCodeValid(dto.getEmail(), dto.getCode(), actionType, VALID_VERIFICATION_CODE_NOT_FOUND);
         userComponent.updateEmailVerifiedByEmail(dto.getEmail(), true);
         emailComponent.removeByEmailAndActionType(dto.getEmail(), actionType);
     }

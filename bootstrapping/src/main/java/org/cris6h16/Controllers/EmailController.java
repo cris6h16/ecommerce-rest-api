@@ -22,7 +22,7 @@ public class EmailController {
 
     @PostMapping(
             path = "/send-email-verification",
-            consumes = MediaType.TEXT_PLAIN_VALUE
+            consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @Transactional(
             rollbackFor = Exception.class,
@@ -30,6 +30,6 @@ public class EmailController {
     )
     public ResponseEntity<Void> sendEmailVerification(@RequestBody SendEmailVerificationDTO dto) {
         this.emailFacade.sendEmailVerificationCodeIfExists(dto);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }

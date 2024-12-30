@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class SendEmailVerificationDTO {
     private String email;
-    private EmailCodeActionType actionType;
+    private String actionType;
 }

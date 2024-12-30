@@ -69,6 +69,11 @@ public class ApplicationComponentAdvice {
                 msg = properties.getProductNotFoundById();
                 break;
 
+            case INVALID_ACTION_TYPE:
+                status = HttpStatus.BAD_REQUEST;
+                msg = properties.getInvalidActionType();
+                break;
+
             default:
                 log.error("A custom exception should have custom response handling", e);
                 status = HttpStatus.INTERNAL_SERVER_ERROR;

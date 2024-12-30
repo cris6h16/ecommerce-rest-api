@@ -18,4 +18,5 @@ public class ApplicationComponentErrorMsgProperties {
     private String imgMultipartFileIsEmpty;
     private String enabledUserNotFound;
     private String productNotFoundById;
+    private String invalidActionType;
 }

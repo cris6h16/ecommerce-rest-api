@@ -72,20 +72,7 @@ public class AuthenticationController {
     }
 
     // todo: talvez deberia estar en otro endpoint y no en /auth, si se mueve verificar sync con docs
-    @PostMapping(
-            path = "/verify-email",
-            consumes = APPLICATION_JSON_VALUE
-    )
-    @Transactional(
-            rollbackFor = Exception.class,
-            isolation = Isolation.READ_COMMITTED
-    )
-    public ResponseEntity<Void> verifyEmail(@RequestBody VerifyEmailDTO dto) {
-        userFacade.verifyEmail(dto);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .build();
-    }
+
 
     @PostMapping(
             path = "/reset-password",

@@ -40,3 +40,22 @@ VALUES
  true,
  '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y' -- 12345678
 );
+
+-- testing funcional
+INSERT INTO email_verification(id, email, code, action_type, created_at, expires_at)
+VALUES
+(
+    nextval('email_verification_id_seq'),
+    'email-no-verificado@gmail.com',
+    'ZJM3076MFJ',
+    'VERIFY_EMAIL',
+    now(),
+    now() + interval '15 hours'
+),(
+    nextval('email_verification_id_seq'),
+    'existente@gmail.com',
+    'AXY1840Y10',
+    'VERIFY_EMAIL',
+    now(),
+    now() + interval '15 hours'
+);

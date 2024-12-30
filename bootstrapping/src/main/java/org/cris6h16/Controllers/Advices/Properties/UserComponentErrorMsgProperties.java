@@ -24,4 +24,6 @@ public class UserComponentErrorMsgProperties {
     private String passwordTooLong;
     private String firstnameTooLong;
     private String firstnameNull;
+    private String firstnameIsBlank;
+    private String lastnameIsBlank;
 }

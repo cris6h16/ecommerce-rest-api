@@ -19,6 +19,7 @@ import static org.cris6h16.email.Exceptions.EmailErrorCode.ACTION_TYPE_TOO_LONG;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.CODE_INVALID_LENGTH;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.CODE_IS_BLANK;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.CODE_NULL;
+import static org.cris6h16.email.Exceptions.EmailErrorCode.CODE_REGEX_MISMATCH;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.EMAIL_NULL;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.EMAIL_REGEX_MISMATCH;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.EMAIL_SENDING_MAX_RETRIES_ERROR;
@@ -76,6 +77,10 @@ public class EmailComponentAdvice {
         } else if (code.equals(ACTION_TYPE_BLANK) || code.equals(ACTION_TYPE_NULL) || code.equals(ACTION_TYPE_TOO_LONG)) {
             status = HttpStatus.BAD_REQUEST;
             msg = props.getInvalidActionTypeLength();
+
+        } else if (code.equals(CODE_REGEX_MISMATCH)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = props.getCodeRegexMismatch();
 
         } else {
             log.error("A custom exception should have custom response handling", e);

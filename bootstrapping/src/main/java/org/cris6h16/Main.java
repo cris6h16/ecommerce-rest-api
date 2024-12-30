@@ -28,34 +28,24 @@ public class Main {
     CommandLineRunner commandLineRunner(UserComponent userComponent, SecurityComponent securityComponent, TransactionTemplate transactionTemplate) {
         return args -> {
             log.info("CommandLineRunner running");
-            /*
-            private String firstname;
-            private String lastname;
-            private String email;
-            private String password;
-            private boolean enabled;
-            private boolean emailVerified;
-            private Set<String> authorities;
-            private BigDecimal balance;
-             */
-//            transactionTemplate.execute(status -> {
-//                try {
-//                    userComponent.create(CreateUserInput.builder()
-//                            .firstname("cris6h16")
-//                            .lastname("test")
-//                            .email("cristianmherrera21@gmail.com")
-//                            .password(securityComponent.encodePassword("12345678"))
-//                            .enabled(true)
-//                            .emailVerified(true)
-//                            .authorities(Set.of("ROLE_SELLER"))
-//                            .balance(BigDecimal.valueOf(10.15))
-//                            .build());
-//                } catch (Exception e) {
-//                    log.error("Error creating user", e);
-//                    status.setRollbackOnly();
-//                }
-//                return null;
-//            });
+            transactionTemplate.execute(status -> {
+                try {
+                    userComponent.create(CreateUserInput.builder()
+                            .firstname("cris6h16")
+                            .lastname("test")
+                            .email("cristianmherrera21@gmail.com")
+                            .password(securityComponent.encodePassword("12345678"))
+                            .enabled(true)
+                            .emailVerified(true)
+                            .authorities(Set.of("ROLE_SELLER"))
+                            .balance(BigDecimal.valueOf(10.15))
+                            .build());
+                } catch (Exception e) {
+                    log.error("Error creating user", e);
+                    status.setRollbackOnly();
+                }
+                return null;
+            });
         };
     }
 

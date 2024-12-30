@@ -17,6 +17,8 @@ error-messages:
       password-null: "La contraseña no puede ser nula"
       password-too-long: "La contraseña es demasiado larga"
       user-id-invalid: "El id del usuario no es válido"
+      firstname-is-blank: "El primer nombre es no puede estar en blanco"
+      lastname-is-blank: "El primer apellido es no puede estar en blanco"
 
     product:
       approx-height-cm-negative: "La altura aproximada en centimetros del producto no puede ser negativa"
@@ -57,6 +59,7 @@ error-messages:
       email-sending: "Ha ocurrido un error al enviar el email de verificación"
       invalid-code-length: "El código de verificación tiene una longitud inválida"
       invalid-action-type-length: "El tipo de acción tiene una longitud inválida"
+      code-regex-mismatch: "El código de verificación no cumple con el formato esperado"
 
     application:
       email-not-verified: "Su email no ha sido verificado, por favor revisa tu bandeja de entrada"
@@ -65,7 +68,7 @@ error-messages:
       enabled-user-not-found: "Usuario no encotradi"
       img-multipart-file-is-empty: "La imagen del producto es requerida"
       product-not-found-by-id: "No se encontró el producto con el id especificado"
-
+      invalid-action-type: "El tipo de acción no es válido"
 
     file:
       file-upload-fail: "Ha ocurrido un error al subir el archivo"

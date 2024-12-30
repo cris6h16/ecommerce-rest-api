@@ -16,5 +16,5 @@ public class EmailComponentErrorMsgProperties {
     private String emailInvalid;
     private String emailSending;
     private String invalidActionTypeLength;
-
+    private String codeRegexMismatch;
 }

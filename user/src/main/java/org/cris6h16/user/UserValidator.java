@@ -12,8 +12,10 @@ import static org.cris6h16.user.Exceptions.UserErrorCode.BALANCE_NULL;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_NULL;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_REGEX_MISMATCH;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_TOO_LONG;
+import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_IS_BLANK;
 import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_NULL;
 import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_TOO_LONG;
+import static org.cris6h16.user.Exceptions.UserErrorCode.LASTNAME_IS_BLANK;
 import static org.cris6h16.user.Exceptions.UserErrorCode.LASTNAME_NULL;
 import static org.cris6h16.user.Exceptions.UserErrorCode.LASTNAME_TOO_LONG;
 import static org.cris6h16.user.Exceptions.UserErrorCode.PASSWORD_LESS_THAN_8;
@@ -36,6 +38,7 @@ import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
 
     public String validateFirstname(String firstname) {
         if (firstname == null) throwE(FIRSTNAME_NULL);
+        if (firstname.isBlank()) throwE(FIRSTNAME_IS_BLANK);
         if ((firstname.trim()).length() > FIRSTNAME_MAX_LENGTH) throwE(FIRSTNAME_TOO_LONG);
         return firstname;
     }
@@ -43,6 +46,7 @@ import static org.cris6h16.user.UserEntity.PASSWORD_LENGTH;
 
     public String validateLastname(String lastname) {
         if (lastname == null) throwE(LASTNAME_NULL);
+        if (lastname.isBlank()) throwE(LASTNAME_IS_BLANK);
         if ((lastname.trim()).length() > LASTNAME_MAX_LENGTH) throwE(LASTNAME_TOO_LONG);
         return lastname;
     }

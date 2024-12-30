@@ -16,6 +16,7 @@ import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_NULL;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_REGEX_MISMATCH;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_TOO_LONG;
+import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_IS_BLANK;
 import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_NULL;
 import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_TOO_LONG;
 import static org.cris6h16.user.Exceptions.UserErrorCode.LASTNAME_NULL;
@@ -55,6 +56,10 @@ public class UserComponentAdvice {
             status = HttpStatus.BAD_REQUEST;
             msg = props.getFirstnameNull();
 
+        } else if (code.equals(FIRSTNAME_IS_BLANK)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = props.getFirstnameIsBlank();
+
         } else if (code.equals(LASTNAME_NULL)) {
             status = HttpStatus.BAD_REQUEST;
             msg = props.getLastnameNull();
@@ -62,6 +67,10 @@ public class UserComponentAdvice {
         } else if (code.equals(UserErrorCode.LASTNAME_TOO_LONG)) {
             status = HttpStatus.BAD_REQUEST;
             msg = props.getLastnameTooLong();
+
+        } else if (code.equals(UserErrorCode.LASTNAME_IS_BLANK)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = props.getLastnameIsBlank();
 
         } else if (code.equals(UserErrorCode.PASSWORD_NULL) || code.equals(UserErrorCode.PASSWORD_LESS_THAN_8)) {
             status = HttpStatus.BAD_REQUEST;
@@ -80,7 +89,7 @@ public class UserComponentAdvice {
             msg = props.getUserIdInvalid();
 
         } else if (code.equals(UserErrorCode.EMAIL_ALREADY_EXISTS)) {
-            status = HttpStatus.BAD_REQUEST;
+            status = HttpStatus.CONFLICT;
             msg = props.getEmailAlreadyExists();
 
         } else {
