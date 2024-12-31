@@ -59,7 +59,7 @@ public class ApplicationComponentAdvice {
                 msg = properties.getEnabledUserNotFound();
                 break;
 
-            case ENABLED_USER_NOT_FOUND_BY_ID:
+            case ENABLED_USER_NOT_FOUND:
                 status = HttpStatus.NOT_FOUND;
                 msg = properties.getEnabledUserNotFound();
                 break;

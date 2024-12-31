@@ -90,7 +90,7 @@ public class UserController {
     }
 
 
-    @PatchMapping(
+    @PostMapping(
             path = "/verify-email",
             consumes = APPLICATION_JSON_VALUE
     )

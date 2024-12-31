@@ -21,7 +21,7 @@ import java.util.Set;
 
 import static org.cris6h16.facades.EmailCodeActionType.VERIFY_EMAIL;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.EMAIL_NOT_VERIFIED;
-import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.ENABLED_USER_NOT_FOUND_BY_ID;
+import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.ENABLED_USER_NOT_FOUND;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.INVALID_CREDENTIALS;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.VALID_VERIFICATION_CODE_NOT_FOUND;
 
@@ -152,10 +152,17 @@ class UserFacadeImpl implements UserFacade {
     public void resetPassword(ResetPasswordDTO dto) {
         String actionType = EmailCodeActionType.RESET_PASSWORD.name();
 
-        isCodeValid(dto.getEmail(), dto.getCode(), actionType, VALID_VERIFICATION_CODE_NOT_FOUND);
         processPassword(dto);
+        existsEnabledUser(dto.getEmail());
+        isCodeValid(dto.getEmail(), dto.getCode(), actionType, VALID_VERIFICATION_CODE_NOT_FOUND);
         userComponent.updatePasswordByEmail(dto.getEmail(), dto.getPassword());
         emailComponent.removeByEmailAndActionType(dto.getEmail(), actionType);
+    }
+
+    private void existsEnabledUser(String email) {
+        if (!userComponent.existsByEmailAndEnabled(email, true)) {
+            throw new ApplicationException(VALID_VERIFICATION_CODE_NOT_FOUND);
+        }
     }
 
 
@@ -205,7 +212,7 @@ class UserFacadeImpl implements UserFacade {
         existsEnabledUser(id);
         return userComponent.findByIdAndEnable(id, true)
                 .map(UserFacadeImpl::toUserDTO)
-                .orElseThrow(() -> new ApplicationException(ENABLED_USER_NOT_FOUND_BY_ID));
+                .orElseThrow(() -> new ApplicationException(ENABLED_USER_NOT_FOUND));
     }
 
     @Override
@@ -221,7 +228,7 @@ class UserFacadeImpl implements UserFacade {
 
     private void existsEnabledUser(Long id) {
         if (!userComponent.existsByIdAndEnabled(id, true)) {
-            throw new ApplicationException(ENABLED_USER_NOT_FOUND_BY_ID);
+            throw new ApplicationException(ENABLED_USER_NOT_FOUND);
         }
     }
 

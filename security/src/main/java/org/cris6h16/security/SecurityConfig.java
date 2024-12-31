@@ -34,12 +34,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/refresh-token").authenticated()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/signup",
-                                "/api/v1/email/send-email-verification").permitAll()
-                        .requestMatchers(HttpMethod.PATCH,
-                                "/api/v1/users/verify-email").permitAll()
+                                "/api/v1/email/send-email-verification",
+                                "/api/v1/users/verify-email",
+                                "/api/v1/auth/reset-password").permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/tests/reset-functional-testing-db").permitAll()
                         .anyRequest().denyAll())

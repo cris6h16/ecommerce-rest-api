@@ -149,4 +149,10 @@ class UserComponentImpl implements UserComponent {
         userRepository.deleteByEmail(email);
     }
 
+    @Override
+    public boolean existsByEmailAndEnabled(String email, boolean enabled) {
+        email = userValidator.validateEmail(email);
+        return userRepository.existsByEmailAndEnabled(email, enabled);
+    }
+
 }

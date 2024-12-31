@@ -58,4 +58,33 @@ VALUES
     'VERIFY_EMAIL',
     now(),
     now() + interval '15 hours'
-);
+),(
+    nextval('email_verification_id_seq'),
+    'existente@gmail.com',
+    'FLAU5C4A99',
+    'VERIFY_EMAIL',
+    now(),
+    now()
+),(
+    nextval('email_verification_id_seq'),
+    'existente@gmail.com',
+    '04S8R5V340',
+    'RESET_PASSWORD',
+    now(),
+    now() + interval '15 hours'
+),(
+    nextval('email_verification_id_seq'),
+    'deshabilitado@gmail.com',
+    '4A5C1V2A66',
+    'RESET_PASSWORD',
+    now(),
+    now() + interval '15 hours'
+),(
+    nextval('email_verification_id_seq'),
+    'existente@gmail.com',
+    '4J5G44H8SW',
+    'RESET_PASSWORD',
+    now(),
+    now()
+)
+;

@@ -36,4 +36,6 @@ public interface UserComponent {
     String isPassValidElseThrow(String password);
 
     void deleteByEmail(String email);
+
+    boolean existsByEmailAndEnabled(String email, boolean enabled);
 }
