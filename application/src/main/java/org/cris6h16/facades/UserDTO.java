@@ -19,7 +19,7 @@ public class UserDTO {
     private String firstname;
     private String lastname;
     private String email;
-    private Set<String> authorities;
+    private String authority;
     private boolean enabled;
     private BigDecimal balance;
     private boolean emailVerified;

@@ -78,8 +78,8 @@ public class UserController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Void> putAuthorities(@PathVariable Long id, @RequestBody Set<String> authorities) {
-        userFacade.updateRoles(id, authorities);
+    public ResponseEntity<Void> putAuthority(@PathVariable Long id, @RequestBody String authority) {
+        userFacade.updateRole(id, authority);
         return ResponseEntity.noContent().build();
     }
 

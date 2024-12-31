@@ -8,7 +8,7 @@ DELETE
 FROM users
 WHERE email IN ('existente@gmail.com', 'deshabilitado@gmail.com', 'email-no-verificado@gmail.com');
 
-INSERT INTO users(id, first_name, last_name, balance, email, email_verified, enabled, password)
+INSERT INTO users(id, first_name, last_name, balance, email, email_verified, enabled, password, authority)
 VALUES
 -- Email existente para login
 (nextval('users_id_seq'),
@@ -18,7 +18,8 @@ VALUES
  'existente@gmail.com',
  true,
  true,
- '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y' -- 12345678
+ '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y', -- 12345678
+'ROLE_USER'
 ),
 -- deshabilitado
 (nextval('users_id_seq'),
@@ -28,7 +29,8 @@ VALUES
  'deshabilitado@gmail.com',
  true,
  false,
- '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y' -- 12345678
+ '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y', -- 12345678
+ 'ROLE_USER'
 ),
 -- email-no-verificado
 (nextval('users_id_seq'),
@@ -38,7 +40,8 @@ VALUES
  'email-no-verificado@gmail.com',
  false,
  true,
- '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y' -- 12345678
+ '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y', -- 12345678
+ 'ROLE_USER'
 );
 
 -- testing funcional

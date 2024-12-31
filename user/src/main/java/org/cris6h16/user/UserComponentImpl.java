@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import static org.cris6h16.user.EntityMapper.getOrCreateAuthorities;
 import static org.cris6h16.user.EntityMapper.toUserEntity;
 import static org.cris6h16.user.EntityMapper.toUserOutput;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_ALREADY_EXISTS;
@@ -22,14 +22,11 @@ class UserComponentImpl implements UserComponent {
 
     private final UserRepository userRepository;
     private final UserValidator userValidator;
-    private final AuthorityRepository authorityRepository;
 
     UserComponentImpl(UserRepository userRepository,
-                      UserValidator userValidator,
-                      AuthorityRepository authorityRepository) {
+                      UserValidator userValidator) {
         this.userRepository = userRepository;
         this.userValidator = userValidator;
-        this.authorityRepository = authorityRepository;
     }
 
 
@@ -38,7 +35,7 @@ class UserComponentImpl implements UserComponent {
         input.prepare();
         validate(input);
         checkDuplicates(input);
-        UserEntity entity = toUserEntity(input, authorityRepository);
+        UserEntity entity = toUserEntity(input);
         entity = userRepository.save(entity);
         return entity.getId();
     }
@@ -105,7 +102,6 @@ class UserComponentImpl implements UserComponent {
     @Override
     public void deleteAll() {
         userRepository.deleteAll();
-        authorityRepository.deleteAll();
     }
 //
 //    @Override
@@ -121,10 +117,9 @@ class UserComponentImpl implements UserComponent {
     }
 
     @Override
-    public void updateAuthoritiesById(Long id, Set<String> authorities) {
+    public void updateAuthorityById(Long id, EAuthority authority) {
         userValidator.validateUserId(id);
-        Set<AuthorityEntity> set = getOrCreateAuthorities(authorities, authorityRepository);
-        userRepository.updateAuthoritiesById(id, set);
+        userRepository.updateAuthoritiesById(id, authority);
     }
 
     @Override

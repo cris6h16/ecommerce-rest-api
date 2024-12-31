@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -15,7 +16,7 @@ public class SecurityComponentImpl implements SecurityComponent {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 
-     SecurityComponentImpl(PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
+    SecurityComponentImpl(PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
     }
@@ -31,13 +32,13 @@ public class SecurityComponentImpl implements SecurityComponent {
     }
 
     @Override
-    public String generateAccessToken(Long id, Set<String> authorities) {
-        return jwtUtils.genAccessToken(id, authorities);
+    public String generateAccessToken(Long id, String authority) {
+        return jwtUtils.genAccessToken(id, Collections.singleton(authority));
     }
 
     @Override
-    public String generateRefreshToken(Long id, Set<String> authorities) {
-        return jwtUtils.genRefreshToken(id, authorities);
+    public String generateRefreshToken(Long id, String authority) {
+        return jwtUtils.genRefreshToken(id, Collections.singleton(authority));
     }
 
     @Override
@@ -50,12 +51,16 @@ public class SecurityComponentImpl implements SecurityComponent {
     }
 
     @Override
-    public Set<String> getCurrentUserAuthorities() {
+    public String getCurrentUserAuthority() {
         Object obj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (obj instanceof UserPrincipal userPrincipal) {
-            return ((UserPrincipal) obj).getAuthorities().stream()
+            Set<String> authorities = ((UserPrincipal) obj).getAuthorities().stream()
                     .map(Object::toString)
                     .collect(Collectors.toSet());
+            if (authorities.size() != 1) {
+                log.error("User should have exactly one authority, but has {}", authorities);
+            }
+            return authorities.iterator().next();
         }
         throw new IllegalStateException("Principal is not an instance of UserPrincipal");
     }

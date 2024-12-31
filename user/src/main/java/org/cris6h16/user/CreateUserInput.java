@@ -21,7 +21,7 @@ public class CreateUserInput implements Prepareable {
     private String password;
     private boolean enabled;
     private boolean emailVerified;
-    private Set<String> authorities;
+    private EAuthority authority;
     private BigDecimal balance;
 
     @Override
@@ -30,9 +30,6 @@ public class CreateUserInput implements Prepareable {
         lastname = lastname.trim();
         email = email.trim();
         password = password.trim();
-        authorities = authorities.stream()
-                .map(String::trim)
-                .collect(HashSet::new, HashSet::add, HashSet::addAll);
     }
 
     @Override
@@ -41,7 +38,7 @@ public class CreateUserInput implements Prepareable {
         lastname = (lastname == null)? "" : lastname;
         email = (email == null)? "" : email;
         password = (password == null)? "" : password;
-        if (authorities == null) authorities = new HashSet<>(0);
+        authority = (authority == null)? EAuthority.ROLE_USER : authority;
         if (balance == null) balance = BigDecimal.ZERO;
     }
 }

@@ -5,12 +5,12 @@ import java.util.Set;
 public interface SecurityComponent {
     String encodePassword(String password);
     boolean matches(String rawPassword, String encodedPassword);
-    String generateRefreshToken(Long id, Set<String> authorities) ;
-    String generateAccessToken(Long id, Set<String> authorities);
+    String generateRefreshToken(Long id, String authority) ;
+    String generateAccessToken(Long id, String authority);
 
     Long getCurrentUserId();
 
-    Set<String> getCurrentUserAuthorities();
+   String getCurrentUserAuthority();
 
     boolean isTokenValid(String token);
 }

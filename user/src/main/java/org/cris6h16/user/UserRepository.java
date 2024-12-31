@@ -32,8 +32,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     boolean existsByEmailAndEnabled(String email, boolean enabled);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE users u SET u.authorities = ?2 WHERE u.id = ?1")
-    void updateAuthoritiesById(Long id, Set<AuthorityEntity> authorities);
+    @Query("UPDATE users u SET u.authority = ?2 WHERE u.id = ?1")
+    void updateAuthoritiesById(Long id, EAuthority authority);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE users u SET u.balance = ?2 WHERE u.id = ?1")

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Map;
 
 import static org.cris6h16.Controllers.AuthenticationController.BASE_PATH;
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
@@ -91,11 +92,11 @@ public class AuthenticationController {
 
     @PostMapping(
             path = "/refresh-token",
-            produces = TEXT_PLAIN_VALUE
+            produces = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<String> refreshAccessToken() {
+    public ResponseEntity<Map<String, String>> refreshAccessToken() {
         String accessToken = userFacade.refreshAccessToken(); // todo: organizar mejor aqui no es user facade es authentication facade
-        return ResponseEntity.ok(accessToken);
+        return ResponseEntity.ok(Map.of("accessToken", accessToken));
     }
 
 

@@ -3,6 +3,7 @@ package org.cris6h16;
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.security.SecurityComponent;
 import org.cris6h16.user.CreateUserInput;
+import org.cris6h16.user.EAuthority;
 import org.cris6h16.user.UserComponent;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -37,7 +38,7 @@ public class Main {
                             .password(securityComponent.encodePassword("12345678"))
                             .enabled(true)
                             .emailVerified(true)
-                            .authorities(Set.of("ROLE_SELLER"))
+                            .authority(EAuthority.ROLE_SELLER)
                             .balance(BigDecimal.valueOf(10.15))
                             .build());
                 } catch (Exception e) {

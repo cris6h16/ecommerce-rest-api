@@ -1,7 +1,6 @@
 package org.cris6h16.user;
 
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class EntityMapper {
@@ -15,20 +14,15 @@ public class EntityMapper {
                 .password(userEntity.getPassword())
                 .enabled(userEntity.isEnabled())
                 .emailVerified(userEntity.isEmailVerified())
-                .authorities(toSetOfString(userEntity.getAuthorities()))
+                .authority(userEntity.getAuthority().name())
                 .balance(userEntity.getBalance())
                 .build();
     }
 
 
-    private static Set<String> toSetOfString(Set<AuthorityEntity> authorities) {
-        return authorities.stream()
-                .map(AuthorityEntity::getName)
-                .collect(Collectors.toSet());
-    }
 
 
-    static UserEntity toUserEntity(CreateUserInput user, AuthorityRepository authorityRepository) {
+    static UserEntity toUserEntity(CreateUserInput user) {
         return UserEntity.builder()
                 .id(null)
                 .firstname(user.getFirstname())
@@ -38,23 +32,8 @@ public class EntityMapper {
                 .balance(user.getBalance())
                 .enabled(user.isEnabled())
                 .emailVerified(user.isEmailVerified())
-                .authorities(getOrCreateAuthorities(user.getAuthorities(), authorityRepository))
+                .authority(user.getAuthority())
                 .build();
-    }
-
-     static Set<AuthorityEntity> getOrCreateAuthorities(Set<String> authorities, AuthorityRepository authorityRepository) {
-        return authorities.stream()
-                .map(authority -> getOrCreateAuthority(authority, authorityRepository))
-                .collect(Collectors.toSet());
-    }
-
-
-     static AuthorityEntity getOrCreateAuthority(String authority, AuthorityRepository authorityRepository) {
-        Supplier<AuthorityEntity> saved = () ->
-                authorityRepository.save(AuthorityEntity.builder().name(authority).build());
-
-        return authorityRepository
-                .findByName(authority).orElseGet(saved);
     }
 
 }

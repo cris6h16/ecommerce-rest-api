@@ -24,7 +24,7 @@ public interface UserComponent {
 
     Page<UserOutput> findAll(Pageable pageable);
 
-    void updateAuthoritiesById(Long id, Set<String> authorities);
+    void updateAuthorityById(Long id,  EAuthority authority);
 
     void adjustBalanceById(Long id, BigDecimal delta);
 

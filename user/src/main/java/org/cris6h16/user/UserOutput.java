@@ -15,7 +15,7 @@ public class UserOutput {
     private String lastname;
     private String email;
     private String password;
-    private Set<String> authorities;
+    private String authority;
     private boolean enabled;
     private BigDecimal balance;
     private boolean emailVerified;

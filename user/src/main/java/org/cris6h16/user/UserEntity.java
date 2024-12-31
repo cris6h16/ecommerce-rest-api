@@ -60,18 +60,14 @@ import java.util.Set;
     @Column(nullable = false, name = "email_verified")
     private boolean emailVerified;
 
-    @ManyToMany(
-            fetch = FetchType.EAGER,
-            cascade = {CascadeType.PERSIST}
-    )
-    @JoinTable(
-            name = "users_authorities",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "authority_id"),
-            uniqueConstraints = {
-                    @UniqueConstraint(columnNames = {"user_id", "authority_id"}, name = "unique_user_authority")
-            },
-            foreignKey = @ForeignKey(name = "fk_user_authority_user")
-    )
-    private Set<AuthorityEntity> authorities;
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    @Enumerated(EnumType.STRING)
+//    @CollectionTable(
+//            name = "authorities",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "authority"})
+//    )
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EAuthority authority;
 }

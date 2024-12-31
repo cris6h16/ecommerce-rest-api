@@ -6,6 +6,7 @@ import org.cris6h16.facades.Exceptions.ApplicationErrorCode;
 import org.cris6h16.facades.Exceptions.ApplicationException;
 import org.cris6h16.security.SecurityComponent;
 import org.cris6h16.user.CreateUserInput;
+import org.cris6h16.user.EAuthority;
 import org.cris6h16.user.LoginOutput;
 import org.cris6h16.user.ResetPasswordDTO;
 import org.cris6h16.user.UserComponent;
@@ -89,7 +90,7 @@ class UserFacadeImpl implements UserFacade {
     private void setSignupDefaults(CreateUserInput input) {
         input.setEnabled(true);
         input.setEmailVerified(false);
-        input.setAuthorities(Set.of("ROLE_USER"));
+        input.setAuthority(EAuthority.ROLE_USER);
     }
 
 
@@ -104,10 +105,10 @@ class UserFacadeImpl implements UserFacade {
 
     private LoginOutput createLoginOutput(UserOutput userDTO) {
         Long id = userDTO.getId();
-        Set<String> authorities = userDTO.getAuthorities();
+        String authority = userDTO.getAuthority();
 
-        String accessToken = securityComponent.generateAccessToken(id, authorities);
-        String refreshToken = securityComponent.generateRefreshToken(id, authorities);
+        String accessToken = securityComponent.generateAccessToken(id, authority);
+        String refreshToken = securityComponent.generateRefreshToken(id, authority);
 
         log.debug("Generated access token: {}, refresh token: {}", accessToken, refreshToken);
         return new LoginOutput(accessToken, refreshToken);
@@ -172,7 +173,7 @@ class UserFacadeImpl implements UserFacade {
                 .firstname(output.getFirstname())
                 .lastname(output.getLastname())
                 .email(output.getEmail())
-                .authorities(output.getAuthorities())
+                .authority(output.getAuthority())
                 .enabled(output.isEnabled())
                 .balance(output.getBalance())
                 .emailVerified(output.isEmailVerified())
@@ -182,9 +183,9 @@ class UserFacadeImpl implements UserFacade {
     @Override
     public String refreshAccessToken() {
         Long id = securityComponent.getCurrentUserId();
-        Set<String> authorities = securityComponent.getCurrentUserAuthorities();
+        String authority = securityComponent.getCurrentUserAuthority();
         existsEnabledUser(id);
-        return securityComponent.generateAccessToken(id, authorities);
+        return securityComponent.generateAccessToken(id, authority);
     }
 
     @Override
@@ -194,9 +195,9 @@ class UserFacadeImpl implements UserFacade {
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
-    public void updateRoles(Long id, Set<String> authorities) {
+    public void updateRole(Long id, String authority) {
         existsEnabledUser(id);
-        userComponent.updateAuthoritiesById(id, authorities);
+        userComponent.updateAuthorityById(id, EAuthority.valueOf(authority));
     }
 
 //    @Override

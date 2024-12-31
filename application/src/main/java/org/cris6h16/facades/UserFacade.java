@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 public interface UserFacade {
     Long signup(SignupDTO user);
@@ -18,7 +17,7 @@ public interface UserFacade {
 
     Page<UserDTO> findAll(Pageable pageable);
 
-    void updateRoles(Long id, Set<String> authorities);
+    void updateRole(Long id, String authority);
 
 
     UserDTO findById(Long id);
