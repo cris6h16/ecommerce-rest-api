@@ -22,10 +22,23 @@ public class ProductSpecs {
             Expression<String> searchName = cb.lower(cb.function("public.unaccent", String.class, cb.literal("%" +finalName+ "%")));
 
             log.debug("ProductSpecs.hasNameLike: productName={}, searchName={}", productName.toString(), searchName.toString());
-            return cb.like(productName,  searchName );
+            return cb.like(productName,  searchName);
         };
 //        return ((root, query, cb) -> cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase().trim() + "%"));
     }
+
+    public static Specification<ProductEntity> hasDescriptionLike(String description) {
+        description = description.trim().toLowerCase();
+
+        String finalDescription = description;
+        return (root, query, cb) -> {
+            Expression<String> productDescription = cb.lower(cb.function("public.unaccent", String.class, root.get("description")));
+            Expression<String> searchDescription = cb.lower(cb.function("public.unaccent", String.class, cb.literal("%" + finalDescription + "%")));
+
+            return cb.like(productDescription, searchDescription);
+        };
+    }
+
 
     public static Specification<ProductEntity> hasCategoryId(String categoryId) {
         return (root, query, cb) -> cb.equal(root.get("category").get("id"), categoryId);
@@ -33,14 +46,6 @@ public class ProductSpecs {
 
     public static Specification<ProductEntity> hasPrice(String priceStr) {
         return ((root, query, cb) -> {
-
-            if (priceStr.startsWith(">=")) { // price >= X
-                return cb.greaterThanOrEqualTo(root.get("price"), parsePrice(priceStr, 2));
-            }
-
-            if (priceStr.startsWith("<=")) { // price <= X
-                return cb.lessThanOrEqualTo(root.get("price"), parsePrice(priceStr, 2));
-            }
 
             if (priceStr.startsWith(">")) { // price > X
                 return cb.greaterThan(root.get("price"), parsePrice(priceStr, 1));

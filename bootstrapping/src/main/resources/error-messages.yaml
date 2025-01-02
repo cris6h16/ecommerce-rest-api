@@ -69,6 +69,7 @@ error-messages:
       img-multipart-file-is-empty: "La imagen del producto es requerida"
       product-not-found-by-id: "No se encontró el producto con el id especificado"
       invalid-action-type: "El tipo de acción no es válido"
+      forbidden-sort-property: "Propiedad de ordenamiento no permitida"
 
     file:
       file-upload-fail: "Ha ocurrido un error al subir el archivo"

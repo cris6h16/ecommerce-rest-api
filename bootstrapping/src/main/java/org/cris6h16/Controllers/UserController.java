@@ -83,11 +83,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(path = "/hard-delete")
-    public ResponseEntity<Void> deleteById(@RequestParam String email) {
-        userFacade.deleteByEmail(email);
-        return ResponseEntity.noContent().build();
-    }
+
 
 
     @PostMapping(
@@ -104,4 +100,6 @@ public class UserController {
                 .status(HttpStatus.NO_CONTENT)
                 .build();
     }
+
+
 }

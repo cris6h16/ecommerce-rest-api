@@ -74,6 +74,11 @@ public class ApplicationComponentAdvice {
                 msg = properties.getInvalidActionType();
                 break;
 
+            case FORBIDDEN_SORT_PROPERTY:
+                status = HttpStatus.BAD_REQUEST;
+                msg = properties.getForbiddenSortProperty();
+                break;
+
             default:
                 log.error("A custom exception should have custom response handling", e);
                 status = HttpStatus.INTERNAL_SERVER_ERROR;

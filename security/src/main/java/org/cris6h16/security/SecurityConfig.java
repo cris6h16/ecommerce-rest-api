@@ -42,7 +42,9 @@ public class SecurityConfig {
                                 "/api/v1/users/verify-email",
                                 "/api/v1/auth/reset-password").permitAll()
                         .requestMatchers(HttpMethod.GET,
-                                "/api/v1/tests/reset-functional-testing-db").permitAll()
+                                "/api/v1/tests/reset-functional-testing-db",
+                                "/api/v1/products"
+                                ).permitAll()
                         .anyRequest().denyAll())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)

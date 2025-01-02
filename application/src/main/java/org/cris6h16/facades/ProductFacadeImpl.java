@@ -15,6 +15,7 @@ import org.cris6h16.user.UserOutput;
 import org.cris6h16.user.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
+import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.FORBIDDEN_SORT_PROPERTY;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.PRODUCT_NOT_FOUND_BY_ID;
 import static org.cris6h16.facades.FacadesCommon.isUserEnabled;
 
@@ -79,9 +81,21 @@ public class ProductFacadeImpl implements ProductFacade {
 
     @Override
     public Page<ProductDTO> findAllProducts(Pageable pageable, Map<String, String> filters) {
-        log.debug("Finding all products with pageable: {} and filters: {}", pageable, filters);
+        hasAllowedSortProperties(pageable.getSort());
         return productComponent.findAllProducts(pageable, filters)
                 .map(this::toProductDTO);
+    }
+
+    private void hasAllowedSortProperties(Sort sort) {
+        if (sort.isSorted()) {
+            Set<String> allowedProperties = Set.of("price", "stock", "id");
+            Set<String> sortProperties = sort.stream()
+                    .map(Sort.Order::getProperty)
+                    .collect(toSet());
+            if (!allowedProperties.containsAll(sortProperties)) {
+                throw new ApplicationException(FORBIDDEN_SORT_PROPERTY);
+            }
+        }
     }
 
     private ProductDTO toProductDTO(ProductOutput productOutput) {

@@ -19,4 +19,5 @@ public class ApplicationComponentErrorMsgProperties {
     private String enabledUserNotFound;
     private String productNotFoundById;
     private String invalidActionType;
+    private String forbiddenSortProperty;
 }

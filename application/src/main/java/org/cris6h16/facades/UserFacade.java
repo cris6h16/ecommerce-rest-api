@@ -24,5 +24,5 @@ public interface UserFacade {
 
     void adjustBalance(Long id, BigDecimal delta);
 
-    void deleteByEmail(String email);
+
 }

@@ -222,10 +222,8 @@ class UserFacadeImpl implements UserFacade {
         userComponent.adjustBalanceById(id, delta);
     }
 
-    @Override
-    public void deleteByEmail(String email) {
-        userComponent.deleteByEmail(email);
-    }
+
+
 
     private void existsEnabledUser(Long id) {
         if (!userComponent.existsByIdAndEnabled(id, true)) {

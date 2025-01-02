@@ -1,6 +1,6 @@
 package org.cris6h16.Controllers.Products;
 
-
+// todo: para todo el proyecto: ESCAPAR ENTRADAS
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.facades.CategoryDTO;
 import org.cris6h16.facades.CreateCategoryDTO;
@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,13 +58,12 @@ public class ProductController {
                         URI.create(PRODUCT_PATH + "/" + id))
                 .build();
     }
-
-
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Page<org.cris6h16.facades.ProductDTO>> findAllProducts(
             @RequestParam(required = false) Map<String, String> filters,
+            @RequestParam(required = false, name = "price") List<String> prices,
             Pageable pageable) {
 
         filters = filters == null ? new HashMap<>() : filters;
@@ -73,8 +73,9 @@ public class ProductController {
         cleanedFilters.remove("sort");
         filters = cleanedFilters;
 
-        log.debug("filters: {}", filters);
-        log.debug("pageable: {}", pageable);
+        if (prices != null && !prices.isEmpty()) {
+            filters.put("price", String.join(",", prices));
+        }
 
         return ResponseEntity
                 .status(HttpStatus.OK)

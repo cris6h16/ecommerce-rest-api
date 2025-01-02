@@ -19,6 +19,7 @@ import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NOT_FOUND
 import static org.cris6h16.product.Exceptions.ProductErrorCode.UNIQUE_USER_ID_PRODUCT_NAME;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_NOT_FOUND_BY_ID;
 import static org.cris6h16.product.ProductSpecs.hasCategoryId;
+import static org.cris6h16.product.ProductSpecs.hasDescriptionLike;
 import static org.cris6h16.product.ProductSpecs.hasNameLike;
 import static org.cris6h16.product.ProductSpecs.hasPrice;
 import static org.cris6h16.user.EntityMapper.toUserOutput;
@@ -140,27 +141,29 @@ class ProductComponentImpl implements ProductComponent {
     }
 
     private Specification<ProductEntity> createFilterSpecification(String property, String value) {
-        if (property.equals("name")) {
-            String[] split = Arrays.stream(value.split(" ")).map(String::trim).toArray(String[]::new);
-            Specification<ProductEntity> spec = Specification.where(null);
-            for (String s : split) {
-                log.debug("Adding name filter: {}", s);
-                spec = spec.and(hasNameLike(s));
+        return switch (property) {
+            case "query" -> {
+                // todo: escapar caracteres especiales
+                log.debug("Creating query filter specification for value: {}", value);
+                String[] split = Arrays.stream(value.split(" ")).map(String::trim).toArray(String[]::new);
+                Specification<ProductEntity> spec = Specification.where(null);
+                for (String s : split) {
+                    spec = spec.or(Specification.where(hasNameLike(s).or(hasDescriptionLike(s))));
+                }
+
+                yield spec;
             }
+            case "price" -> {
+                Specification<ProductEntity> spec = Specification.where(null);
+                for (String p : value.split(",")){
+                    spec = spec.and(hasPrice(p.trim()));
+                }
 
-            return spec;
-        }
-
-        if (property.equals("price")) {
-            return hasPrice(value);
-        }
-
-        if (property.equals("categoryId")) {
-            return hasCategoryId(value);
-        }
-
-        log.error("Unsupported filter attribute: {}", property);
-        throw new ProductComponentException(ProductErrorCode.UNSUPPORTED_FILTER_ATTRIBUTE);
+                yield spec;
+            }
+            case "categoryId" -> hasCategoryId(value);
+            default -> throw new ProductComponentException(ProductErrorCode.UNSUPPORTED_FILTER_ATTRIBUTE);
+        };
     }
 
 
