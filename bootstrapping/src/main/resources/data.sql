@@ -2,16 +2,24 @@
 CREATE EXTENSION IF NOT EXISTS unaccent SCHEMA public;
 
 
--- testing funcional
 
-DELETE
-FROM users
-WHERE email IN ('existente@gmail.com', 'deshabilitado@gmail.com', 'email-no-verificado@gmail.com');
+-- TODO: usar para test environment un usuario que tenga solo los permisos para el schema que corresponde a test. para evitar por error borrar la base de datos
+-- testing funcional
+TRUNCATE TABLE cart_items CASCADE;
+TRUNCATE TABLE carts CASCADE;
+TRUNCATE TABLE products CASCADE;
+TRUNCATE TABLE users CASCADE;
+TRUNCATE TABLE email_verification CASCADE;
+TRUNCATE TABLE product_images CASCADE;
+TRUNCATE TABLE categories CASCADE;
+
+
 
 INSERT INTO users(id, first_name, last_name, balance, email, email_verified, enabled, password, authority)
 VALUES
+
 -- Email existente para login
-(nextval('users_id_seq'),
+(1,
  'Existente',
  'Test',
  0.00,
@@ -20,8 +28,9 @@ VALUES
  true,
  '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y', -- 12345678
  'ROLE_USER'),
+
 -- deshabilitado
-(nextval('users_id_seq'),
+(2,
  'Deshabilitado',
  'Test',
  0.00,
@@ -30,8 +39,9 @@ VALUES
  false,
  '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y', -- 12345678
  'ROLE_USER'),
+
 -- email-no-verificado
-(nextval('users_id_seq'),
+(3,
  'NoVerificado',
  'Test',
  0.00,
@@ -39,7 +49,40 @@ VALUES
  false,
  true,
  '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y', -- 12345678
- 'ROLE_USER');
+ 'ROLE_USER'),
+
+-- No habilitado (VENDEDOR)
+(4,
+ 'NoVerificado',
+ 'Test',
+ 0.00,
+ 'vededor_deshabilitado@gmail.com',
+ true,
+ false,
+ '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y', -- 12345678
+ 'ROLE_SELLER'),
+
+    -- No verificado (VENDEDOR)
+(5,
+ 'NoVerificado',
+ 'Test',
+ 0.00,
+ 'vededor_email_no_verificado@gmail.com',
+ false,
+ true,
+ '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y', -- 12345678
+ 'ROLE_SELLER'),
+
+    -- Vendedor (habilitado y verificado)
+(6,
+ 'Super',
+ 'Tienda',
+ 0.00,
+ 'super@tienda.com',
+ true,
+ true,
+ '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y', -- 12345678
+ 'ROLE_SELLER');
 
 -- testing funcional
 INSERT INTO email_verification(id, email, code, action_type, created_at, expires_at)
@@ -83,26 +126,7 @@ VALUES (nextval('email_verification_id_seq'),
 
 -- - --- -- -  - -- - - - - - -- -- - -- - - - --- -- - -
 
-DELETE
-FROM products
-WHERE name IN ('Cable USB 3.0 marca Samsung', 'Camisa de vestir', 'Zapatos de vestir', 'Celular Samsung Galaxy S21 Ultra 5G');
-DELETE
-FROM categories
-WHERE name IN ('Accesorios', 'Ropa', 'Zapatos', 'Celulares');
-DELETE
-FROM users
-WHERE email IN ('super@tienda.com');
 
--- Insertar un usuario con id generado automáticamente
-INSERT INTO users(first_name, last_name, balance, email, email_verified, enabled, password, authority)
-VALUES ('Super',
-        'Tienda',
-        0.00,
-        'super@tienda.com',
-        true,
-        true,
-        '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y', -- 12345678
-        'ROLE_SELLER');
 
 -- Insertar categorías
 INSERT INTO categories(id, name)
@@ -129,7 +153,7 @@ VALUES (1,
         99,
         1,
         nextval('products_id_seq'),
-        currval('users_id_seq'),
+        6,
         '1 metro de largo, 480 Mbps de velocidad de transferencia de datos, compatible con USB 2.0 y 1.1',
         'Cable USB 3.0 marca Samsung'),
        (6,
@@ -139,7 +163,7 @@ VALUES (1,
         4,
         4,
         nextval('products_id_seq'),
-        currval('users_id_seq'),
+        6,
         'Pantalla de 6.8 pulgadas, 12 GB de RAM, 128 GB de almacenamiento, cámara de 108 MP',
         'Celular Samsung Galaxy S21 Ultra 5G'),
        (5,
@@ -148,7 +172,7 @@ VALUES (1,
         71,
         2,
         nextval('products_id_seq'),
-        currval('users_id_seq'),
+        6,
         'Camisa de vestir minimalista para hombre, sámsúng, talla M, color azul',
         'Camisa de vestir'),
        (9,
@@ -158,6 +182,6 @@ VALUES (1,
         12,
         3,
         nextval('products_id_seq'),
-        currval('users_id_seq'),
+        6,
         'Zapatos de vestir para hombre de cuero, talla 42, color negro',
         'Zapatos de vestir');

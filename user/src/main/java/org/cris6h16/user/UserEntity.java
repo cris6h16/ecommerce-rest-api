@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 
 /**
@@ -29,11 +28,10 @@ import java.util.Set;
 @Getter
 @Setter
  public class UserEntity {
-    // This statics have to be used as a centralize place for validation, not were wrote for make easy for change ( error messages contains this values )
     protected static final int FIRSTNAME_MAX_LENGTH = 30;
     protected static final int LASTNAME_MAX_LENGTH = 30;
     protected static final int EMAIL_MAX_LENGTH = 255;
-    protected static final int PASSWORD_LENGTH = 80; // deberia ser 60 (bcrypt) pero la encrypción suele dejar prefijo como {bcrypt} o {noop}
+    protected static final int PASSWORD_MAX_LENGTH = 80; // deberia ser 60 (bcrypt) pero la encrypción suele dejar prefijo como {bcrypt} o {noop}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +46,7 @@ import java.util.Set;
     @Column(nullable = false, length = EMAIL_MAX_LENGTH, unique = true)
     private String email;
 
-    @Column(nullable = false, length = PASSWORD_LENGTH)
+    @Column(nullable = false, length = PASSWORD_MAX_LENGTH)
     private String password;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -67,6 +65,8 @@ import java.util.Set;
 //            joinColumns = @JoinColumn(name = "user_id"),
 //            uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "authority"})
 //    )
+//  private Set<EAuthority> authorities;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EAuthority authority;

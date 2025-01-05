@@ -17,5 +17,5 @@ public class FileComponentErrorMsgProperty {
     private String isEmpty;
     private String sizeExceeded;
     private String contentTypeIsNotImage;
-
+    private String fileListIsEmpty;
 }

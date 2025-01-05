@@ -35,16 +35,9 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String requestURI = request.getRequestURI();
 
-        // skip for `permitAll` endpoints
-//        if (isPermitAllEndpoint(requestURI)) {
-//            log.debug("PermitAll endpoint, skipping token validation: {}", requestURI);
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
-
         String token = getTokenFromRequest(request);
 
-        if (isTokenInvalid(token, response)) {
+        if (token == null || !jwtUtils.validate(token)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -60,15 +53,6 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.debug("Authenticated user: {}", user);
 
         filterChain.doFilter(request, response);
-    }
-
-    private boolean isTokenInvalid(String token, HttpServletResponse response) {
-        if (token == null || !jwtUtils.validate(token)) {
-            log.debug(token == null ? "Token is null, setting response status to 401" : "Token is invalid, setting response status to 401");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return true;
-        }
-        return false;
     }
 
 
@@ -91,10 +75,5 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
 
-//    private boolean isPermitAllEndpoint(String uri) {
-//        return uri.matches("/api/v1/auth/(login|signup|verify-email|reset-password|send-email-verification)")
-//                || uri.equals("/api/v1/products/categories")
-//                || uri.equals("/api/v1/products");
-//    }
 
 }

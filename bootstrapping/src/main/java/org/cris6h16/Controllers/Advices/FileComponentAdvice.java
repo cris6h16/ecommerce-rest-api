@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_DELETE_BY_URL_ERROR;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_IS_EMPTY;
+import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_LIST_IS_EMPTY;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -56,7 +57,11 @@ public class FileComponentAdvice {
             status = HttpStatus.BAD_REQUEST;
             msg = msgs.getIsEmpty();
 
-        } else if (ec.equals(FileErrorCode.FILE_SIZE_EXCEEDED)) {
+        } else if (ec.equals(FILE_LIST_IS_EMPTY)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = msgs.getFileListIsEmpty();
+
+        }else if (ec.equals(FileErrorCode.FILE_SIZE_EXCEEDED)) {
             status = HttpStatus.BAD_REQUEST;
             msg = msgs.getSizeExceeded();
 
@@ -73,9 +78,6 @@ public class FileComponentAdvice {
         return ResponseEntity
                 .status(status)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(
-                        ec.name(),
-                        msg
-                ));
+                .body(new ErrorResponse(msg));
     }
 }

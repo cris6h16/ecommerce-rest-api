@@ -24,6 +24,7 @@ import static org.cris6h16.email.Exceptions.EmailErrorCode.EMAIL_NULL;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.EMAIL_REGEX_MISMATCH;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.EMAIL_SENDING_MAX_RETRIES_ERROR;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.EMAIL_TOO_LONG;
+import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_LIST_IS_EMPTY;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -49,18 +50,6 @@ public class EmailComponentAdvice {
         HttpStatus status;
         String msg;
 
-        /*
-            EMAIL_TOO_LONG,
-            EMAIL_REGEX_MISMATCH,
-            CODE_NULL,
-            EMAIL_NULL,
-            CODE_IS_BLANK,
-            CODE_INVALID_LENGTH,
-            EMAIL_SENDING_MAX_RETRIES_ERROR;
-            ACTION_TYPE_BLANK,
-            ACTION_TYPE_NULL,
-            ACTION_TYPE_TOO_LONG,
-         */
         EmailErrorCode code = e.getErrorCode();
         if (code.equals(EMAIL_TOO_LONG) || code.equals(EMAIL_NULL) || code.equals(EMAIL_REGEX_MISMATCH)) {
             status = HttpStatus.BAD_REQUEST;
@@ -92,9 +81,6 @@ public class EmailComponentAdvice {
         return ResponseEntity
                 .status(status)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(
-                        code.name(),
-                        msg
-                ));
+                .body(new ErrorResponse(msg));
     }
 }

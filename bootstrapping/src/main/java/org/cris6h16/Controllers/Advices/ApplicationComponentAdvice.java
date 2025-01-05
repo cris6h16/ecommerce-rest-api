@@ -88,9 +88,6 @@ public class ApplicationComponentAdvice {
         return ResponseEntity
                 .status(status)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(
-                        errorCode.name(),
-                        msg
-                ));
+                .body(new ErrorResponse(msg));
     }
 }

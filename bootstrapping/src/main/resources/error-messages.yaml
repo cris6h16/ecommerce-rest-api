@@ -6,7 +6,6 @@ error-messages:
   components:
     user:
       email-already-exists: "El email ya está registrado"
-      email-invalid: "El email no es válido"
       email-null: "El email no puede ser nulo"
       email-too-long: "El email es demasiado largo"
       firstname-null: "El nombre no puede ser nulo"
@@ -17,9 +16,12 @@ error-messages:
       password-null: "La contraseña no puede ser nula"
       password-too-long: "La contraseña es demasiado larga"
       user-id-invalid: "El id del usuario no es válido"
-      firstname-is-blank: "El primer nombre es no puede estar en blanco"
-      lastname-is-blank: "El primer apellido es no puede estar en blanco"
-
+      lastname-length-mismatch: "El primer apellido debe contener entre 1 y 30 caracteres"
+      email-regex-mismatch: "El correo electrónico ingresado no tiene el formato correcto"
+      firstname-length-mismatch: "El primer nombre debe contener entre 1 y 30 caracteres"
+      lastname-is-blank: "def"
+      firstname-is-blank: "def"
+      password-length-mismatch: "La contraseña debe contener entre 8 y 80 caracteres"
     product:
       approx-height-cm-negative: "La altura aproximada en centimetros del producto no puede ser negativa"
       approx-height-cm-null: "La altura aproximada en centimetros del producto no puede ser nula"
@@ -73,3 +75,4 @@ error-messages:
 
     file:
       file-upload-fail: "Ha ocurrido un error al subir el archivo"
+      file-list-is-empty: "La lista de imagenes no puede estar vacía"

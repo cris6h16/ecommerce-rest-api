@@ -12,13 +12,17 @@ import org.springframework.stereotype.Component;
 @Setter
 @ValidatePropertiesNotNullOrEmpty
 public class UserComponentErrorMsgProperties {
+    private String emailRegexMismatch;
+    private String firstnameLengthMismatch;
+    private String lastnameLengthMismatch;
+    private String passwordLengthMismatch;
+
     private String emailAlreadyExists;
     private String emailNull;
     private String userIdInvalid;
     private String lastnameNull;
     private String lastnameTooLong;
     private String emailTooLong;
-    private String emailInvalid;
     private String passwordNull;
     private String passwordLessThan8;
     private String passwordTooLong;

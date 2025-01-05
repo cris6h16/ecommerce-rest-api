@@ -178,10 +178,7 @@ public class ProductComponentAdvice {
         return ResponseEntity
                 .status(status)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(
-                        e.name(),
-                        msg
-                ));
+                .body(new ErrorResponse(msg));
     }
 
 

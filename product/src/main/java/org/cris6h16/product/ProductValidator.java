@@ -46,7 +46,7 @@ class ProductValidator {
     public void validate(CreateProductInput input) {
         input.setName(validateProductName(input.getName()));
         input.setDescription(validateDescription(input.getDescription()));
-        input.setImageUrls(validateImagesUrl(input.getImageUrls()));
+//        input.setImageUrls(validateImagesUrl(input.getImageUrls()));
         validatePrice(input.getPrice());
         validateStock(input.getStock());
         validateApproxWeightLb(input.getApproxWeightLb());

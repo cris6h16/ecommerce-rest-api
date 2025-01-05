@@ -14,6 +14,7 @@ import java.util.Set;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_CONTENT_TYPE_IS_NOT_IMAGE;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_CONTENT_TYPE_IS_NULL;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_IS_EMPTY;
+import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_LIST_IS_EMPTY;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_SIZE_EXCEEDED;
 
 @Service
@@ -46,6 +47,7 @@ class FileComponentImpl implements FileComponent {
     }
 
     private void areValidImages(List<MultipartFile> multipartFiles) {
+        if (multipartFiles == null) throw new FileComponentException(FILE_LIST_IS_EMPTY);
         for (MultipartFile multipartFile : multipartFiles) {
             _isValidImg(multipartFile);
         }

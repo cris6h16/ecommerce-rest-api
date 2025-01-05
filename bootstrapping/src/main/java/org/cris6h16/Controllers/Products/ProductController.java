@@ -48,7 +48,6 @@ public class ProductController {
 
 
     @PostMapping(
-            path = "/create-product",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)

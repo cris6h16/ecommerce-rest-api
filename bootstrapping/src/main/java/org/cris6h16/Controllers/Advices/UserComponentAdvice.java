@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
-import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_NULL;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_REGEX_MISMATCH;
-import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_TOO_LONG;
 import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_IS_BLANK;
+import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_LENGTH_MISMATCH;
 import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_NULL;
 import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_TOO_LONG;
+import static org.cris6h16.user.Exceptions.UserErrorCode.LASTNAME_LENGTH_MISMATCH;
 import static org.cris6h16.user.Exceptions.UserErrorCode.LASTNAME_NULL;
+import static org.cris6h16.user.Exceptions.UserErrorCode.PASSWORD_LENGTH_MISMATCH;
 import static org.cris6h16.user.Exceptions.UserErrorCode.PASSWORD_TOO_LONG;
 
 @RestControllerAdvice
@@ -56,11 +57,22 @@ public class UserComponentAdvice {
             status = HttpStatus.BAD_REQUEST;
             msg = props.getFirstnameNull();
 
-        } else if (code.equals(FIRSTNAME_IS_BLANK)) {
-            status = HttpStatus.BAD_REQUEST;
-            msg = props.getFirstnameIsBlank();
+        }
 
-        } else if (code.equals(LASTNAME_NULL)) {
+        else if (code.equals(FIRSTNAME_LENGTH_MISMATCH)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = props.getFirstnameLengthMismatch();
+
+        }else if (code.equals(LASTNAME_LENGTH_MISMATCH)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = props.getLastnameLengthMismatch();
+
+        }else if (code.equals(PASSWORD_LENGTH_MISMATCH)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = props.getPasswordLengthMismatch();
+
+        }
+        else if (code.equals(LASTNAME_NULL)) {
             status = HttpStatus.BAD_REQUEST;
             msg = props.getLastnameNull();
 
@@ -80,9 +92,15 @@ public class UserComponentAdvice {
             status = HttpStatus.BAD_REQUEST;
             msg = props.getPasswordTooLong();
 
-        } else if (code.equals(EMAIL_NULL) || code.equals(EMAIL_TOO_LONG) || code.equals(EMAIL_REGEX_MISMATCH)) {
+        }
+//        else if (code.equals(EMAIL_NULL) || code.equals(EMAIL_TOO_LONG) || code.equals(EMAIL_REGEX_MISMATCH)) {
+//            status = HttpStatus.BAD_REQUEST;
+//            msg = props.getEmailInvalid();
+//
+//        }
+        else if (code.equals(EMAIL_REGEX_MISMATCH)) {
             status = HttpStatus.BAD_REQUEST;
-            msg = props.getEmailInvalid();
+            msg = props.getEmailRegexMismatch();
 
         } else if (code.equals(UserErrorCode.USER_ID_NULL) || code.equals(UserErrorCode.USER_ID_LESS_THAN_1)) {
             status = HttpStatus.BAD_REQUEST;
@@ -102,10 +120,7 @@ public class UserComponentAdvice {
         return ResponseEntity
                 .status(status)
                 .headers(jsonHeaderCons)
-                .body(new ErrorResponse(
-                        code.name(),
-                        msg
-                ));
+                .body(new ErrorResponse(msg));
     }
 
 }
