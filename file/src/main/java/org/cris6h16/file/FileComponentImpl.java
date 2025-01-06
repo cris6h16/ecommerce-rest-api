@@ -2,18 +2,16 @@ package org.cris6h16.file;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.file.Exceptions.FileComponentException;
-import org.cris6h16.file.Exceptions.FileErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_CONTENT_TYPE_IS_NOT_IMAGE;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_CONTENT_TYPE_IS_NULL;
-import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_IS_EMPTY;
+import static org.cris6h16.file.Exceptions.FileErrorCode.EMPTY_MULTIPART_FILE;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_LIST_IS_EMPTY;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_SIZE_EXCEEDED;
 
@@ -47,7 +45,7 @@ class FileComponentImpl implements FileComponent {
     }
 
     private void areValidImages(List<MultipartFile> multipartFiles) {
-        if (multipartFiles == null) throw new FileComponentException(FILE_LIST_IS_EMPTY);
+        if (multipartFiles == null || multipartFiles.isEmpty()) throw new FileComponentException(FILE_LIST_IS_EMPTY);
         for (MultipartFile multipartFile : multipartFiles) {
             _isValidImg(multipartFile);
         }
@@ -64,7 +62,7 @@ class FileComponentImpl implements FileComponent {
         String contentType = multipartFile.getContentType();
         long maxSize = 5 * 1024 * 1024;
         if (multipartFile.isEmpty()) {
-            throw new FileComponentException(FILE_IS_EMPTY);
+            throw new FileComponentException(EMPTY_MULTIPART_FILE);
         }
         if (multipartFile.getSize() > maxSize) {
             throw new FileComponentException(FILE_SIZE_EXCEEDED);

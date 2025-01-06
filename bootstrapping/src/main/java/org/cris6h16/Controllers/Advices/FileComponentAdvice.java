@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_DELETE_BY_URL_ERROR;
-import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_IS_EMPTY;
+import static org.cris6h16.file.Exceptions.FileErrorCode.EMPTY_MULTIPART_FILE;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_LIST_IS_EMPTY;
 
 @RestControllerAdvice
@@ -53,9 +53,9 @@ public class FileComponentAdvice {
             status = HttpStatus.SERVICE_UNAVAILABLE;
             msg = msgs.getUploadAllRetriesError();
 
-        } else if (ec.equals(FILE_IS_EMPTY)) {
+        } else if (ec.equals(EMPTY_MULTIPART_FILE)) {
             status = HttpStatus.BAD_REQUEST;
-            msg = msgs.getIsEmpty();
+            msg = msgs.getEmptyMultipartFile();
 
         } else if (ec.equals(FILE_LIST_IS_EMPTY)) {
             status = HttpStatus.BAD_REQUEST;

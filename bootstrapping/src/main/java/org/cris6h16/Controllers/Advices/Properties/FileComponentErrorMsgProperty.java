@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "error-messages.components.file")
 @Component
 public class FileComponentErrorMsgProperty {
+    private String emptyMultipartFile;
+
     private String fileUploadFail;
     private String deleteByUrlError;
     private String uploadError;

@@ -82,3 +82,4 @@ error-messages:
     file:
       file-upload-fail: "Ha ocurrido un error al subir el archivo"
       file-list-is-empty: "La lista de imagenes no puede estar vacía"
+      empty-multipart-file: "La imagen del producto es requerida"
