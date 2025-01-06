@@ -23,7 +23,7 @@ import java.time.temporal.ChronoUnit;
 @Getter
 class VerificationCodeEntity {
     public static final int EXP_MIN = 60;
-    public static final int CODE_LENGTH = 10;
+    public static final int CODE_LENGTH = 6;
     public static final int EMAIL_MAX_LENGTH = 255;
     static final int ACTION_TYPE_MAX_LENGTH = 20;
 

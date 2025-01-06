@@ -29,8 +29,8 @@ public class EmailValidator {
 
 
     String validateCode(String code) {
-        if (code == null) throwE(CODE_NULL);
-        if (!(code = code.trim().toUpperCase()).matches("^[A-Z0-9]{10}$")) throwE(CODE_REGEX_MISMATCH);
+        code = code == null ? "" : code.trim().toUpperCase();
+        if (!code.matches("^[A-Z0-9]{6}$")) throwE(CODE_REGEX_MISMATCH);
         return code;
     }
 

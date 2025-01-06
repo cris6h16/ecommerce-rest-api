@@ -43,4 +43,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<BigDecimal> findBalanceById(Long id);
 
     void deleteByEmail(String email);
+
+    boolean existsByEmailVerifiedAndId(boolean emailVerified, Long id);
 }

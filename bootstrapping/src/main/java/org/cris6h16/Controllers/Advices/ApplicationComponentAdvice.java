@@ -45,12 +45,12 @@ public class ApplicationComponentAdvice {
                 break;
 
             case EMAIL_NOT_VERIFIED:
-                status = HttpStatus.UNAUTHORIZED;
+                status = HttpStatus.FORBIDDEN;
                 msg = properties.getEmailNotVerified();
                 break;
 
             case VALID_VERIFICATION_CODE_NOT_FOUND:
-                status = HttpStatus.BAD_REQUEST;
+                status = HttpStatus.FORBIDDEN;
                 msg = properties.getValidVerificationCodeNotFound();
                 break;
 
@@ -69,9 +69,9 @@ public class ApplicationComponentAdvice {
                 msg = properties.getProductNotFoundById();
                 break;
 
-            case INVALID_ACTION_TYPE:
+            case UNSUPPORTED_ACTION_TYPE:
                 status = HttpStatus.BAD_REQUEST;
-                msg = properties.getInvalidActionType();
+                msg = properties.getUnsupportedActionType();
                 break;
 
             case FORBIDDEN_SORT_PROPERTY:

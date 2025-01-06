@@ -38,4 +38,6 @@ public interface UserComponent {
     void deleteByEmail(String email);
 
     boolean existsByEmailAndEnabled(String email, boolean enabled);
+
+    boolean findEmailVerifiedById(boolean emailVerified, Long userId);
 }

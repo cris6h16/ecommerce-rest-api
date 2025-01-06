@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 @Setter
 @ValidatePropertiesNotNullOrEmpty
 public class ApplicationComponentErrorMsgProperties {
+    private String unsupportedActionType;
+
     private String validVerificationCodeNotFound;
     private String emailNotVerified;
     private String invalidCredentials;

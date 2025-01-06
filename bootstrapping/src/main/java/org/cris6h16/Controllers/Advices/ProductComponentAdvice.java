@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.INVALID_STOCK;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_DESCRIPTION_LENGTH_MISMATCH;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_LIST_IMG_IS_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NAME_LENGTH_MISMATCH;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_ID_NULL;
 
 @RestControllerAdvice
@@ -49,9 +52,25 @@ public class ProductComponentAdvice {
             status = HttpStatus.BAD_REQUEST;
             msg = msgs.getUserIdLessThanOne();
 
+        }else if (e.equals(PRODUCT_NAME_LENGTH_MISMATCH)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = msgs.getProductNameLengthMismatch();
+
+        }else if (e.equals(PRODUCT_DESCRIPTION_LENGTH_MISMATCH)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = msgs.getProductDescriptionLengthMismatch();
+
         } else if (e.equals(ProductErrorCode.UNIQUE_USER_ID_PRODUCT_NAME)) {
             status = HttpStatus.CONFLICT;
             msg = msgs.getUniqueUserIdProductName();
+
+        }else if (e.equals(INVALID_STOCK)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = msgs.getInvalidStock();
+
+        }else if (e.equals(ProductErrorCode.INVALID_PRICE)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = msgs.getInvalidPrice();
 
         } else if (e.equals(ProductErrorCode.CATEGORY_ID_NULL)) {
             status = HttpStatus.BAD_REQUEST;

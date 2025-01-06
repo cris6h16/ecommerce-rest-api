@@ -2,37 +2,37 @@ package org.cris6h16.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.user.Exceptions.UserComponentException;
-import org.cris6h16.user.Exceptions.UserErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.cris6h16.user.EntityMapper.toUserEntity;
 import static org.cris6h16.user.EntityMapper.toUserOutput;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_ALREADY_EXISTS;
-import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_NULL;
-import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_REGEX_MISMATCH;
-import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_TOO_LONG;
 import static org.cris6h16.user.Exceptions.UserErrorCode.USER_NOT_FOUND_BY_ID;
-import static org.cris6h16.user.UserEntity.EMAIL_MAX_LENGTH;
 
 @Service
 @Slf4j
 class UserComponentImpl implements UserComponent {
 
     private final UserRepository userRepository;
+    private final UserValidator userValidator;
 
-    UserComponentImpl(UserRepository userRepository) {
+    UserComponentImpl(UserRepository userRepository,
+                      UserValidator userValidator) {
         this.userRepository = userRepository;
+        this.userValidator = userValidator;
     }
 
 
     @Override
     public Long create(CreateUserInput input) {
-        input.prepare(); // trim & null to empty
+        input.prepare();
         validate(input);
         checkDuplicates(input);
         UserEntity entity = toUserEntity(input);
@@ -50,11 +50,11 @@ class UserComponentImpl implements UserComponent {
     }
 
     private void validate(CreateUserInput user) {
-        if (!user.getEmail().matches("^\\S+@\\S+\\.\\S+$")) {
-            throw new UserComponentException(EMAIL_REGEX_MISMATCH);
-        }
+        user.setFirstname(userValidator.validateFirstname(user.getFirstname()));
+        user.setLastname(userValidator.validateLastname(user.getLastname()));
+        user.setEmail(userValidator.validateEmail(user.getEmail()));
+        user.setPassword(userValidator.validatePassword(user.getPassword()));
     }
-
 
 
     @Override
@@ -148,6 +148,12 @@ class UserComponentImpl implements UserComponent {
     public boolean existsByEmailAndEnabled(String email, boolean enabled) {
         email = userValidator.validateEmail(email);
         return userRepository.existsByEmailAndEnabled(email, enabled);
+    }
+
+    @Override
+    public boolean findEmailVerifiedById(boolean emailVerified, Long userId) {
+        userValidator.validateUserId(userId);
+        return userRepository.existsByEmailVerifiedAndId(emailVerified, userId);
     }
 
 }

@@ -51,9 +51,9 @@ public class EmailComponentAdvice {
         String msg;
 
         EmailErrorCode code = e.getErrorCode();
-        if (code.equals(EMAIL_TOO_LONG) || code.equals(EMAIL_NULL) || code.equals(EMAIL_REGEX_MISMATCH)) {
+        if (code.equals(EMAIL_REGEX_MISMATCH)) {
             status = HttpStatus.BAD_REQUEST;
-            msg = props.getEmailInvalid();
+            msg = props.getEmailRegexMismatch();
 
         } else if (code.equals(EMAIL_SENDING_MAX_RETRIES_ERROR)) {
             status = HttpStatus.SERVICE_UNAVAILABLE;

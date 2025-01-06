@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 @Setter
 @ValidatePropertiesNotNullOrEmpty
 public class EmailComponentErrorMsgProperties {
+    private String emailRegexMismatch;
+
     private String invalidCodeLength;
     private String emailInvalid;
     private String emailSending;

@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 import static org.cris6h16.facades.EmailCodeActionType.VERIFY_EMAIL;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.EMAIL_NOT_VERIFIED;
@@ -99,7 +98,6 @@ class UserFacadeImpl implements UserFacade {
     public LoginOutput login(LoginDTO loginDTO) {
         UserOutput output = userComponent.findByEmailAndEnabled(loginDTO.getEmail(), true).orElseThrow(() -> new ApplicationException(INVALID_CREDENTIALS));
         passMatches(loginDTO, output, INVALID_CREDENTIALS);
-        isEmailVerified(output, EMAIL_NOT_VERIFIED);
         return createLoginOutput(output);
     }
 
@@ -115,19 +113,7 @@ class UserFacadeImpl implements UserFacade {
     }
 
 
-    private void isEmailVerified(UserOutput output, ApplicationErrorCode errorCode) {
-        if (!output.isEmailVerified()) {
-            log.debug("Email not verified: {}", output.getEmail());
 
-            String email = output.getEmail();
-            String actionType = VERIFY_EMAIL.name();
-
-            emailComponent.removeByEmailAndActionType(email, actionType);
-            emailComponent.sendEmailVerificationCode(email, actionType);
-            throw new ApplicationException(errorCode);
-        }
-        log.debug("Has a verified email: {}", output.getEmail());
-    }
 
     private void passMatches(LoginDTO loginDTO, UserOutput userOutput, ApplicationErrorCode errorCode) {
         if (!securityComponent.matches(loginDTO.getPassword(), userOutput.getPassword())) {
@@ -142,6 +128,7 @@ class UserFacadeImpl implements UserFacade {
     public void verifyEmail(VerifyEmailDTO dto) {
         String actionType = EmailCodeActionType.VERIFY_EMAIL.name();
 
+        existsEnabledUserByEmail(dto.getEmail());
         isCodeValid(dto.getEmail(), dto.getCode(), actionType, VALID_VERIFICATION_CODE_NOT_FOUND);
         userComponent.updateEmailVerifiedByEmail(dto.getEmail(), true);
         emailComponent.removeByEmailAndActionType(dto.getEmail(), actionType);
@@ -154,13 +141,13 @@ class UserFacadeImpl implements UserFacade {
         String actionType = EmailCodeActionType.RESET_PASSWORD.name();
 
         processPassword(dto);
-        existsEnabledUser(dto.getEmail());
+        existsEnabledUserByEmail(dto.getEmail());
         isCodeValid(dto.getEmail(), dto.getCode(), actionType, VALID_VERIFICATION_CODE_NOT_FOUND);
         userComponent.updatePasswordByEmail(dto.getEmail(), dto.getPassword());
         emailComponent.removeByEmailAndActionType(dto.getEmail(), actionType);
     }
 
-    private void existsEnabledUser(String email) {
+    private void existsEnabledUserByEmail(String email) {
         if (!userComponent.existsByEmailAndEnabled(email, true)) {
             throw new ApplicationException(VALID_VERIFICATION_CODE_NOT_FOUND);
         }
@@ -184,7 +171,7 @@ class UserFacadeImpl implements UserFacade {
     public String refreshAccessToken() {
         Long id = securityComponent.getCurrentUserId();
         String authority = securityComponent.getCurrentUserAuthority();
-        existsEnabledUser(id);
+        existsEnabledUserByEmail(id);
         return securityComponent.generateAccessToken(id, authority);
     }
 
@@ -196,7 +183,7 @@ class UserFacadeImpl implements UserFacade {
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public void updateRole(Long id, String authority) {
-        existsEnabledUser(id);
+        existsEnabledUserByEmail(id);
         userComponent.updateAuthorityById(id, EAuthority.valueOf(authority));
     }
 
@@ -210,7 +197,7 @@ class UserFacadeImpl implements UserFacade {
 
     @Override
     public UserDTO findById(Long id) {
-        existsEnabledUser(id);
+        existsEnabledUserByEmail(id);
         return userComponent.findByIdAndEnable(id, true)
                 .map(UserFacadeImpl::toUserDTO)
                 .orElseThrow(() -> new ApplicationException(ENABLED_USER_NOT_FOUND));
@@ -218,14 +205,14 @@ class UserFacadeImpl implements UserFacade {
 
     @Override
     public void adjustBalance(Long id, BigDecimal delta) {
-        existsEnabledUser(id);
+        existsEnabledUserByEmail(id);
         userComponent.adjustBalanceById(id, delta);
     }
 
 
 
 
-    private void existsEnabledUser(Long id) {
+    private void existsEnabledUserByEmail(Long id) {
         if (!userComponent.existsByIdAndEnabled(id, true)) {
             throw new ApplicationException(ENABLED_USER_NOT_FOUND);
         }

@@ -1,4 +1,4 @@
-package org.cris6h16.facades;
+package org.cris6h16.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.user.Exceptions.UserComponentException;
@@ -15,6 +15,7 @@ import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_TOO_LONG;
 import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_LENGTH_MISMATCH;
 import static org.cris6h16.user.Exceptions.UserErrorCode.LASTNAME_LENGTH_MISMATCH;
 import static org.cris6h16.user.Exceptions.UserErrorCode.PASSWORD_LENGTH_MISMATCH;
+import static org.cris6h16.user.Exceptions.UserErrorCode.PASSWORD_LESS_THAN_8;
 import static org.cris6h16.user.Exceptions.UserErrorCode.USER_ID_LESS_THAN_1;
 import static org.cris6h16.user.Exceptions.UserErrorCode.USER_ID_NULL;
 import static org.cris6h16.user.UserEntity.EMAIL_MAX_LENGTH;

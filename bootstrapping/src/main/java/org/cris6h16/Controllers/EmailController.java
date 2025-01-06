@@ -24,12 +24,8 @@ public class EmailController {
             path = "/send-email-verification",
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    @Transactional(
-            rollbackFor = Exception.class,
-            isolation = Isolation.READ_COMMITTED
-    )
     public ResponseEntity<Void> sendEmailVerification(@RequestBody SendEmailVerificationDTO dto) {
         this.emailFacade.sendEmailVerificationCodeIfExists(dto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

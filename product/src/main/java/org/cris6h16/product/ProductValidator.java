@@ -20,16 +20,16 @@ import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_ID_LESS_
 import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_ID_NULL;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NAME_NULL;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NAME_TOO_LONG;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.DESCRIPTION_NULL;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.DESCRIPTION_TOO_LONG;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.INVALID_PRICE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.INVALID_STOCK;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_DESCRIPTION_LENGTH_MISMATCH;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.IMAGE_URL_NULL;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.IMAGE_URL_TOO_LONG;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRICE_NEGATIVE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRICE_NULL;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_ID_LESS_THAN_ONE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_ID_NULL;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NAME_NULL;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NAME_TOO_LONG;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NAME_LENGTH_MISMATCH;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.STOCK_NEGATIVE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.STOCK_NULL;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_ID_LESS_THAN_ONE;
@@ -47,8 +47,8 @@ class ProductValidator {
         input.setName(validateProductName(input.getName()));
         input.setDescription(validateDescription(input.getDescription()));
 //        input.setImageUrls(validateImagesUrl(input.getImageUrls()));
-        validatePrice(input.getPrice());
-        validateStock(input.getStock());
+        input.setPrice(validatePrice(input.getPrice()));
+        input.setStock(validateStock(input.getStock()));
         validateApproxWeightLb(input.getApproxWeightLb());
         validateApproxWidthCm(input.getApproxWidthCm());
         validateApproxHeightCm(input.getApproxHeightCm());
@@ -89,25 +89,33 @@ class ProductValidator {
     }
 
     public String validateDescription(String description) {
-        if (description == null) throwE(DESCRIPTION_NULL);
-        if ((description.trim()).length() > PRODUCT_MAX_DESCRIPTION_LENGTH) throwE(DESCRIPTION_TOO_LONG);
-        return description;
+        return validateLength(description, 1, PRODUCT_MAX_DESCRIPTION_LENGTH, PRODUCT_DESCRIPTION_LENGTH_MISMATCH);
     }
 
-    public void validateStock(Integer stock) {
-        if (stock == null) throwE(STOCK_NULL);
-        if (stock < 0) throwE(STOCK_NEGATIVE);
+    public Integer validateStock(Integer stock) {
+        stock = stock == null ? 0 : stock;
+        if (stock < 0) throwE(INVALID_STOCK);
+        return stock;
     }
 
-    public void validatePrice(BigDecimal price) {
-        if (price == null) throwE(PRICE_NULL);
-        if (price.compareTo(BigDecimal.ZERO) < 0) throwE(PRICE_NEGATIVE);
+    public BigDecimal validatePrice(BigDecimal price) {
+        price = price == null ? BigDecimal.ZERO : price;
+        if (price.compareTo(BigDecimal.ZERO) == -1) throwE(INVALID_PRICE);
+        return price;
     }
 
     public String validateProductName(String name) {
-        if (name == null) throwE(PRODUCT_NAME_NULL);
-        if ((name.trim()).length() > PRODUCT_MAX_NAME_LENGTH) throwE(PRODUCT_NAME_TOO_LONG);
+        return validateLength(name, 1, PRODUCT_MAX_NAME_LENGTH, PRODUCT_NAME_LENGTH_MISMATCH);
+    }
+
+    private String validateLength(String name, int minLength, int maxLength, ProductErrorCode lengthError) {
+        name = trim(name);
+        if (name.length() < minLength || name.length() > maxLength) throwE(lengthError);
         return name;
+    }
+
+    private String trim(String s) {
+        return s == null ? "" : s.trim();
     }
 
 
