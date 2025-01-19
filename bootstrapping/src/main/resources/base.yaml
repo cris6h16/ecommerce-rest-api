@@ -1,6 +1,4 @@
 spring:
-
-
   application:
     name: restful-api-jwt
 
@@ -25,10 +23,8 @@ spring:
 
   sql:
     init:
-      mode: always
-      data-locations: classpath:data.sql
+      mode: never
 
   servlet:
     multipart:
       max-file-size: 5MB
-

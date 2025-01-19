@@ -1,4 +1,4 @@
 jwt:
-  secret-key: "12345678yt432112345678765432123456789876543212345678432"
+  secret-key: ${jwt.secret-key-value}
   refresh-token-exp-minutes: 43200 # 30 days
   access-token-exp-minutes: 15

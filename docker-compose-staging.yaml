@@ -1,0 +1,48 @@
+version: "3.9"
+services:
+  backend:
+    container_name: ecommerce-rest-api
+    hostname: ecommerce-rest-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ["sh", "-c", "sleep 5 && java -jar app.jar --spring.profiles.active=staging"]
+    # entrypoint: [ "sh", "-c", "sleep 5 && java -jar app.jar" ] ----  command: [ "--spring.profiles.active=staging" ] todo: documentar como el CMD no es remplazado por el command
+    ports:
+      - "7937:8080"
+    restart: on-failure
+    environment:
+      - PSQL_HOSTNAME=ecommerce-db
+      - PSQL_PORT=5432
+      - PSQL_DB_NAME=staging
+      - PSQL_USER=cris6h16
+      - PSQL_PASS=12345678
+      - MAIL_USER=${MAIL_USER}
+      - MAIL_PASS=${MAIL_PASS}
+    networks:
+      - private
+      - public
+    volumes:
+      - ecommerce-rest-api-mvn:/root/.m2
+    depends_on:
+      - db
+
+  db:
+    container_name: ecommerce-db
+    hostname: ecommerce-db
+    image: postgres:15
+    restart: on-failure
+    environment:
+      POSTGRES_USER: cris6h16
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: staging
+    networks:
+      - private
+
+networks:
+  private:
+  public:
+
+volumes:
+  ecommerce-rest-api-mvn:
+    driver: local
