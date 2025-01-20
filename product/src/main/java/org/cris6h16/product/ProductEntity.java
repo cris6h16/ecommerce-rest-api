@@ -74,7 +74,7 @@ public class ProductEntity {
     @Column(nullable = false)
     private Integer approxHeightCm;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "product_images",
             joinColumns = @JoinColumn(name = "entity_id"),

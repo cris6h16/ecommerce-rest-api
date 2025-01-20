@@ -12,7 +12,7 @@ services:
     entrypoint: ["sh", "-c", "sleep 5 && java -jar app.jar --spring.profiles.active=mail-gmail,db-psql-variables,test,load-data"]
     ports:
       - "7937:8080"
-    restart: on-failure
+    restart: no
     environment:
       - PSQL_HOSTNAME=ecommerce-db
       - PSQL_PORT=5432
@@ -34,7 +34,7 @@ services:
     container_name: ecommerce-db
     hostname: ecommerce-db
     image: postgres:15
-    restart: on-failure
+    restart: no
     environment:
       POSTGRES_USER: cris6h16
       POSTGRES_PASSWORD: 12345678
