@@ -27,21 +27,21 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    sh """
-                        docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
-                    """
-                }
-            }
-        }
+//         stage('Build Docker Image') {
+//             steps {
+//                 script {
+//                     sh """
+//                         docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
+//                     """
+//                 }
+//             }
+//         }
 
         stage('Run API in Test Mode') {
             steps {
                 script {
                     sh """
-                        docker run -d --name api-test -p 8080:8080 $DOCKER_IMAGE:$DOCKER_TAG
+                        docker compose -f .\docker-compose-staging.yaml up
                     """
                 }
             }
@@ -66,30 +66,29 @@ pipeline {
         stage('Stop Test API Container') {
             steps {
                 script {
-                    sh 'docker stop api-test || true'
-                    sh 'docker rm api-test || true'
+                    sh 'docker compose -f .\docker-compose-staging.yaml down'
                 }
             }
         }
 
-        stage('Deploy API in Production Mode') {
-            steps {
-                script {
-                    sh """
-                        docker stop ecommerce-api || true
-                        docker rm ecommerce-api || true
-
-                        nohup docker run -d --name ecommerce-api -p 8080:8080 \
-                        -e SPRING_PROFILES_ACTIVE=$PROD_PROFILE $DOCKER_IMAGE:$DOCKER_TAG &
-                    """
-                }
-            }
-        }
+//         stage('Deploy API in Production Mode') {
+//             steps {
+//                 script {
+//                     sh """
+//                         docker stop ecommerce-api || true
+//                         docker rm ecommerce-api || true
+//
+//                         nohup docker run -d --name ecommerce-api -p 8080:8080 \
+//                         -e SPRING_PROFILES_ACTIVE=$PROD_PROFILE $DOCKER_IMAGE:$DOCKER_TAG &
+//                     """
+//                 }
+//             }
+//         }
     }
 
     post {
         always {
-            cleanWs()
+//             cleanWs()
         }
     }
 }
