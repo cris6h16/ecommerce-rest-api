@@ -6,8 +6,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    entrypoint: ["sh", "-c", "sleep 5 && java -jar app.jar --spring.profiles.active=staging"]
-    # entrypoint: [ "sh", "-c", "sleep 5 && java -jar app.jar" ] ----  command: [ "--spring.profiles.active=staging" ] todo: documentar como el CMD no es remplazado por el command
+      target: production
+      args:
+        - DOCKER_BUILDKIT=1
+    entrypoint: ["sh", "-c", "sleep 5 && java -jar app.jar --spring.profiles.active=mail-gmail,db-psql-variables,test,load-data"]
     ports:
       - "7937:8080"
     restart: on-failure
@@ -19,11 +21,12 @@ services:
       - PSQL_PASS=12345678
       - MAIL_USER=${MAIL_USER}
       - MAIL_PASS=${MAIL_PASS}
+      - PSQL_SCHEMA=public
     networks:
       - private
       - public
-    volumes:
-      - ecommerce-rest-api-mvn:/root/.m2
+#    volumes:
+#      - maven-cache:/root/.m2
     depends_on:
       - db
 
@@ -43,6 +46,6 @@ networks:
   private:
   public:
 
-volumes:
-  ecommerce-rest-api-mvn:
-    driver: local
+#volumes:
+#  maven-cache:
+#    driver: local

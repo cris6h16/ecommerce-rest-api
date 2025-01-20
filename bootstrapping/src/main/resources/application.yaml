@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: restful-api-jwt
+
+  config:
+    import:
+      - classpath:error-messages.yaml
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+
+  sql:
+    init:
+      mode: never
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 7481
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY:123}
+  refresh-token-exp-minutes: 43200 # 30 days
+  access-token-exp-minutes: 15
+
+logging:
+  level:
+    root: error

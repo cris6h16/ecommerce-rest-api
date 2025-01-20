@@ -1,4 +1,0 @@
-jwt:
-  secret-key: ${jwt.secret-key-value}
-  refresh-token-exp-minutes: 43200 # 30 days
-  access-token-exp-minutes: 15

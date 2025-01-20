@@ -13,6 +13,14 @@ TRUNCATE TABLE email_verification CASCADE;
 TRUNCATE TABLE product_images CASCADE;
 TRUNCATE TABLE categories CASCADE;
 
+SELECT setval('users_id_seq', 100, true);
+SELECT setval('products_id_seq', 100, true);
+SELECT setval('email_verification_id_seq', 100, true);
+SELECT setval('categories_id_seq', 100, true);
+SELECT setval('carts_id_seq', 100, true);
+SELECT setval('cart_items_id_seq', 100, true);
+
+
 
 
 INSERT INTO users(id, first_name, last_name, balance, email, email_verified, enabled, password, authority)
@@ -83,6 +91,10 @@ VALUES
  true,
  '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y', -- 12345678
  'ROLE_SELLER');
+
+
+
+
 
 -- testing funcional
 INSERT INTO email_verification(id, email, code, action_type, created_at, expires_at)
