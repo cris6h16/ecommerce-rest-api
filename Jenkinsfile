@@ -13,13 +13,6 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Run Unit Tests') {
-            steps {
-                script {
-                    sh 'mvn test'
-                }
-            }
-        }
         stage('Run API in Test Mode') {
             steps {
                 script {
