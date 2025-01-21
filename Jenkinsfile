@@ -17,8 +17,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'firebase-key', variable: 'FIREBASE_KEY_FILE')]) {
-                        sh 'find ./file/src/'
-                        sh 'cp $FIREBASE_KEY_FILE file/src/main/resources/firebase-private-key.json'
+                        sh 'cp -p $FIREBASE_KEY_FILE file/src/main/resources/firebase-private-key.json'
                         sh """
                            docker compose -f .\\docker-compose-staging.yaml up
                         """
