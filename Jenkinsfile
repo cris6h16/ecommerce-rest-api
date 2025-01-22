@@ -8,7 +8,7 @@ pipeline {
         COLLECTION_FILE = 'collection.json'
         REMOTE_SERVER = '192.168.100.135'
         REMOTE_USER = 'Cristian'
-        APP_SERVER_PATH = 'C:/Users/Cristian/Desktop/cicd/ssh'
+        APP_SERVER_PATH = "C:\Users\Cristian\Desktop\cicd\ssh"
     }
     stages {
         stage('Checkout') {
@@ -16,6 +16,20 @@ pipeline {
                 checkout scm
             }
         }
+        stage ('Limpiar Carpeta') {
+            steps {
+                script {
+                    withCredentials([
+                        file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')
+                    ]) {
+                       sh """
+                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'rd /s /q  ${APP_SERVER_PATH}'
+                        """
+                       ssh "-i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'mkdir ${APP_SERVER_PATH}'"
+                }
+            }
+        }
+
         stage('Copy Application to Remote') {
             steps {
                 script {
@@ -25,13 +39,6 @@ pipeline {
                     ]) {
                         sh 'mkdir -p file/src/main/resources'
                         sh 'cp ${FIREBASE_KEY_FILE} file/src/main/resources/firebase-private-key.json'
-
-                        def remotePath = '/cygdrive/c/Users/Cristian/Desktop/cicd/ssh'
-
-                        // first clean folder
-                        sh """
-                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'rd /s /q  ${APP_SERVER_PATH}'
-                        """
 
                         sh """
                            scp -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no -r ./ ${REMOTE_USER}@${REMOTE_SERVER}:${APP_SERVER_PATH}
