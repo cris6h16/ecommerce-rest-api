@@ -8,7 +8,7 @@ pipeline {
         COLLECTION_FILE = 'collection.json'
         REMOTE_SERVER = '192.168.100.135'
         REMOTE_USER = 'Cristian'
-        APP_SERVER_PATH = "C:\Users\Cristian\Desktop\cicd\ssh"
+        APP_SERVER_PATH = "C:\\Users\\Cristian\\Desktop\\cicd\\ssh"
     }
     stages {
         stage('Checkout') {
