@@ -40,7 +40,7 @@ pipeline {
         stage('Run API in Test Mode') {
             steps {
                 script {
-                    withCredentials(file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {[
+                    withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
                         sh """
                             ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker-compose -f ${APP_SERVER_PATH_WIN}/docker-compose-staging.yaml down --rmi local'
                             ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker-compose -f ${APP_SERVER_PATH_WIN}/docker-compose-staging.yaml up -d'
