@@ -9,7 +9,6 @@ pipeline {
         REMOTE_SERVER = '192.168.100.135'
         REMOTE_USER = 'Cristian'
         APP_SERVER_PATH = '/cygdrive/c/Users/Cristian/Desktop/cicd/ssh'
-        APP_SERVER_PATH_WIN = 'C:/Users/Cristian/Desktop/cicd/ssh'
     }
     stages {
         stage('Checkout') {
@@ -42,8 +41,8 @@ pipeline {
                 script {
                     withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
                         sh """
-                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker-compose -f ${APP_SERVER_PATH_WIN}/docker-compose-staging.yaml down --rmi local'
-                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker-compose -f ${APP_SERVER_PATH_WIN}/docker-compose-staging.yaml up -d'
+                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker-compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml down --rmi local'
+                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker-compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml up -d'
                         """
                     }
                 }
@@ -68,7 +67,7 @@ pipeline {
                 script {
                     withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
                         sh """
-                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker-compose -f ${APP_SERVER_PATH_WIN}/docker-compose-staging.yaml down --rmi local'
+                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker-compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml down --rmi local'
                         """
                     }
                 }
