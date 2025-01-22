@@ -28,6 +28,11 @@ pipeline {
 
                         def remotePath = '/cygdrive/c/Users/Cristian/Desktop/cicd/ssh'
 
+                        // first clean folder
+                        sh """
+                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'rd /s /q  ${APP_SERVER_PATH}'
+                        """
+
                         sh """
                            scp -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no -r ./ ${REMOTE_USER}@${REMOTE_SERVER}:${APP_SERVER_PATH}
                         """
@@ -57,7 +62,8 @@ pipeline {
                     }
                     sh '''
                         newman run $COLLECTION_FILE \
-                        --reporters cli,junit --reporter-junit-export newman-results.xml
+                        --reporters cli,junit --reporter-junit-export newman-results.xml \
+                        --env-var hostURL=http://${REMOTE_SERVER}:7937
                     '''
                 }
             }
