@@ -60,7 +60,7 @@ public class ProductController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Page<org.cris6h16.facades.ProductDTO>> findAllProducts(
+    public ResponseEntity<Page<ProductDTO>> findAllProducts(
             @RequestParam(required = false) Map<String, String> filters,
             @RequestParam(required = false, name = "price") List<String> prices,
             Pageable pageable) {

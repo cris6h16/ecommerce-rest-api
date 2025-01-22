@@ -24,9 +24,10 @@ public class CreateProductDTO {
     private BigDecimal price;
     private Integer stock;
     private String description;
-    private Integer approxWeightLb;
-    private Integer approxWidthCm;
-    private Integer approxHeightCm;
+    private Integer weightPounds;
+    private Integer widthCM;
+    private Integer heightCM;
+    private Integer lengthCM;
     private List<MultipartFile> images;
     private Long categoryId;
 }

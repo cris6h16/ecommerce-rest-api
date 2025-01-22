@@ -92,7 +92,7 @@ public class ProductComponentAdvice {
             status = HttpStatus.BAD_REQUEST;
             msg = msgs.getApproxWeightLbNull();
 
-        } else if (e.equals(ProductErrorCode.APPROX_WEIGHT_LB_NEGATIVE)) {
+        } else if (e.equals(ProductErrorCode.asdfghj)) {
             status = HttpStatus.BAD_REQUEST;
             msg = msgs.getApproxWeightLbNegative();
 

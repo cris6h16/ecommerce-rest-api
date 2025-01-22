@@ -10,30 +10,23 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.cris6h16.product.CategoryEntity.CATEGORY_MAX_NAME_LENGTH;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.APPROX_HEIGHT_CM_NEGATIVE;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.APPROX_HEIGHT_CM_NULL;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.APPROX_WEIGHT_LB_NEGATIVE;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.APPROX_WEIGHT_LB_NULL;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.APPROX_WIDTH_CM_NEGATIVE;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.APPROX_WIDTH_CM_NULL;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_ID_LESS_THAN_ONE;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_ID_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_ID_NEGATIVE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NAME_NULL;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NAME_TOO_LONG;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.INVALID_PRICE;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.INVALID_STOCK;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_DESCRIPTION_LENGTH_MISMATCH;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_HAS_NO_IMAGES;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.HEIGHT_CM_NEGATIVE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.IMAGE_URL_NULL;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.IMAGE_URL_TOO_LONG;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.PRICE_NEGATIVE;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.PRICE_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.INVALID_PRICE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.LENGTH_CM_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_DESCRIPTION_LENGTH_MISMATCH;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_ID_LESS_THAN_ONE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_ID_NULL;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NAME_LENGTH_MISMATCH;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.STOCK_NEGATIVE;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.STOCK_NULL;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_ID_LESS_THAN_ONE;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_ID_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_ID_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.WEIGHT_POUNDS_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.WIDTH_CM_NEGATIVE;
 import static org.cris6h16.product.ProductEntity.PRODUCT_MAX_DESCRIPTION_LENGTH;
 import static org.cris6h16.product.ProductEntity.PRODUCT_MAX_IMG_URL_LENGTH;
 import static org.cris6h16.product.ProductEntity.PRODUCT_MAX_NAME_LENGTH;
@@ -46,46 +39,39 @@ class ProductValidator {
     public void validate(CreateProductInput input) {
         input.setName(validateProductName(input.getName()));
         input.setDescription(validateDescription(input.getDescription()));
-//        input.setImageUrls(validateImagesUrl(input.getImageUrls()));
         input.setPrice(validatePrice(input.getPrice()));
         input.setStock(validateStock(input.getStock()));
-        validateApproxWeightLb(input.getApproxWeightLb());
-        validateApproxWidthCm(input.getApproxWidthCm());
-        validateApproxHeightCm(input.getApproxHeightCm());
-        validateCategoryId(input.getCategoryId());
-        validateUserId(input.getUserId());
+        input.setWeightPounds(validateWeightPounds(input.getWeightPounds()));
+        input.setWidthCM(validateWidthCM(input.getWidthCM()));
+        input.setHeightCM(validateHeightCM(input.getHeightCM()));
+        input.setLengthCM(validateLengthCM(input.getLengthCM()));
+        input.setImageUrls(validateImagesUrl(input.getImageUrls()));
+    }
+
+    private Integer validateLengthCM(Integer lengthCM) {
+        return validateNonNegative(lengthCM, LENGTH_CM_NEGATIVE);
     }
 
 
-    public void validateUserId(Long userId) {
-        if (userId == null) throwE(USER_ID_NULL);
-        if (userId < 1) throwE(USER_ID_LESS_THAN_ONE);
+    public Long validateUserId(Long userId) {
+        return validateNonNegative(userId, USER_ID_NEGATIVE);
     }
 
-    public void validateCategoryId(Long categoryId) {
-        if (categoryId == null) throwE(CATEGORY_ID_NULL);
-        if (categoryId < 1) throwE(CATEGORY_ID_LESS_THAN_ONE);
+    public Long validateCategoryId(Long categoryId) {
+        return validateNonNegative(categoryId, CATEGORY_ID_NEGATIVE);
     }
 
-    public String validateImageUrl(String imageUrl) {
-        if (imageUrl == null) throwE(IMAGE_URL_NULL);
-        if ((imageUrl.trim()).length() > PRODUCT_MAX_IMG_URL_LENGTH) throwE(IMAGE_URL_TOO_LONG);
-        return imageUrl;
+
+    public Integer validateHeightCM(Integer approxHeightCm) {
+        return validateNonNegative(approxHeightCm, HEIGHT_CM_NEGATIVE);
     }
 
-    public void validateApproxHeightCm(Integer approxHeightCm) {
-        if (approxHeightCm == null) throwE(APPROX_HEIGHT_CM_NULL);
-        if (approxHeightCm < 0) throwE(APPROX_HEIGHT_CM_NEGATIVE);
+    public Integer validateWidthCM(Integer wCM) {
+        return validateNonNegative(wCM, WIDTH_CM_NEGATIVE);
     }
 
-    public void validateApproxWidthCm(Integer approxWidthCm) {
-        if (approxWidthCm == null) throwE(APPROX_WIDTH_CM_NULL);
-        if (approxWidthCm < 0) throwE(APPROX_WIDTH_CM_NEGATIVE);
-    }
-
-    public void validateApproxWeightLb(Integer approxWeightLb) {
-        if (approxWeightLb == null) throwE(APPROX_WEIGHT_LB_NULL);
-        if (approxWeightLb < 0) throwE(APPROX_WEIGHT_LB_NEGATIVE);
+    public Integer validateWeightPounds(Integer wp) {
+        return validateNonNegative(wp, WEIGHT_POUNDS_NEGATIVE);
     }
 
     public String validateDescription(String description) {
@@ -93,9 +79,7 @@ class ProductValidator {
     }
 
     public Integer validateStock(Integer stock) {
-        stock = stock == null ? 0 : stock;
-        if (stock < 0) throwE(INVALID_STOCK);
-        return stock;
+        return validateNonNegative(stock, STOCK_NEGATIVE);
     }
 
     public BigDecimal validatePrice(BigDecimal price) {
@@ -138,12 +122,32 @@ class ProductValidator {
     }
 
     Set<String> validateImagesUrl(Set<String> urls) {
-        Set<String> l = new HashSet<>();
-        if (urls == null) throwE(ProductErrorCode.PRODUCT_LIST_IMG_IS_NULL);
-        if (urls.isEmpty()) throwE(ProductErrorCode.PRODUCT_LIST_IMG_IS_EMPTY);
+        Set<String> emptySet = new HashSet<>();
+        if (urls == null || urls.isEmpty()) throwE(PRODUCT_HAS_NO_IMAGES);
 
-        for (String url : urls) l.add(validateImageUrl(url));
+        for (String url : urls) {
+            emptySet.add(validateImageUrl(url));
+        }
 
-        return l;
+        return emptySet;
+    }
+
+    public String validateImageUrl(String url) {
+        url = trim(url);
+        if (url.length() > PRODUCT_MAX_IMG_URL_LENGTH) throwE(IMAGE_URL_TOO_LONG);
+        return url;
+    }
+
+
+    private Integer validateNonNegative(Integer value, ProductErrorCode errorCode) {
+        value = value == null ? 0 : value;
+        if (value < 0) throwE(errorCode);
+        return value;
+    }
+
+    private Long validateNonNegative(Long value, ProductErrorCode errorCode) {
+        value = value == null ? 0 : value;
+        if (value < 0) throwE(errorCode);
+        return value;
     }
 }

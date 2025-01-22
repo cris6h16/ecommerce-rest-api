@@ -17,9 +17,10 @@ public class CreateProductInput implements Prepareable {
     private BigDecimal price;
     private Integer stock;
     private String description;
-    private Integer approxWeightLb;
-    private Integer approxWidthCm;
-    private Integer approxHeightCm;
+    private Integer weightPounds;
+    private Integer widthCM;
+    private Integer heightCM;
+    private Integer lengthCM;
     private Set<String> imageUrls;
     private Long categoryId;
     private Long userId;
@@ -37,9 +38,10 @@ public class CreateProductInput implements Prepareable {
         price = price == null ? BigDecimal.ZERO : price;
         stock = stock == null ? 0 : stock;
         description = description == null ? "" : description;
-        approxWeightLb = approxWeightLb == null ? 0 : approxWeightLb;
-        approxWidthCm = approxWidthCm == null ? 0 : approxWidthCm;
-        approxHeightCm = approxHeightCm == null ? 0 : approxHeightCm;
+        weightPounds = weightPounds == null ? 0 : weightPounds;
+        widthCM = widthCM == null ? 0 : widthCM;
+        heightCM = heightCM == null ? 0 : heightCM;
+        lengthCM = lengthCM == null ? 0 : lengthCM;
         imageUrls = imageUrls == null ? Set.of() : imageUrls;
     }
 }

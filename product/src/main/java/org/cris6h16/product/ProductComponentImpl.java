@@ -209,9 +209,9 @@ class ProductComponentImpl implements ProductComponent {
                 .price(productEntity.getPrice())
                 .stock(productEntity.getStock())
                 .description(productEntity.getDescription())
-                .approxWeightLb(productEntity.getApproxWeightLb())
-                .approxWidthCm(productEntity.getApproxWidthCm())
-                .approxHeightCm(productEntity.getApproxHeightCm())
+                .weightPounds(productEntity.getWeightPounds())
+                .widthCM(productEntity.getWidthCM())
+                .heightCM(productEntity.getHeightCM())
                 .imageUrls(productEntity.getImageUrls())
                 .category(toCategoryOutput(productEntity.getCategory()))
                 .user(toUserOutput(productEntity.getUser()))
@@ -225,9 +225,9 @@ class ProductComponentImpl implements ProductComponent {
                 .price(productEntity.getPrice())
                 .stock(productEntity.getStock())
                 .description(productEntity.getDescription())
-                .approxWeightLb(productEntity.getApproxWeightLb())
-                .approxWidthCm(productEntity.getApproxWidthCm())
-                .approxHeightCm(productEntity.getApproxHeightCm())
+                .weightPounds(productEntity.getWeightPounds())
+                .widthCM(productEntity.getWidthCM())
+                .heightCM(productEntity.getHeightCM())
                 .imageUrls(productEntity.getImageUrls())
                 .category(toCategoryOutput(productEntity.getCategory()))
                 .user(null)
@@ -243,24 +243,14 @@ class ProductComponentImpl implements ProductComponent {
     }
 
     private void checkDuplicates(ProductEntity pe, Long productId) {
-        boolean exists;
+        // ? creating : updating
+        boolean exists = (productId == null)
+                ? productRepository.existsByNameAndUserId(pe.getName(), pe.getUser().getId())
+                : productRepository.existsByNameAndUserIdAndIdNot(pe.getName(), pe.getUser().getId(), productId);
 
-        if (productId == null) {// is creating  aproduct
-            exists = productRepository.existsByNameAndUserId(
-                    pe.getName(),
-                    pe.getUser().getId());
-
-        } else { // is updating a product
-            exists = productRepository.existsByNameAndUserIdAndIdNot(
-                    pe.getName(),
-                    pe.getUser().getId(),
-                    productId);
-        }
-
-        if (exists) {
-            throw new ProductComponentException(UNIQUE_USER_ID_PRODUCT_NAME); // todo: ponerlo el constraint a nivel de entidad
-        }
+        if (exists) throw new ProductComponentException(UNIQUE_USER_ID_PRODUCT_NAME);
     }
+
 
     private ProductEntity toProductEntity(CreateProductInput input) {
         ProductEntity pe = ProductEntity.builder()
@@ -269,9 +259,10 @@ class ProductComponentImpl implements ProductComponent {
                 .price(input.getPrice())
                 .stock(input.getStock())
                 .description(input.getDescription())
-                .approxWeightLb(input.getApproxWeightLb())
-                .approxWidthCm(input.getApproxWidthCm())
-                .approxHeightCm(input.getApproxHeightCm())
+                .weightPounds(input.getWeightPounds())
+                .widthCM(input.getWidthCM())
+                .heightCM(input.getHeightCM())
+                .lengthCM(input.getLengthCM())
                 .imageUrls(input.getImageUrls())
                 .category(findCategory(input.getCategoryId()))
                 .user(findUser(input.getUserId()))

@@ -66,13 +66,16 @@ public class ProductEntity {
     private String description;
 
     @Column(nullable = false)
-    private Integer approxWeightLb;
+    private Integer weightPounds;
 
     @Column(nullable = false)
-    private Integer approxWidthCm;
+    private Integer widthCM;
 
     @Column(nullable = false)
-    private Integer approxHeightCm;
+    private Integer heightCM;
+
+    @Column(nullable = false)
+    private Integer lengthCM;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
