@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 "/api/v1/email/send-email-verification",
                                 "/api/v1/users/verify-email",
                                 "/api/v1/auth/reset-password").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/health").permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/tests/reset-functional-testing-db",
                                 "/api/v1/products").permitAll()
