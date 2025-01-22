@@ -1,29 +1,26 @@
 openapi: 3.1.0
 info:
-  title: Ecommerce API REST
+  title: Ecommerce API
   version: 1.0.0
   description: API para un sistema ecommerce siguiendo los principos REST
-  contact:
-    name: Cristian Manuel Herrera Guallo
-    email: cristianmherrera21@gmail.com
-    url: https://github.com/cris6h16
+#  contact:
+#    name: Cristian Manuel Herrera Guallo
+#    email: cristianmherrera21@gmail.com
+#    url: https://github.com/cris6h16
 
 servers:
-  - url: http://localhost:8080
-    description: Dev Server
+  - url: http://192.168.100.135:8080
+    description: Prod Server
 
 paths:
   /api/v1/auth/signup:
     post:
       operationId: signup
       summary: _Path_ o Ruta para registro de Usuarios
-      description: "Ruta para crearse una cuenta de usuario"
+      description: Ruta para crearse una cuenta de usuario
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-            $ref: '#/components/schemas/SignupDTO'
+        $ref: '#/components/requestBodies/Signup'
+
       responses:
         201:
           description: Usuario creado exitosamente
@@ -32,8 +29,9 @@ paths:
               description: URL de la nueva cuenta creada
               schema:
                 type: string
+
         400:
-          description: Error en los datos enviados
+          description: Error en los datos de entrada enviados
           content:
             application/json:
               schema:
@@ -41,8 +39,14 @@ paths:
               examples:
                 PasswordTooShort:
                   value:
-                    message: "La contraseña debe tener al menos 8 caracteres" # todo: coincidir con el mensaje de error
-                    code: "USER_PASSWORD_TOO_SHORT" # todo: coincidir con el codigo de error
+                    message: "La contraseña debe contener entre 8 y 80 caracteres"
+                FirstnameLengthMismatch:
+                  value:
+                    message: "El primer apellido debe contener entre 1 y 30 caracteres"
+                EmailRegexMismatch:
+                  value:
+                    message: "El correo electrónico ingresado no tiene el formato correcto"
+
         409:
           description: Algun atributo unico ya existe o esta en uso
           content:
@@ -52,41 +56,19 @@ paths:
               examples:
                 EmailAlreadyExists:
                   value:
-                    message: "El email ya esta en uso" # todo: coincidir con el mensaje de error
-                    code: "USER_EMAIL_ALREADY_EXISTS" # todo: coincidir con el codigo de error
+                    message: "El email ya está registrado"
 
-        503:
-          description: Error al enviar el correo de verificacion
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponseDTO'
-              examples:
-                EmailNotSent:
-                value:
-                  message: "Error al enviar el correo de verificacion" # todo: coincidir con el mensaje de error
-                  code: "EMAIL_NOT_SENT" # todo: coincidir con el codigo de error
 
         default:
-          description: Error inesperado en el servidor
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponseDTO'
-              examples:
-                UnexpectedError:
-                  value:
-                    message: "Error inesperado" # todo: coincidir con el mensaje de error
-                    code: "UNEXPECTED_ERROR" # todo: coincidir con el codigo de error
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/v1/auth/login:
     post:
-      operationId: login
+      operationId: Login
       summary: _Path_ o Ruta para iniciar sesion
       description: "Ruta para iniciar sesion en la aplicacion"
       requestBody:
-        required: true
-        $ref: '#/components/schemas/LoginDTO'
+        $ref: '#/components/requestBodies/Login'
 
       responses:
         200:
@@ -94,19 +76,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RefreshAccessTokenDTO'
+                $ref: '#/components/schemas/LoginOutput'
 
         400:
-          description: Propiedades enviadas incorrectas ( solicitud no procesada )
+          description: Error en los datos de entrada enviados
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseDTO'
               examples:
-                InvalidCredentials:
+                EmailRegexMismatch:
                   value:
-                    message: "Email invalido" # todo: coincidir con el mensaje de error
-                    code: "EMAIL_REGEX_MISSMATCH" # todo: coincidir con el codigo de error
+                    message: "El correo electrónico ingresado no tiene el formato correcto"
         401:
           description: Credenciales incorrectas
           content:
@@ -116,52 +97,86 @@ paths:
               examples:
                 InvalidCredentials:
                   value:
-                    message: "Credenciales incorrectas" # todo: coincidir con el mensaje de error
-                    code: "INVALID_CREDENTIALS" # todo: coincidir con el codigo de error
+                    message: "Credenciales incorrectas"
 
         default:
-          description: Error inesperado en el servidor
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/v1/email/send-email-verification:
+    post:
+      summary: _Path_ o Ruta para enviar correo de verificacion
+      description: Ruta para enviar codigos de verificacion a los correos de los usuarios registrados
+      requestBody:
+        $ref: '#/components/schemas/SendEmailVerification'
+      responses:
+        204:
+          description: Correo de verificacion enviado exitosamente (si el correo no esta registrado, no se envia nada y se responde con 204)
+
+        400:
+          description: Error en los datos de entrada enviados
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseDTO'
               examples:
-                UnexpectedError:
+                InvalidActionType:
                   value:
-                    message: "Error inesperado" # todo: coincidir con el mensaje de error
-                    code: "UNEXPECTED_ERROR" # todo: coincidir con el codigo de error
+                    message: "El tipo de acción no es soportado"
+                EmailRegexMismatch:
+                  value:
+                    message: "El correo electrónico ingresado no tiene el formato correcto"
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+
+
+
+
+
 
   /api/v1/auth/refresh-token:
-      post:
-        operationId: refreshToken
-        summary: _Path_ o Ruta para refrescar el token de acceso
-        description: "Ruta para refrescar el token de acceso"
-        responses:
-          200:
-              description: accessToken refrescado exitosamente
-              content:
-                application/json:
-                    schema:
-                    $ref: '#/components/schemas/AccessTokenDTO'
-          401:
-              description: refreshToken no valido ( no se pudo autenticar la petición )
+    post:
+      operationId: refreshToken
+      summary: _Path_ o Ruta para refrescar el token de acceso
+      description: "Ruta para refrescar el token de acceso"
+      responses:
+        200:
+          description: accessToken refrescado exitosamente
+          content:
+            application/json:
+              schema:
+              $ref: '#/components/schemas/AccessTokenDTO'
+        401:
+          description: refreshToken no valido ( no se pudo autenticar la petición )
 
-          403:
-              description: Permisos insuficientes ( no tiene el rol de usuario )
+        403:
+          description: Permisos insuficientes ( no tiene el rol de usuario )
 
-          default:
-              description: Error inesperado en el servidor
-              content:
-              application/json:
-                  schema:
-                  $ref: '#/components/schemas/ErrorResponseDTO'
-                  examples:
-                  UnexpectedError:
-                      value:
-                      message: "Error inesperado" # todo: coincidir con el mensaje de error
-                      code: "UNEXPECTED_ERROR" # todo: coincidir con el codigo de error
+        default:
+          description: Error inesperado en el servidor
+          content:
+          application/json:
+            schema:
+            $ref: '#/components/schemas/ErrorResponseDTO'
+            examples:
+            UnexpectedError:
+              value:
+              message: "Error inesperado" # todo: coincidir con el mensaje de error
+              code: "UNEXPECTED_ERROR" # todo: coincidir con el codigo de error
 
 components:
+
+  responses:
+    UnexpectedError:
+      description: 500 - Error inesperado en el servidor
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseDTO'
+          examples:
+            UnexpectedError:
+              value:
+                message: "Ha ocurrido un error inesperado"
+
   schemas:
 
     LoginDTO:
@@ -174,7 +189,7 @@ components:
           type: string
           format: password
 
-    RefreshAccessTokenDTO:
+    LoginOutput:
       type: object
       properties:
         accessToken:
@@ -185,8 +200,8 @@ components:
     AccessTokenDTO:
       type: object
       properties:
-          accessToken:
-          type: string
+        accessToken:
+        type: string
 
     SignupDTO:
       type: object
@@ -207,9 +222,29 @@ components:
       properties:
         message:
           type: string
-        code:
+
+    SendEmailVerification:
+      type: object
+      properties:
+        email:
           type: string
+          format: email
+        actionType:
+          type: string
+          enum: [ "RESET_PASSWORD", "VERIFY_EMAIL" ]
 
 
+  requestBodies:
+    Signup:
+      required: true
+      content:
+        application/json:
+          schema:
+          $ref: '#/components/schemas/SignupDTO'
 
-
+    Login:
+      required: true
+      content:
+        application/json:
+        schema:
+        $ref: '#/components/schemas/LoginDTO'

@@ -7,6 +7,7 @@ public  class UserComponentException extends RuntimeException {
     private final UserErrorCode errorCode;
 
     public UserComponentException(UserErrorCode errorCode) {
+        super(errorCode.name());
         this.errorCode = errorCode;
     }
 }

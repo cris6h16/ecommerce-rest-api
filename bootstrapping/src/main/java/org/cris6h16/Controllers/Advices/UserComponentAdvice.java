@@ -14,14 +14,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_REGEX_MISMATCH;
-import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_IS_BLANK;
+import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_TOO_LONG;
 import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_LENGTH_MISMATCH;
-import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_NULL;
-import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_TOO_LONG;
 import static org.cris6h16.user.Exceptions.UserErrorCode.LASTNAME_LENGTH_MISMATCH;
-import static org.cris6h16.user.Exceptions.UserErrorCode.LASTNAME_NULL;
 import static org.cris6h16.user.Exceptions.UserErrorCode.PASSWORD_LENGTH_MISMATCH;
-import static org.cris6h16.user.Exceptions.UserErrorCode.PASSWORD_TOO_LONG;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -49,66 +45,42 @@ public class UserComponentAdvice {
         String msg;
 
         UserErrorCode code = e.getErrorCode();
-        if (code.equals(FIRSTNAME_TOO_LONG)) {
+
+        if (code.equals(EMAIL_TOO_LONG)) {
             status = HttpStatus.BAD_REQUEST;
-            msg = props.getFirstnameTooLong();
+            msg = props.getEmailTooLong();
 
-        } else if (code.equals(FIRSTNAME_NULL)) {
-            status = HttpStatus.BAD_REQUEST;
-            msg = props.getFirstnameNull();
-
-        }
-
-        else if (code.equals(FIRSTNAME_LENGTH_MISMATCH)) {
-            status = HttpStatus.BAD_REQUEST;
-            msg = props.getFirstnameLengthMismatch();
-
-        }else if (code.equals(LASTNAME_LENGTH_MISMATCH)) {
-            status = HttpStatus.BAD_REQUEST;
-            msg = props.getLastnameLengthMismatch();
-
-        }else if (code.equals(PASSWORD_LENGTH_MISMATCH)) {
-            status = HttpStatus.BAD_REQUEST;
-            msg = props.getPasswordLengthMismatch();
-
-        }
-        else if (code.equals(LASTNAME_NULL)) {
-            status = HttpStatus.BAD_REQUEST;
-            msg = props.getLastnameNull();
-
-        } else if (code.equals(UserErrorCode.LASTNAME_TOO_LONG)) {
-            status = HttpStatus.BAD_REQUEST;
-            msg = props.getLastnameTooLong();
-
-        } else if (code.equals(UserErrorCode.LASTNAME_IS_BLANK)) {
-            status = HttpStatus.BAD_REQUEST;
-            msg = props.getLastnameIsBlank();
-
-        } else if (code.equals(UserErrorCode.PASSWORD_NULL) || code.equals(UserErrorCode.PASSWORD_LESS_THAN_8)) {
-            status = HttpStatus.BAD_REQUEST;
-            msg = props.getPasswordLessThan8();
-
-        } else if (code.equals(PASSWORD_TOO_LONG)) {
-            status = HttpStatus.BAD_REQUEST;
-            msg = props.getPasswordTooLong();
-
-        }
-//        else if (code.equals(EMAIL_NULL) || code.equals(EMAIL_TOO_LONG) || code.equals(EMAIL_REGEX_MISMATCH)) {
-//            status = HttpStatus.BAD_REQUEST;
-//            msg = props.getEmailInvalid();
-//
-//        }
-        else if (code.equals(EMAIL_REGEX_MISMATCH)) {
+        } else if (code.equals(EMAIL_REGEX_MISMATCH)) {
             status = HttpStatus.BAD_REQUEST;
             msg = props.getEmailRegexMismatch();
 
-        } else if (code.equals(UserErrorCode.USER_ID_NULL) || code.equals(UserErrorCode.USER_ID_LESS_THAN_1)) {
+        } else if (code.equals(UserErrorCode.USER_ID_LESS_THAN_1)) {
             status = HttpStatus.BAD_REQUEST;
-            msg = props.getUserIdInvalid();
+            msg = props.getUserIdLessThan1();
+
+        } else if (code.equals(UserErrorCode.USER_NOT_FOUND)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = props.getUserNotFound();
+
+        } else if (code.equals(UserErrorCode.INVALID_BALANCE)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = props.getInvalidBalance();
 
         } else if (code.equals(UserErrorCode.EMAIL_ALREADY_EXISTS)) {
             status = HttpStatus.CONFLICT;
             msg = props.getEmailAlreadyExists();
+
+        } else if (code.equals(FIRSTNAME_LENGTH_MISMATCH)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = props.getFirstnameLengthMismatch();
+
+        } else if (code.equals(LASTNAME_LENGTH_MISMATCH)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = props.getLastnameLengthMismatch();
+
+        } else if (code.equals(PASSWORD_LENGTH_MISMATCH)) {
+            status = HttpStatus.BAD_REQUEST;
+            msg = props.getPasswordLengthMismatch();
 
         } else {
             log.error("A custom exception should have custom response handling", e);

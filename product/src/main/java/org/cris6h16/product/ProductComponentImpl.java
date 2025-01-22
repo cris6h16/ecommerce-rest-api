@@ -112,7 +112,6 @@ class ProductComponentImpl implements ProductComponent {
     @Override
     public Page<ProductOutput> findAllProducts(Pageable pageable, Map<String, String> filters) {
         if (filters.isEmpty()) {
-            log.debug("No filters, returning all products(pageable: {})", pageable);
             return productRepository.findAll(pageable)
                     .map(this::toProductOutputNotEager);
         }
@@ -133,7 +132,6 @@ class ProductComponentImpl implements ProductComponent {
         for (Map.Entry<String, String> entry : filters.entrySet()) {
             String property = entry.getKey();
             String value = entry.getValue();
-            log.debug("Creating filter specification for property: {} with value: {}", property, value);
             spec = spec.and(createFilterSpecification(property, value));
         }
 
@@ -141,22 +139,22 @@ class ProductComponentImpl implements ProductComponent {
     }
 
     private Specification<ProductEntity> createFilterSpecification(String property, String value) {
+        // todo: escapar caracteres especiales
         return switch (property) {
             case "query" -> {
-                // todo: escapar caracteres especiales
-                log.debug("Creating query filter specification for value: {}", value);
-                String[] split = Arrays.stream(value.split(" ")).map(String::trim).toArray(String[]::new);
+                String[] words = Arrays.stream(value.split(" ")).map(String::trim).toArray(String[]::new);
                 Specification<ProductEntity> spec = Specification.where(null);
-                for (String s : split) {
-                    spec = spec.or(Specification.where(hasNameLike(s).or(hasDescriptionLike(s))));
+                for (String word : words) {
+                    spec = spec.or(Specification.where(hasNameLike(word).or(hasDescriptionLike(word))));
                 }
 
                 yield spec;
             }
             case "price" -> {
                 Specification<ProductEntity> spec = Specification.where(null);
-                for (String p : value.split(",")){
-                    spec = spec.and(hasPrice(p.trim()));
+                for (String p : value.split(",")) {
+                    p = p.trim();
+                    spec = spec.and(hasPrice(p));
                 }
 
                 yield spec;

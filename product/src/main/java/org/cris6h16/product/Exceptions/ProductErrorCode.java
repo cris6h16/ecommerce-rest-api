@@ -2,6 +2,7 @@ package org.cris6h16.product.Exceptions;
 
 
 public enum ProductErrorCode {
+    INVALID_CATEGORY_ID,
     USER_ID_NULL,
     CATEGORY_ID_NULL,
     IMAGE_URL_NULL,

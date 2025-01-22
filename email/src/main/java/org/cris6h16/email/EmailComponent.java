@@ -7,4 +7,6 @@ public interface EmailComponent {
     void deleteAll();
 
     void removeByEmailAndActionType(String email, String actionType);
+
+    void updateUsedByEmailAndActionType(String email, String actionType, boolean used);
 }

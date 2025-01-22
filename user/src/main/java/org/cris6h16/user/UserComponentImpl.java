@@ -8,13 +8,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.cris6h16.user.EntityMapper.toUserEntity;
 import static org.cris6h16.user.EntityMapper.toUserOutput;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_ALREADY_EXISTS;
-import static org.cris6h16.user.Exceptions.UserErrorCode.USER_NOT_FOUND_BY_ID;
+import static org.cris6h16.user.Exceptions.UserErrorCode.USER_NOT_FOUND;
 
 @Service
 @Slf4j
@@ -126,7 +124,7 @@ class UserComponentImpl implements UserComponent {
     public void adjustBalanceById(Long id, BigDecimal delta) {
         userValidator.validateUserId(id);
 
-        BigDecimal balance = userRepository.findBalanceById(id).orElseThrow(() -> new UserComponentException(USER_NOT_FOUND_BY_ID));
+        BigDecimal balance = userRepository.findBalanceById(id).orElseThrow(() -> new UserComponentException(USER_NOT_FOUND));
         balance = balance.add(delta);
         userValidator.validateBalance(balance);
 

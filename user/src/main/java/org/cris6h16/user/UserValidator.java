@@ -7,17 +7,13 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
-import static org.cris6h16.user.Exceptions.UserErrorCode.BALANCE_NEGATIVE;
-import static org.cris6h16.user.Exceptions.UserErrorCode.BALANCE_NULL;
-import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_NULL;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_REGEX_MISMATCH;
 import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_TOO_LONG;
 import static org.cris6h16.user.Exceptions.UserErrorCode.FIRSTNAME_LENGTH_MISMATCH;
+import static org.cris6h16.user.Exceptions.UserErrorCode.INVALID_BALANCE;
 import static org.cris6h16.user.Exceptions.UserErrorCode.LASTNAME_LENGTH_MISMATCH;
 import static org.cris6h16.user.Exceptions.UserErrorCode.PASSWORD_LENGTH_MISMATCH;
-import static org.cris6h16.user.Exceptions.UserErrorCode.PASSWORD_LESS_THAN_8;
 import static org.cris6h16.user.Exceptions.UserErrorCode.USER_ID_LESS_THAN_1;
-import static org.cris6h16.user.Exceptions.UserErrorCode.USER_ID_NULL;
 import static org.cris6h16.user.UserEntity.EMAIL_MAX_LENGTH;
 import static org.cris6h16.user.UserEntity.FIRSTNAME_MAX_LENGTH;
 import static org.cris6h16.user.UserEntity.LASTNAME_MAX_LENGTH;
@@ -69,19 +65,17 @@ class UserValidator {
     $ = end of the string
      */
     public String validateEmail(String email) {
-        if (email == null) throwE(EMAIL_NULL);
-        if ((email.trim()).length() > EMAIL_MAX_LENGTH) throwE(EMAIL_TOO_LONG);
+        email = trim(email).toLowerCase();
+        if (email.length() > EMAIL_MAX_LENGTH) throwE(EMAIL_TOO_LONG);
         if (!email.matches("^\\S+@\\S+\\.\\S+$")) throwE(EMAIL_REGEX_MISMATCH);
-        return email.toLowerCase();
+        return email;
     }
 
     void validateUserId(Long id) {
-        if (id == null) throwE(USER_ID_NULL);
-        if (id < 1) throwE(USER_ID_LESS_THAN_1);
+        if (id == null || id < 1) throwE(USER_ID_LESS_THAN_1);
     }
 
     void validateBalance(BigDecimal balance) {
-        if (balance == null) throwE(BALANCE_NULL);
-        if (balance.compareTo(BigDecimal.ZERO) < 0) throwE(BALANCE_NEGATIVE);
+        if (balance == null || balance.compareTo(BigDecimal.ZERO) < 0) throwE(INVALID_BALANCE);
     }
 }

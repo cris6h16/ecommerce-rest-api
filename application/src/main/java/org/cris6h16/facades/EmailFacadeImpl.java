@@ -31,11 +31,9 @@ public class EmailFacadeImpl implements EmailFacade {
     @Override
     public void sendEmailVerificationCodeIfExists(SendEmailVerificationDTO dto) {
         String email = dto.getEmail();
-        String actionType = toActionTypeEnum(dto.getActionType());
+        String actionType = formatActionTypeEnum(dto.getActionType());
 
-        if (!existsUserByEmail(email)) {
-            return;
-        }
+        if (!existsEnabledUserByEmail(email)) return;
 
         taskExecutor.execute(() -> {
             transactionTemplate.execute((TransactionStatus status) -> {
@@ -50,15 +48,14 @@ public class EmailFacadeImpl implements EmailFacade {
         });
     }
 
-    private String toActionTypeEnum(String actionType) {
+    private String formatActionTypeEnum(String actionType) {
         actionType = actionType.toUpperCase().trim();
-        if (EmailCodeActionType.contains(actionType)) {
-            return actionType;
-        }
+        if (EmailCodeActionType.contains(actionType)) return actionType;
+
         throw new ApplicationException(UNSUPPORTED_ACTION_TYPE);
     }
 
-    private boolean existsUserByEmail(String email) {
-        return userComponent.existsByEmail(email);
+    private boolean existsEnabledUserByEmail(String email) {
+        return userComponent.existsByEmailAndEnabled(email, true);
     }
 }

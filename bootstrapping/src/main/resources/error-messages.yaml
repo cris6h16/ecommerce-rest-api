@@ -6,22 +6,15 @@ error-messages:
   components:
     user:
       email-already-exists: "El email ya está registrado"
-      email-null: "El email no puede ser nulo"
       email-too-long: "El email es demasiado largo"
-      firstname-null: "El nombre no puede ser nulo"
-      firstname-too-long: "El primer nombre es demasiado largo"
-      lastname-null: "El apellido no puede ser nulo"
-      lastname-too-long: "El apellido es demasiado largo"
-      password-less-than8: "La contraseña debe tener al menos 8 caracteres"
-      password-null: "La contraseña no puede ser nula"
-      password-too-long: "La contraseña es demasiado larga"
-      user-id-invalid: "El id del usuario no es válido"
       lastname-length-mismatch: "El primer apellido debe contener entre 1 y 30 caracteres"
       email-regex-mismatch: "El correo electrónico ingresado no tiene el formato correcto"
       firstname-length-mismatch: "El primer nombre debe contener entre 1 y 30 caracteres"
-      lastname-is-blank: "def"
-      firstname-is-blank: "def"
       password-length-mismatch: "La contraseña debe contener entre 8 y 80 caracteres"
+      user-id-less-than1: "El id del usuario no puede ser menor a 1"
+      invalid-balance: "El balance es inválido"
+      user-not-found: "Usuario no encontrado"
+
     product:
       approx-height-cm-negative: "La altura aproximada en centimetros del producto no puede ser negativa"
       approx-height-cm-null: "La altura aproximada en centimetros del producto no puede ser nula"
@@ -69,15 +62,16 @@ error-messages:
       email-regex-mismatch: "El correo electrónico ingresado no tiene el formato correcto"
 
     application:
+      invalid-credentials: "Credenciales incorrectas"
+      unsupported-action-type: "El tipo de acción no es soportado"
+
       email-not-verified: "Tu correo electronico no esta verificado. Completa el proceso de verificacion para continuar"
-      invalid-credentials: "Credenciales inválidas"
       valid-verification-code-not-found: "El código de verificación no es válido o ya ha sido utilizado"
       enabled-user-not-found: "Usuario no encotrado"
       img-multipart-file-is-empty: "La imagen del producto es requerida"
       product-not-found-by-id: "No se encontró el producto con el id especificado"
       invalid-action-type: "def"
       forbidden-sort-property: "Propiedad de ordenamiento no permitida"
-      unsupported-action-type: "El tipo de acción no es soportado"
 
     file:
       file-upload-fail: "Ha ocurrido un error al subir el archivo"

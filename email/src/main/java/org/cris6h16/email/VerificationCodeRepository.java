@@ -11,4 +11,9 @@ import java.time.LocalDateTime;
     int deleteByEmail(String email);
 
      void deleteByEmailAndActionType(String email, String actionType);
+
+     boolean existsByEmailAndCodeAndUsedAndExpiresAtAfter(String email, String code, boolean used, LocalDateTime localDateTime);
+
+     void updateUsedByEmailAndActionType(String email, String actionType, boolean used);
+
  }

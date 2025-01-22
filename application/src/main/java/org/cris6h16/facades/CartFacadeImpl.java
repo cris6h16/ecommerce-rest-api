@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
 
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.CART_ITEM_NOT_FOUND;
-import static org.cris6h16.facades.FacadesCommon.isUserEnabled;
+import static org.cris6h16.facades.FacadesCommon.isUserEnabledById;
 @Component
 public class CartFacadeImpl implements CartFacade{
     private final CartComponent cartComponent;
@@ -28,7 +28,7 @@ public class CartFacadeImpl implements CartFacade{
     @Override
     public Long addItemToCart(CreateCartItemDTO dto) {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabled(userId, userComponent);
+        isUserEnabledById(userId, userComponent);
         return cartComponent.addItemToCart(toInput(dto), userId);
     }
 
@@ -42,7 +42,7 @@ public class CartFacadeImpl implements CartFacade{
     @Override
     public CartDTO getOrCreateMyCart() {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabled(userId, userComponent);
+        isUserEnabledById(userId, userComponent);
         return toDTO(cartComponent.getOrCreateCartByUserId(userId));
     }
 
@@ -69,14 +69,14 @@ public class CartFacadeImpl implements CartFacade{
 
     @Override
     public void updateCartItemQuantity(Long itemId, Integer quantity) {
-        isUserEnabled(securityComponent.getCurrentUserId(), userComponent);
+        isUserEnabledById(securityComponent.getCurrentUserId(), userComponent);
         cartComponent.updateCartItemQuantityById(quantity, itemId);
     }
 
     @Override
     public void deleteCartItem(Long itemId) {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabled(userId, userComponent);
+        isUserEnabledById(userId, userComponent);
         isOwnerOfCart(userId, itemId);
         cartComponent.deleteCartItemById(itemId);
     }

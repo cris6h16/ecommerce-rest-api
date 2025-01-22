@@ -22,7 +22,7 @@ import java.time.temporal.ChronoUnit;
 })
 @Getter
 class VerificationCodeEntity {
-    public static final int EXP_MIN = 60;
+    public static final int EXP_MIN = 15;
     public static final int CODE_LENGTH = 6;
     public static final int EMAIL_MAX_LENGTH = 255;
     static final int ACTION_TYPE_MAX_LENGTH = 20;
@@ -40,6 +40,9 @@ class VerificationCodeEntity {
     @Column(nullable = false, length = ACTION_TYPE_MAX_LENGTH, name = "action_type")
     private String actionType;
 
+    @Column(nullable = false)
+    private boolean used;
+
     @Column(nullable = false, updatable = false, name = "created_at")
     private LocalDateTime createdAt;
 
@@ -56,6 +59,7 @@ class VerificationCodeEntity {
     public void onCreate() {
         this.createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
         this.expiresAt = this.createdAt.plusMinutes(EXP_MIN).truncatedTo(ChronoUnit.MILLIS);
+        this.used = false;
     }
 
     VerificationCodeEntity(String email, String code, String actionType) {

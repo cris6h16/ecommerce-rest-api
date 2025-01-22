@@ -1,15 +1,11 @@
 package org.cris6h16.Controllers;
 
-import org.cris6h16.facades.EmailFacade;
 import org.cris6h16.facades.LoginDTO;
-import org.cris6h16.facades.SendEmailVerificationDTO;
 import org.cris6h16.facades.SignupDTO;
 import org.cris6h16.facades.UserFacade;
-import org.cris6h16.facades.VerifyEmailDTO;
 import org.cris6h16.user.LoginOutput;
 import org.cris6h16.user.ResetPasswordDTO;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +21,6 @@ import java.util.Map;
 import static org.cris6h16.Controllers.AuthenticationController.BASE_PATH;
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @RestController
 @RequestMapping(BASE_PATH)

@@ -39,8 +39,7 @@ public class EmailValidator {
     }
 
     String validateActionType(String actionType) {
-        if (actionType == null) throwE(ACTION_TYPE_NULL);
-        if ((actionType.trim()).isBlank()) throwE(ACTION_TYPE_BLANK);
+        actionType = actionType == null ? "" : actionType.trim().toUpperCase();
         if (actionType.length() > ACTION_TYPE_MAX_LENGTH) throwE(ACTION_TYPE_TOO_LONG);
         return actionType;
     }

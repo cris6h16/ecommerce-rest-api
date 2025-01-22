@@ -7,6 +7,7 @@ public class ApplicationException extends RuntimeException {
     private final ApplicationErrorCode errorCode;
 
     public ApplicationException(ApplicationErrorCode errorCode) {
+        super(errorCode.name());
         this.errorCode = errorCode;
     }
 }

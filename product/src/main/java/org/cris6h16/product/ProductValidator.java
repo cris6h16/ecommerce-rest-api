@@ -100,7 +100,7 @@ class ProductValidator {
 
     public BigDecimal validatePrice(BigDecimal price) {
         price = price == null ? BigDecimal.ZERO : price;
-        if (price.compareTo(BigDecimal.ZERO) == -1) throwE(INVALID_PRICE);
+        if (!(price.compareTo(BigDecimal.ZERO) > 0)) throwE(INVALID_PRICE); // price must be greater than 0
         return price;
     }
 

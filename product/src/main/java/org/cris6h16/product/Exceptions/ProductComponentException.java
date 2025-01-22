@@ -7,6 +7,7 @@ public class ProductComponentException extends RuntimeException {
     private final ProductErrorCode errorCode;
 
     public ProductComponentException(ProductErrorCode errorCode) {
+        super(errorCode.name());
         this.errorCode = errorCode;
     }
 }

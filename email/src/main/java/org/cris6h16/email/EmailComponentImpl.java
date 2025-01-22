@@ -40,7 +40,7 @@ public class EmailComponentImpl implements EmailComponent {
         email = validator.validateEmail(email);
         code = validator.validateCode(code);
 
-        return repository.existsByEmailAndCodeAndExpiresAtAfter(email, code, LocalDateTime.now());
+        return repository.existsByEmailAndCodeAndUsedAndExpiresAtAfter(email, code, false,LocalDateTime.now());
     }
 
     @Override
@@ -54,6 +54,14 @@ public class EmailComponentImpl implements EmailComponent {
         actionType = validator.validateActionType(actionType);
 
         repository.deleteByEmailAndActionType(email, actionType);
+    }
+
+    @Override
+    public void updateUsedByEmailAndActionType(String email, String actionType, boolean used) {
+        email = validator.validateEmail(email);
+        actionType = validator.validateActionType(actionType);
+
+        repository.updateUsedByEmailAndActionType(email, actionType, used);
     }
 
 }

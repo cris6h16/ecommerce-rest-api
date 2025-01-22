@@ -36,7 +36,7 @@ class UserFacadeImpl implements UserFacade {
     public UserFacadeImpl(EmailComponent emailComponent,
                           UserComponent userComponent,
                           SecurityComponent securityComponent
-                          ) {
+    ) {
         this.emailComponent = emailComponent;
         this.userComponent = userComponent;
         this.securityComponent = securityComponent;
@@ -48,14 +48,8 @@ class UserFacadeImpl implements UserFacade {
         CreateUserInput input = toCreateUserInput(dto);
         processPassword(input);
         setSignupDefaults(input);
-        Long id = userComponent.create(input);
 
-        String email = input.getEmail();
-        String actionType = VERIFY_EMAIL.name();
-        emailComponent.removeByEmailAndActionType(email, actionType);
-        emailComponent.sendEmailVerificationCode(email, actionType);
-
-        return id;
+        return userComponent.create(input);
     }
 
     private void processPassword(CreateUserInput input) {
@@ -108,19 +102,17 @@ class UserFacadeImpl implements UserFacade {
         String accessToken = securityComponent.generateAccessToken(id, authority);
         String refreshToken = securityComponent.generateRefreshToken(id, authority);
 
-        log.debug("Generated access token: {}, refresh token: {}", accessToken, refreshToken);
         return new LoginOutput(accessToken, refreshToken);
     }
 
 
+//    todo: agregar logs con AOP
 
 
     private void passMatches(LoginDTO loginDTO, UserOutput userOutput, ApplicationErrorCode errorCode) {
         if (!securityComponent.matches(loginDTO.getPassword(), userOutput.getPassword())) {
-            log.debug("Password not match");
             throw new ApplicationException(errorCode);
         }
-        log.debug("Password match");
     }
 
     @Override
@@ -131,20 +123,19 @@ class UserFacadeImpl implements UserFacade {
         existsEnabledUserByEmail(dto.getEmail());
         isCodeValid(dto.getEmail(), dto.getCode(), actionType, VALID_VERIFICATION_CODE_NOT_FOUND);
         userComponent.updateEmailVerifiedByEmail(dto.getEmail(), true);
-        emailComponent.removeByEmailAndActionType(dto.getEmail(), actionType);
+        emailComponent.updateUsedByEmailAndActionType(dto.getEmail(), actionType, true);
     }
-
 
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public void resetPassword(ResetPasswordDTO dto) {
         String actionType = EmailCodeActionType.RESET_PASSWORD.name();
 
-        processPassword(dto);
         existsEnabledUserByEmail(dto.getEmail());
+        processPassword(dto);
         isCodeValid(dto.getEmail(), dto.getCode(), actionType, VALID_VERIFICATION_CODE_NOT_FOUND);
         userComponent.updatePasswordByEmail(dto.getEmail(), dto.getPassword());
-        emailComponent.removeByEmailAndActionType(dto.getEmail(), actionType);
+        emailComponent.updateUsedByEmailAndActionType(dto.getEmail(), actionType, true);
     }
 
     private void existsEnabledUserByEmail(String email) {
@@ -210,8 +201,6 @@ class UserFacadeImpl implements UserFacade {
     }
 
 
-
-
     private void existsEnabledUserByEmail(Long id) {
         if (!userComponent.existsByIdAndEnabled(id, true)) {
             throw new ApplicationException(ENABLED_USER_NOT_FOUND);
@@ -221,11 +210,7 @@ class UserFacadeImpl implements UserFacade {
 
     private void isCodeValid(String email, String code, String actionType, ApplicationErrorCode errorCode) {
         boolean valid = emailComponent.isCodeValid(email, code, actionType);
-        if (!valid) {
-            log.debug("Code is not valid, email: {}, code: {}, actionType: {}", email, code, actionType);
-            throw new ApplicationException(errorCode);
-        }
-        log.debug("Code is valid, email: {}, code: {}, actionType: {}", email, code, actionType);
+        if (!valid) throw new ApplicationException(errorCode);
     }
 
 }
