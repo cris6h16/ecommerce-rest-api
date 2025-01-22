@@ -41,8 +41,8 @@ pipeline {
                 script {
                     withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
                         sh """
-                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker-compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml down --rmi local'
-                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker-compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml up -d'
+                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml down --rmi local'
+                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml up -d'
                         """
                     }
                 }
@@ -67,7 +67,7 @@ pipeline {
                 script {
                     withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
                         sh """
-                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker-compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml down --rmi local'
+                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'docker compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml down --rmi local'
                         """
                     }
                 }
