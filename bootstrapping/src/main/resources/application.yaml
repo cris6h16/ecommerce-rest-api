@@ -27,7 +27,7 @@ server:
   port: 8080 # modificar docker-compose si se cambia
 
 jwt:
-  secret-key: 12345678yt432112345678765432123456789876543212345678432
+  secret-key: ${JWT_SECRET_KEY:123}
   refresh-token-exp-minutes: 43200 # 30 days
   access-token-exp-minutes: 15
 

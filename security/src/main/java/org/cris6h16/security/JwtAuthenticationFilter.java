@@ -33,8 +33,6 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         log.debug("entered to JwtAuthenticationFilter.doFilterInternal");
 
-        String requestURI = request.getRequestURI();
-
         String token = getTokenFromRequest(request);
 
         if (token == null || !jwtUtils.validate(token)) {

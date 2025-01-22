@@ -52,7 +52,7 @@ class JwtUtilsImpl implements JwtUtils {
 
     @Override
     public boolean validate(String token) {
-        log.debug("Validating token");
+        log.debug("Validating token with secret key: {}", jwtProperties.getSecretKey());
         try {
             Jwts.parser()
                     .verifyWith(getSign())
