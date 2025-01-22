@@ -53,7 +53,7 @@ pipeline {
                 script {
                     retry(5) {
                         sleep(15)
-                        sh "curl -f http://localhost:7937/health || exit 1"
+                        sh "curl -f http://${REMOTE_SERVER}:7937/health || exit 1"
                     }
                     sh '''
                         newman run $COLLECTION_FILE \
