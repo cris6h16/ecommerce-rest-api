@@ -23,7 +23,7 @@ pipeline {
                         file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')
                     ]) {
                         sh """
-                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'rd /s /q  ${APP_SERVER_PATH}'
+                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'rd /s /q  ${APP_SERVER_PATH} || exit 0'
                         """
                         ssh "-i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'mkdir ${APP_SERVER_PATH}'"
                     }
