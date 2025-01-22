@@ -8,7 +8,7 @@ pipeline {
         COLLECTION_FILE = 'collection.json'
         REMOTE_SERVER = '192.168.100.135'
         REMOTE_USER = 'Cristian'
-        APP_SERVER_PATH = "C:\\Users\\Cristian\\Desktop\\cicd\\ssh"
+        APP_SERVER_PATH = "C:/Users/Cristian/Desktop/cicd/ssh"
     }
     stages {
         stage('Checkout') {
@@ -23,7 +23,7 @@ pipeline {
                         file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')
                     ]) {
                         sh """
-                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'rd /s /q  ${APP_SERVER_PATH} || exit 0'
+                            ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'rd /s /q  ${APP_SERVER_PATH}/ || exit 0'
                         """
                         ssh "-i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'mkdir ${APP_SERVER_PATH}'"
                     }
