@@ -120,7 +120,7 @@ class UserFacadeImpl implements UserFacade {
     public void verifyEmail(VerifyEmailDTO dto) {
         String actionType = EmailCodeActionType.VERIFY_EMAIL.name();
 
-        existsEnabledUserByEmail(dto.getEmail());
+        existsEnabledUserByEmail(dto.getEmail(), VALID_VERIFICATION_CODE_NOT_FOUND);
         isCodeValid(dto.getEmail(), dto.getCode(), actionType, VALID_VERIFICATION_CODE_NOT_FOUND);
         userComponent.updateEmailVerifiedByEmail(dto.getEmail(), true);
         emailComponent.updateUsedByEmailAndActionType(dto.getEmail(), actionType, true);
@@ -131,16 +131,16 @@ class UserFacadeImpl implements UserFacade {
     public void resetPassword(ResetPasswordDTO dto) {
         String actionType = EmailCodeActionType.RESET_PASSWORD.name();
 
-        existsEnabledUserByEmail(dto.getEmail());
+        existsEnabledUserByEmail(dto.getEmail(), VALID_VERIFICATION_CODE_NOT_FOUND);
         processPassword(dto);
         isCodeValid(dto.getEmail(), dto.getCode(), actionType, VALID_VERIFICATION_CODE_NOT_FOUND);
         userComponent.updatePasswordByEmail(dto.getEmail(), dto.getPassword());
         emailComponent.updateUsedByEmailAndActionType(dto.getEmail(), actionType, true);
     }
 
-    private void existsEnabledUserByEmail(String email) {
+    private void existsEnabledUserByEmail(String email, ApplicationErrorCode errorCode) {
         if (!userComponent.existsByEmailAndEnabled(email, true)) {
-            throw new ApplicationException(VALID_VERIFICATION_CODE_NOT_FOUND);
+            throw new ApplicationException(errorCode);
         }
     }
 

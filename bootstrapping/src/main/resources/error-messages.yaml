@@ -64,10 +64,10 @@ error-messages:
     application:
       invalid-credentials: "Credenciales incorrectas"
       unsupported-action-type: "El tipo de acción no es soportado"
+      valid-verification-code-not-found: "El código de verificación no es válido o ya ha sido utilizado"
 
       email-not-verified: "Tu correo electronico no esta verificado. Completa el proceso de verificacion para continuar"
-      valid-verification-code-not-found: "El código de verificación no es válido o ya ha sido utilizado"
-      enabled-user-not-found: "Usuario no encotrado"
+      enabled-user-not-found: "Usuario no encontrado"
       img-multipart-file-is-empty: "La imagen del producto es requerida"
       product-not-found-by-id: "No se encontró el producto con el id especificado"
       invalid-action-type: "def"

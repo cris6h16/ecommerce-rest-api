@@ -40,7 +40,7 @@ public class ApplicationComponentAdvice {
         ApplicationErrorCode errorCode = e.getErrorCode();
         switch (errorCode) {
             case INVALID_CREDENTIALS:
-                status = HttpStatus.UNAUTHORIZED;
+                status = HttpStatus.FORBIDDEN;
                 msg = properties.getInvalidCredentials();
                 break;
 

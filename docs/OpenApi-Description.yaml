@@ -88,7 +88,7 @@ paths:
                 EmailRegexMismatch:
                   value:
                     message: "El correo electrónico ingresado no tiene el formato correcto"
-        401:
+        403:
           description: Credenciales incorrectas
           content:
             application/json:
@@ -128,40 +128,181 @@ paths:
         default:
           $ref: '#/components/responses/UnexpectedError'
 
+  /api/v1/users/verify-email:
+    post:
+      summary: _Path_ o Ruta para verificar el correo de un usuario
+      description: Ruta para verificar el correo de un usuario proporcionando el codigo de verificacion
+      requestBody:
+        $ref: '#/components/requestBodies/VerifyEmail'
+      responses:
+        204:
+          description: Correo verificado exitosamente
+        400:
+          description: Error en los datos de entrada enviados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                EmailRegexMismatch:
+                  value:
+                    message: "El correo electrónico ingresado no tiene el formato correcto"
+                CodeRegexMismatch:
+                  value:
+                    message: "El código de verificación no cumple con el formato esperado"
+        403:
+          description: Codigo de verificacion no valido o ya usado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                ValidVerificationCodeNotFound:
+                  value:
+                    message: "El código de verificación no es válido o ya ha sido utilizado"
+
+        default:
+          $ref: '#/components/responses/UnexpectedError'
 
 
+  /api/v1/auth/reset-password:
+    post:
+      summary: _Path_ o Ruta para restablecer la contraseña de un usuario
+      description: Ruta para restablecer la contraseña de un usuario proporcionando el correo electronico, el codigo de verificacion y la nueva contraseña
+      requestBody:
+        $ref: '#/components/schemas/SendEmailVerification'
+      responses:
+        204:
+          description: La contraseña se ha restablecido exitosamente
 
+        400:
+          description: Error en los datos de entrada enviados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                EmailRegexMismatch:
+                  value:
+                    message: "El correo electrónico ingresado no tiene el formato correcto"
+                CodeRegexMismatch:
+                  value:
+                    message: "El código de verificación no cumple con el formato esperado"
+                PasswordLengthMismatch:
+                  value:
+                    message: "La contraseña debe contener entre 8 y 80 caracteres"
+
+        403:
+          description: Codigo de verificacion no valido o ya usado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                ValidVerificationCodeNotFound:
+                  value:
+                    message: "El código de verificación no es válido o ya ha sido utilizado"
+
+        default:
+          $ref: '#/components/responses/UnexpectedError'
 
 
   /api/v1/auth/refresh-token:
     post:
-      operationId: refreshToken
       summary: _Path_ o Ruta para refrescar el token de acceso
-      description: "Ruta para refrescar el token de acceso"
+      description: Ruta para refrescar el token de acceso estando autenticado (Autenticacion Bearer)
+      security:
+        - BearerAuth: [ ]
       responses:
         200:
-          description: accessToken refrescado exitosamente
+          description: Token de acceso refrescado exitosamente
           content:
             application/json:
               schema:
-              $ref: '#/components/schemas/AccessTokenDTO'
-        401:
-          description: refreshToken no valido ( no se pudo autenticar la petición )
+                $ref: '#/components/schemas/AccessTokenDTO'
 
-        403:
-          description: Permisos insuficientes ( no tiene el rol de usuario )
+        401:
+          description: La autenticacion ha fallado, posiblemente el token de acceso ha expirado o es invalido
+
+        404:
+          description: El id del usuario que esta en el token referencia a un usuario que no existe en la base de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                UserNotFound:
+                  value:
+                    message: "Usuario no encontrado"
 
         default:
-          description: Error inesperado en el servidor
-          content:
-          application/json:
-            schema:
-            $ref: '#/components/schemas/ErrorResponseDTO'
-            examples:
-            UnexpectedError:
-              value:
-              message: "Error inesperado" # todo: coincidir con el mensaje de error
-              code: "UNEXPECTED_ERROR" # todo: coincidir con el codigo de error
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/v1/products:
+    get:
+      summary: _Path_ o Ruta para obtener todos los productos
+      description: Ruta para obtener todos los productos disponibles aplicando filtros y paginacion
+      parameters:
+        - name: page
+          in: query
+          description: Numero de pagina (0-indexed)
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+
+
+        - name: size
+          in: query
+          description: Cantidad de productos por pagina
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+
+        - name: sort
+          in: query
+          description: Ordenar los productos por campos específicos
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - price
+                - stock
+                - id
+            example: [ "price,asc", "stock,desc" ]
+
+        - name: query
+          in: query
+          description: Texto de busqueda para filtrar los productos
+          required: false
+          schema:
+            type: string
+
+        - name: price
+          in: query
+          description: Filtrar productos por precio o rango de precios utilizando los operadores `>` (mayor que) o `<` (menor que). El rango de precios se define con dos propiedades 'price' y su rango
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              pattern: "^[<>]\\d+$"
+            example: [ ">10", "<99" ]
+
+        - name: categoryId
+          in: query
+          description: Filtrar productos por categoria
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+
+      responses:
+        200:
+          $ref: '#/components/responses/Page<ProductDTO>'
 
 components:
 
@@ -176,6 +317,10 @@ components:
             UnexpectedError:
               value:
                 message: "Ha ocurrido un error inesperado"
+
+    Page<ProductDTO>:
+        type: object
+        properties:
 
   schemas:
 
@@ -233,6 +378,16 @@ components:
           type: string
           enum: [ "RESET_PASSWORD", "VERIFY_EMAIL" ]
 
+    VerifyEmailDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        code:
+          type: string
+
+
 
   requestBodies:
     Signup:
@@ -248,3 +403,10 @@ components:
         application/json:
         schema:
         $ref: '#/components/schemas/LoginDTO'
+
+    VerifyEmail:
+      required: true
+      content:
+        application/json:
+        schema:
+        $ref: '#/components/schemas/VerifyEmailDTO'

@@ -25,6 +25,7 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.FORBIDDEN_SORT_PROPERTY;
+import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.PAGE_SIZE_TOO_BIG;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.PRODUCT_NOT_FOUND_BY_ID;
 import static org.cris6h16.facades.FacadesCommon.isUserEnabledById;
 
@@ -88,8 +89,15 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     public Page<ProductDTO> findAllProducts(Pageable pageable, Map<String, String> filters) {
         hasAllowedSortProperties(pageable.getSort());
+        checkSize(pageable);
         return productComponent.findAllProducts(pageable, filters)
                 .map(this::toProductDTO);
+    }
+
+    private void checkSize(Pageable pageable) {
+        if (pageable.getPageSize() > 100) {
+            throw new ApplicationException(PAGE_SIZE_TOO_BIG);
+        }
     }
 
     private void hasAllowedSortProperties(Sort sort) {

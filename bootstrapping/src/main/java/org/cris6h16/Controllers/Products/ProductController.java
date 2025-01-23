@@ -39,7 +39,7 @@ import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 public class ProductController {
 
     protected final ProductFacade productFacade;
-    static final String PRODUCT_PATH = "api/v1/products";
+static final String PRODUCT_PATH = "api/v1/products";
     public static final String CATEGORY_PATH = ProductController.PRODUCT_PATH + "/categories";
 
     public ProductController(ProductFacade productFacade) {
