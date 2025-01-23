@@ -65,16 +65,16 @@ public class ProductEntity {
     @Column(nullable = false, length = PRODUCT_MAX_DESCRIPTION_LENGTH)
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "weight_pounds")
     private Integer weightPounds;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "width_cm")
     private Integer widthCM;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "height_cm")
     private Integer heightCM;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "length_cm")
     private Integer lengthCM;
 
     @ElementCollection(fetch = FetchType.EAGER)

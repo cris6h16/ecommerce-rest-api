@@ -3,24 +3,21 @@ info:
   title: Ecommerce API
   version: 1.0.0
   description: API para un sistema ecommerce siguiendo los principos REST
-#  contact:
-#    name: Cristian Manuel Herrera Guallo
-#    email: cristianmherrera21@gmail.com
-#    url: https://github.com/cris6h16
-
+  # contact:
+  #   name: Cristian Manuel Herrera Guallo
+  #   email: cristianmherrera21@gmail.com
+  #   url: https://github.com/cris6h16
 servers:
   - url: http://192.168.100.135:8080
     description: Prod Server
-
 paths:
   /api/v1/auth/signup:
     post:
       operationId: signup
-      summary: _Path_ o Ruta para registro de Usuarios
-      description: Ruta para crearse una cuenta de usuario
+      summary: registro de Usuarios
+      description: crearse una cuenta de usuario
       requestBody:
         $ref: '#/components/requestBodies/Signup'
-
       responses:
         201:
           description: Usuario creado exitosamente
@@ -29,7 +26,6 @@ paths:
               description: URL de la nueva cuenta creada
               schema:
                 type: string
-
         400:
           description: Error en los datos de entrada enviados
           content:
@@ -46,7 +42,6 @@ paths:
                 EmailRegexMismatch:
                   value:
                     message: "El correo electrónico ingresado no tiene el formato correcto"
-
         409:
           description: Algun atributo unico ya existe o esta en uso
           content:
@@ -57,19 +52,15 @@ paths:
                 EmailAlreadyExists:
                   value:
                     message: "El email ya está registrado"
-
-
         default:
           $ref: '#/components/responses/UnexpectedError'
-
   /api/v1/auth/login:
     post:
       operationId: Login
-      summary: _Path_ o Ruta para iniciar sesion
-      description: "Ruta para iniciar sesion en la aplicacion"
+      summary: iniciar sesion
+      description: "iniciar sesion en la aplicacion"
       requestBody:
         $ref: '#/components/requestBodies/Login'
-
       responses:
         200:
           description: Usuario autenticado exitosamente
@@ -77,7 +68,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginOutput'
-
         400:
           description: Error en los datos de entrada enviados
           content:
@@ -98,20 +88,17 @@ paths:
                 InvalidCredentials:
                   value:
                     message: "Credenciales incorrectas"
-
         default:
           $ref: '#/components/responses/UnexpectedError'
-
   /api/v1/email/send-email-verification:
     post:
-      summary: _Path_ o Ruta para enviar correo de verificacion
-      description: Ruta para enviar codigos de verificacion a los correos de los usuarios registrados
+      summary: enviar correo de verificacion
+      description: enviar codigos de verificacion a los correos de los usuarios registrados
       requestBody:
-        $ref: '#/components/schemas/SendEmailVerification'
+        $ref: '#/components/requestBodies/SendEmailVerification'
       responses:
         204:
           description: Correo de verificacion enviado exitosamente (si el correo no esta registrado, no se envia nada y se responde con 204)
-
         400:
           description: Error en los datos de entrada enviados
           content:
@@ -127,11 +114,10 @@ paths:
                     message: "El correo electrónico ingresado no tiene el formato correcto"
         default:
           $ref: '#/components/responses/UnexpectedError'
-
   /api/v1/users/verify-email:
     post:
-      summary: _Path_ o Ruta para verificar el correo de un usuario
-      description: Ruta para verificar el correo de un usuario proporcionando el codigo de verificacion
+      summary: verificar el correo de un usuario
+      description: verificar el correo de un usuario proporcionando el codigo de verificacion
       requestBody:
         $ref: '#/components/requestBodies/VerifyEmail'
       responses:
@@ -160,21 +146,17 @@ paths:
                 ValidVerificationCodeNotFound:
                   value:
                     message: "El código de verificación no es válido o ya ha sido utilizado"
-
         default:
           $ref: '#/components/responses/UnexpectedError'
-
-
   /api/v1/auth/reset-password:
     post:
-      summary: _Path_ o Ruta para restablecer la contraseña de un usuario
-      description: Ruta para restablecer la contraseña de un usuario proporcionando el correo electronico, el codigo de verificacion y la nueva contraseña
+      summary: restablecer la contraseña de un usuario
+      description: restablecer la contraseña de un usuario proporcionando el correo electronico, el codigo de verificacion y la nueva contraseña
       requestBody:
-        $ref: '#/components/schemas/SendEmailVerification'
+        $ref: '#/components/requestBodies/SendEmailVerification'
       responses:
         204:
           description: La contraseña se ha restablecido exitosamente
-
         400:
           description: Error en los datos de entrada enviados
           content:
@@ -191,7 +173,6 @@ paths:
                 PasswordLengthMismatch:
                   value:
                     message: "La contraseña debe contener entre 8 y 80 caracteres"
-
         403:
           description: Codigo de verificacion no valido o ya usado
           content:
@@ -202,15 +183,12 @@ paths:
                 ValidVerificationCodeNotFound:
                   value:
                     message: "El código de verificación no es válido o ya ha sido utilizado"
-
         default:
           $ref: '#/components/responses/UnexpectedError'
-
-
   /api/v1/auth/refresh-token:
     post:
-      summary: _Path_ o Ruta para refrescar el token de acceso
-      description: Ruta para refrescar el token de acceso estando autenticado (Autenticacion Bearer)
+      summary: refrescar el token de acceso
+      description: refrescar el token de acceso estando autenticado (Autenticacion Bearer)
       security:
         - BearerAuth: [ ]
       responses:
@@ -220,10 +198,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AccessTokenDTO'
-
         401:
           description: La autenticacion ha fallado, posiblemente el token de acceso ha expirado o es invalido
-
         404:
           description: El id del usuario que esta en el token referencia a un usuario que no existe en la base de datos
           content:
@@ -234,14 +210,12 @@ paths:
                 UserNotFound:
                   value:
                     message: "Usuario no encontrado"
-
         default:
           $ref: '#/components/responses/UnexpectedError'
-
   /api/v1/products:
     get:
-      summary: _Path_ o Ruta para obtener todos los productos
-      description: Ruta para obtener todos los productos disponibles aplicando filtros y paginacion
+      summary: obtener todos los productos
+      description: obtener todos los productos disponibles aplicando filtros y paginacion
       parameters:
         - name: page
           in: query
@@ -250,8 +224,6 @@ paths:
           schema:
             type: integer
             minimum: 0
-
-
         - name: size
           in: query
           description: Cantidad de productos por pagina
@@ -259,7 +231,6 @@ paths:
           schema:
             type: integer
             maximum: 100
-
         - name: sort
           in: query
           description: Ordenar los productos por campos específicos
@@ -273,14 +244,12 @@ paths:
                 - stock
                 - id
             example: [ "price,asc", "stock,desc" ]
-
         - name: query
           in: query
           description: Texto de busqueda para filtrar los productos
           required: false
           schema:
             type: string
-
         - name: price
           in: query
           description: Filtrar productos por precio o rango de precios utilizando los operadores `>` (mayor que) o `<` (menor que). El rango de precios se define con dos propiedades 'price' y su rango
@@ -291,7 +260,6 @@ paths:
               type: string
               pattern: "^[<>]\\d+$"
             example: [ ">10", "<99" ]
-
         - name: categoryId
           in: query
           description: Filtrar productos por categoria
@@ -299,13 +267,10 @@ paths:
           schema:
             type: integer
             minimum: 0
-
       responses:
         200:
-          $ref: '#/components/responses/Page<ProductDTO>'
-
+          $ref: '#/components/responses/PageProductDTO'
 components:
-
   responses:
     UnexpectedError:
       description: 500 - Error inesperado en el servidor
@@ -317,13 +282,65 @@ components:
             UnexpectedError:
               value:
                 message: "Ha ocurrido un error inesperado"
-
-    Page<ProductDTO>:
-        type: object
-        properties:
-
+    PageProductDTO:
+      description: Pagina de productos
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              totalPages:
+                type: integer
+              totalElements:
+                type: integer
+              pageable:
+                type: object
+                properties:
+                  pageNumber:
+                    type: integer
+                  pageSize:
+                    type: integer
+                  sort:
+                    type: object
+                    properties:
+                      sorted:
+                        type: boolean
+                      empty:
+                        type: boolean
+                      unsorted:
+                        type: boolean
+                  offset:
+                    type: integer
+                  paged:
+                    type: boolean
+                  unpaged:
+                    type: boolean
+              first:
+                type: boolean
+              last:
+                type: boolean
+              size:
+                type: integer
+              content:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductDTO'
+              number:
+                type: integer
+              sort:
+                type: object
+                properties:
+                  sorted:
+                    type: boolean
+                  empty:
+                    type: boolean
+                  unsorted:
+                    type: boolean
+              numberOfElements:
+                type: integer
+              empty:
+                type: boolean
   schemas:
-
     LoginDTO:
       type: object
       properties:
@@ -333,7 +350,6 @@ components:
         password:
           type: string
           format: password
-
     LoginOutput:
       type: object
       properties:
@@ -341,13 +357,11 @@ components:
           type: string
         refreshToken:
           type: string
-
     AccessTokenDTO:
       type: object
       properties:
         accessToken:
-        type: string
-
+          type: string
     SignupDTO:
       type: object
       properties:
@@ -361,14 +375,12 @@ components:
         password:
           type: string
           format: password
-
     ErrorResponseDTO:
       type: object
       properties:
         message:
           type: string
-
-    SendEmailVerification:
+    SendEmailVerificationDTO:
       type: object
       properties:
         email:
@@ -377,7 +389,6 @@ components:
         actionType:
           type: string
           enum: [ "RESET_PASSWORD", "VERIFY_EMAIL" ]
-
     VerifyEmailDTO:
       type: object
       properties:
@@ -386,27 +397,78 @@ components:
           format: email
         code:
           type: string
-
-
-
+    ProductDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+        stock:
+          type: integer
+        description:
+          type: string
+        weightPounds:
+          type: number
+        widthCM:
+          type: number
+        heightCM:
+          type: number
+        lengthCM:
+          type: number
+        imageUrls:
+          type: array
+          items:
+            type: string
+        user:
+          $ref: '#/components/schemas/UserInProductDTO'
+        category:
+          $ref: '#/components/schemas/CategoryDTO'
+    UserInProductDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstname:
+          type: string
+        lastname:
+          type: string
+    CategoryDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
   requestBodies:
     Signup:
       required: true
       content:
         application/json:
           schema:
-          $ref: '#/components/schemas/SignupDTO'
-
+            $ref: '#/components/schemas/SignupDTO'
     Login:
       required: true
       content:
         application/json:
-        schema:
-        $ref: '#/components/schemas/LoginDTO'
-
+          schema:
+            $ref: '#/components/schemas/LoginDTO'
     VerifyEmail:
       required: true
       content:
         application/json:
-        schema:
-        $ref: '#/components/schemas/VerifyEmailDTO'
+          schema:
+            $ref: '#/components/schemas/VerifyEmailDTO'
+    SendEmailVerification:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SendEmailVerificationDTO'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
