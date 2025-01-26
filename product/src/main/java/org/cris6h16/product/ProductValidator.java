@@ -11,17 +11,14 @@ import java.util.Set;
 
 import static org.cris6h16.product.CategoryEntity.CATEGORY_MAX_NAME_LENGTH;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_ID_NEGATIVE;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NAME_NULL;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NAME_TOO_LONG;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_HAS_NO_IMAGES;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.HEIGHT_CM_NEGATIVE;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.IMAGE_URL_NULL;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.IMAGE_URL_TOO_LONG;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.INVALID_PRICE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.LENGTH_CM_NEGATIVE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_DESCRIPTION_LENGTH_MISMATCH;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_ID_LESS_THAN_ONE;
-import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_ID_NULL;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_HAS_NO_IMAGES;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_ID_INVALID;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NAME_LENGTH_MISMATCH;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.STOCK_NEGATIVE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_ID_NEGATIVE;
@@ -111,14 +108,14 @@ class ProductValidator {
         validateCategoryName(input.getName());
     }
 
-    private void validateCategoryName(String name) {
-        if (name == null) throwE(CATEGORY_NAME_NULL);
+    private String validateCategoryName(String name) {
+        name = trim(name);
         if (name.length() > CATEGORY_MAX_NAME_LENGTH) throwE(CATEGORY_NAME_TOO_LONG);
+        return name;
     }
 
     public void validateProductId(Long id) {
-        if (id == null) throwE(PRODUCT_ID_NULL);
-        if (id < 1) throwE(PRODUCT_ID_LESS_THAN_ONE);
+        if (id == null || id < 1) throwE(PRODUCT_ID_INVALID);
     }
 
     Set<String> validateImagesUrl(Set<String> urls) {

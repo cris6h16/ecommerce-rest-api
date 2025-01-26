@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 @ValidatePropertiesNotNullOrEmpty
 public class ApplicationComponentErrorMsgProperties {
     private String unsupportedActionType;
+    private String pageSizeTooBig;
+    private String forbiddenSortProperty;
 
     private String validVerificationCodeNotFound;
     private String emailNotVerified;
@@ -21,5 +23,4 @@ public class ApplicationComponentErrorMsgProperties {
     private String enabledUserNotFound;
     private String productNotFoundById;
     private String invalidActionType;
-    private String forbiddenSortProperty;
 }

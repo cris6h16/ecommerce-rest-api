@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileComponentErrorMsgProperty {
     private String emptyMultipartFile;
+    private String emptyFileList;
+    private String invalidFileName;
 
     private String fileUploadFail;
     private String deleteByUrlError;

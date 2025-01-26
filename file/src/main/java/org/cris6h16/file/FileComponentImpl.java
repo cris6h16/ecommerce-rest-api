@@ -9,11 +9,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_CONTENT_TYPE_IS_NOT_IMAGE;
-import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_CONTENT_TYPE_IS_NULL;
+import static org.cris6h16.file.Exceptions.FileErrorCode.EMPTY_FILE_LIST;
 import static org.cris6h16.file.Exceptions.FileErrorCode.EMPTY_MULTIPART_FILE;
-import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_LIST_IS_EMPTY;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_SIZE_EXCEEDED;
+import static org.cris6h16.file.Exceptions.FileErrorCode.INVALID_CONTENT_TYPE;
+import static org.cris6h16.file.Exceptions.FileErrorCode.INVALID_FILE_NAME;
 
 @Service
 @Slf4j
@@ -26,28 +26,45 @@ class FileComponentImpl implements FileComponent {
     }
 
     @Override
-    public Set<String> uploadImages(List<MultipartFile> list) {
-        areValidImages(list);
+    public Set<String> uploadImages(List<MultipartFile> list, long maxSizePerFile) {
+        areFilesValid(list, maxSizePerFile);
 
-        Set<String> uploadedUrls = new HashSet<>();
+        Set<String> uploadedUrls = new HashSet<>(3);
         try {
             for (MultipartFile multipartFile : list) {
-                String url = this.fileRepository.upload(multipartFile, 3);
+                String url = fileRepository.upload(multipartFile);
                 uploadedUrls.add(url);
             }
             return uploadedUrls;
 
-        } catch (Exception e) {
-            log.error("Error uploading files: ", e);
+        } catch (RuntimeException e) {
             this.rollbackUploads(uploadedUrls);
             throw e;
         }
     }
 
-    private void areValidImages(List<MultipartFile> multipartFiles) {
-        if (multipartFiles == null || multipartFiles.isEmpty()) throw new FileComponentException(FILE_LIST_IS_EMPTY);
-        for (MultipartFile multipartFile : multipartFiles) {
-            _isValidImg(multipartFile);
+    private void areFilesValid(List<MultipartFile> list, long maxSizePerFile) {
+        if (list == null || list.isEmpty()) throw new FileComponentException(EMPTY_FILE_LIST);
+        for (MultipartFile multipartFile : list) {
+            _isValidImg(multipartFile, maxSizePerFile);
+        }
+    }
+
+    private void _isValidImg(MultipartFile file, long maxSize) {
+        String contentType = file.getContentType();
+        String originalFilename = file.getOriginalFilename() == null ? "" : file.getOriginalFilename();
+
+        if (file.isEmpty()) {
+            throw new FileComponentException(EMPTY_MULTIPART_FILE);
+        }
+        if (file.getSize() > maxSize) {
+            throw new FileComponentException(FILE_SIZE_EXCEEDED);
+        }
+        if (contentType == null || contentType.isEmpty()) {
+            throw new FileComponentException(INVALID_CONTENT_TYPE);
+        }
+        if (!originalFilename.matches("^.*\\..*$")) {
+            throw new FileComponentException(INVALID_FILE_NAME);
         }
     }
 
@@ -58,20 +75,4 @@ class FileComponentImpl implements FileComponent {
     }
 
 
-    private void _isValidImg(MultipartFile multipartFile) {
-        String contentType = multipartFile.getContentType();
-        long maxSize = 5 * 1024 * 1024;
-        if (multipartFile.isEmpty()) {
-            throw new FileComponentException(EMPTY_MULTIPART_FILE);
-        }
-        if (multipartFile.getSize() > maxSize) {
-            throw new FileComponentException(FILE_SIZE_EXCEEDED);
-        }
-        if (contentType == null) {
-            throw new FileComponentException(FILE_CONTENT_TYPE_IS_NULL);
-        }
-        if (!contentType.startsWith("image/")) {
-            throw new FileComponentException(FILE_CONTENT_TYPE_IS_NOT_IMAGE);
-        }
-    }
 }

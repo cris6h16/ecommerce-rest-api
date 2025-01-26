@@ -75,8 +75,13 @@ public class ApplicationComponentAdvice {
                 break;
 
             case FORBIDDEN_SORT_PROPERTY:
-                status = HttpStatus.BAD_REQUEST;
+                status = HttpStatus.FORBIDDEN;
                 msg = properties.getForbiddenSortProperty();
+                break;
+
+            case PAGE_SIZE_TOO_BIG:
+                status = HttpStatus.FORBIDDEN;
+                msg = properties.getPageSizeTooBig();
                 break;
 
             default:

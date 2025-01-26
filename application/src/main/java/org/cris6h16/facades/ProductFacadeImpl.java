@@ -36,6 +36,8 @@ public class ProductFacadeImpl implements ProductFacade {
     private final SecurityComponent securityComponent;
     private final FileComponent fileComponent;
     private final UserComponent userComponent;
+    private static final long MAX_IMG_SIZE = 5 * 1024 * 1024;
+
 
     public ProductFacadeImpl(ProductComponent productComponent, SecurityComponent securityComponent, FileComponent fileComponent, UserComponent userComponent) {
         this.productComponent = productComponent;
@@ -44,14 +46,15 @@ public class ProductFacadeImpl implements ProductFacade {
         this.userComponent = userComponent;
     }
 
+
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public Long createProduct(CreateProductDTO dto) {
         Long userId = securityComponent.getCurrentUserId();
         isUserEnabledById(userId, userComponent);
         isEmailVerified(userId);
-        Long id = productComponent.createProduct(toInput(dto));
-        Set<String> url = fileComponent.uploadImages(dto.getImages());
+        Long id = productComponent.createProduct(toInput(dto, userId));
+        Set<String> url = fileComponent.uploadImages(dto.getImages(), MAX_IMG_SIZE);
         productComponent.updateImagesById(id, url);
         return id;
     }
@@ -153,8 +156,8 @@ public class ProductFacadeImpl implements ProductFacade {
 
     @Override
     public void putProduct(Long id, CreateProductDTO createProductDTO) {
-        existProductById(id); // avoid creation complexity again
-        productComponent.updateProductById(id, toInput(createProductDTO));
+//        existProductById(id); // avoid creation complexity again
+//        productComponent.updateProductById(id, toInput(createProductDTO));
     }
 
     @Override
@@ -180,11 +183,8 @@ public class ProductFacadeImpl implements ProductFacade {
         return res;
     }
 
-    private CreateProductInput toInput(CreateProductDTO dto) {
-        log.debug("Converting CreateProductDTO to CreateProductInput: {}", dto);
-        Long userId = securityComponent.getCurrentUserId();
-        isUserEnabledById(userId, userComponent);
-        CreateProductInput res = CreateProductInput.builder()
+    private CreateProductInput toInput(CreateProductDTO dto, Long userId) {
+        return CreateProductInput.builder()
                 .name(dto.getName())
                 .price(dto.getPrice())
                 .stock(dto.getStock())
@@ -196,7 +196,5 @@ public class ProductFacadeImpl implements ProductFacade {
                 .categoryId(dto.getCategoryId())
                 .userId(userId)
                 .build();
-        log.debug("CreateProductInput created: {}", res);
-        return res;
     }
 }

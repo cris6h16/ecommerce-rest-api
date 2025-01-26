@@ -20,11 +20,8 @@ import static org.cris6h16.email.Exceptions.EmailErrorCode.CODE_INVALID_LENGTH;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.CODE_IS_BLANK;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.CODE_NULL;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.CODE_REGEX_MISMATCH;
-import static org.cris6h16.email.Exceptions.EmailErrorCode.EMAIL_NULL;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.EMAIL_REGEX_MISMATCH;
 import static org.cris6h16.email.Exceptions.EmailErrorCode.EMAIL_SENDING_MAX_RETRIES_ERROR;
-import static org.cris6h16.email.Exceptions.EmailErrorCode.EMAIL_TOO_LONG;
-import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_LIST_IS_EMPTY;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)

@@ -13,9 +13,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
+import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_CONTENT_TYPE_IS_NOT_IMAGE;
+import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_DELETE_BY_URL_ALL_RETRIES_ERROR;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_DELETE_BY_URL_ERROR;
 import static org.cris6h16.file.Exceptions.FileErrorCode.EMPTY_MULTIPART_FILE;
-import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_LIST_IS_EMPTY;
+import static org.cris6h16.file.Exceptions.FileErrorCode.EMPTY_FILE_LIST;
+import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_SIZE_EXCEEDED;
+import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_UPLOAD_ALL_RETRIES_ERROR;
+import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_UPLOAD_ERROR;
+import static org.cris6h16.file.Exceptions.FileErrorCode.INVALID_FILE_NAME;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -45,11 +51,11 @@ public class FileComponentAdvice {
             status = HttpStatus.SERVICE_UNAVAILABLE;
             msg = msgs.getDeleteByUrlError();
 
-        } else if (ec.equals(FileErrorCode.FILE_UPLOAD_ERROR) || ec.equals(FileErrorCode.FILE_DELETE_BY_URL_ALL_RETRIES_ERROR)) {
+        } else if (ec.equals(FILE_UPLOAD_ERROR) || ec.equals(FILE_DELETE_BY_URL_ALL_RETRIES_ERROR)) {
             status = HttpStatus.SERVICE_UNAVAILABLE;
             msg = msgs.getUploadError();
 
-        } else if (ec.equals(FileErrorCode.FILE_UPLOAD_ALL_RETRIES_ERROR)) {
+        } else if (ec.equals(FILE_UPLOAD_ALL_RETRIES_ERROR)) {
             status = HttpStatus.SERVICE_UNAVAILABLE;
             msg = msgs.getUploadAllRetriesError();
 
@@ -57,17 +63,17 @@ public class FileComponentAdvice {
             status = HttpStatus.BAD_REQUEST;
             msg = msgs.getEmptyMultipartFile();
 
-        } else if (ec.equals(FILE_LIST_IS_EMPTY)) {
+        } else if (ec.equals(EMPTY_FILE_LIST)) {
             status = HttpStatus.BAD_REQUEST;
-            msg = msgs.getFileListIsEmpty();
+            msg = msgs.getEmptyFileList();
 
-        }else if (ec.equals(FileErrorCode.FILE_SIZE_EXCEEDED)) {
+        } else if (ec.equals(FILE_SIZE_EXCEEDED)) {
             status = HttpStatus.BAD_REQUEST;
             msg = msgs.getSizeExceeded();
 
-        } else if (ec.equals(FileErrorCode.FILE_CONTENT_TYPE_IS_NOT_IMAGE) || ec.equals(FileErrorCode.FILE_CONTENT_TYPE_IS_NULL)) {
+        } else if (ec.equals(INVALID_FILE_NAME)) {
             status = HttpStatus.BAD_REQUEST;
-            msg = msgs.getContentTypeIsNotImage();
+            msg = msgs.getInvalidFileName();
 
         } else {
             log.error("A custom exception should have custom response handling", e);

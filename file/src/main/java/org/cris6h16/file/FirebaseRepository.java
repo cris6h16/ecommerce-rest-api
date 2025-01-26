@@ -23,7 +23,6 @@ import java.util.UUID;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_DELETE_BY_URL_ALL_RETRIES_ERROR;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_DELETE_BY_URL_ERROR;
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_UPLOAD_ALL_RETRIES_ERROR;
-import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_UPLOAD_ERROR;
 
 @Slf4j
 @Component
@@ -87,58 +86,44 @@ public class FirebaseRepository implements FileRepository {
         return parts[parts.length - 1].split("\\?")[0];
     }
 
-    private String uploadFile(File file, String fileName) throws IOException {
+    private String uploadFile(File file, String fileName) {
         BlobId blobId = BlobId.of(bucketName, fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
-        storage.create(blobInfo, Files.readAllBytes(file.toPath()));
+
+        try {
+            storage.create(blobInfo, Files.readAllBytes(file.toPath()));
+
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to read all bytes from file: " + e.getMessage(), e);
+        }
 
         String DOWNLOAD_URL = "https://firebasestorage.googleapis.com/v0/b/" + bucketName + "/o/%s?alt=media";
         return String.format(DOWNLOAD_URL, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
     }
 
-    private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
+    private File convertToFile(MultipartFile multipartFile, String fileName) {
         File tempFile = new File(fileName);
         try (FileOutputStream fos = new FileOutputStream(tempFile)) {
             fos.write(multipartFile.getBytes());
+
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to convert file: " + e.getMessage(), e);
         }
+
         return tempFile;
     }
 
     @Override
-    public String upload(MultipartFile multipartFile, int retries) {
-        try {
-            String filename = getFilename(multipartFile.getOriginalFilename());
+    public String upload(MultipartFile multipartFile) {
+        String filename = getFilename(multipartFile.getOriginalFilename());
 
-            File file = this.convertToFile(multipartFile, filename);
-            String URL = this._uploadWithRetry(file, filename, retries);
-            if (!file.delete()) log.warn("Failed to delete file: {}", file.getName());
+        File file = this.convertToFile(multipartFile, filename);
+        String URL = this.uploadFile(file, filename);
+        if (!file.delete()) log.error("Failed to delete file: {}", file.getName());
 
-            log.debug("File uploaded: {}", URL);
-            return URL;
-
-        } catch (Exception e) {
-            log.error("Error in uploading file: ", e);
-            throw new FileComponentException(FILE_UPLOAD_ERROR);
-        }
+        return URL;
     }
 
-    private String _uploadWithRetry(File file, String fileName, int retries) throws IOException {
-        int attempts = 0;
-        while (attempts++ < retries) {
-            try {
-                return uploadFile(file, fileName);
-
-            } catch (IOException e) {
-                if (attempts >= retries) {
-                    log.error("Failed to upload file: {} after {} attempts", fileName, attempts);
-                } else {
-                    log.warn("Retrying upload... attempt: {}", attempts);
-                }
-            }
-        }
-
-        throw new FileComponentException(FILE_UPLOAD_ALL_RETRIES_ERROR);
-    }
 
     private String getFilename(String originalFilename) {
         return UUID.randomUUID().toString() + getExtension(originalFilename);

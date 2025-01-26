@@ -14,6 +14,7 @@ import static org.cris6h16.product.Exceptions.ProductErrorCode.PRICE_FILTER_INVA
 
 @Slf4j
 public class ProductSpecs {
+    // todo: escapar caracteres especiales de operaciones like
     public static Specification<ProductEntity> hasNameLike(String name) {
         name = name.trim().toLowerCase();
 
@@ -73,7 +74,6 @@ public class ProductSpecs {
         try {
             return new BigDecimal(priceStr.substring(offset));
         } catch (NumberFormatException e) {
-            log.error("Error parsing price filter: {}", priceStr);
             throw new ProductComponentException(PRICE_FILTER_ERROR_PARSING_STR_TO_BIGDECIMAL);
         }
     }

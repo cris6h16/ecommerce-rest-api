@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.Set;
 
 public interface FileComponent {
-    Set<String> uploadImages(List<MultipartFile> list);
+    Set<String> uploadImages(List<MultipartFile> list, long maxSizePerFile);
 }

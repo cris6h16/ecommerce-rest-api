@@ -16,37 +16,13 @@ public class ProductComponentErrorMsgProperties {
     private String productDescriptionLengthMismatch;
     private String invalidPrice;
     private String invalidStock;
-
-    private String userIdNull;
-    private String userIdLessThanOne;
+    private String invalidCategoryId;
     private String userNotFoundById;
-    private String categoryIdNull;
-    private String categoryIdLessThanOne;
-    private String categoryNameTooLong;
-    private String categoryNameNull;
     private String categoryNotFoundById;
-    private String imageUrlNull;
     private String imageUrlTooLong;
-    private String approxWeightLbNull;
     private String stockNegative;
-    private String approxHeightCmNull;
-    private String approxHeightCmNegative;
-    private String approxWidthCmNull;
-    private String approxWidthCmNegative;
-    private String approxWeightLbNegative;
-    private String descriptionNull;
-    private String descriptionTooLong;
-    private String stockNull;
-    private String priceNull;
-    private String priceNegative;
-    private String productNameNull;
-    private String productNameTooLong;
-    private String productIdNull;
-    private String productIdLessThanOne;
     private String uniqueUserIdProductName;
     private String productNotFoundById;
-    private String priceFilterInvalidFormat;
     private String unsupportedFilterAttribute;
-    private String productListImgIsEmpty;
     private String priceFilterErrorParsingStrToBigDecimal;
 }

@@ -270,6 +270,116 @@ paths:
       responses:
         200:
           $ref: '#/components/responses/PageProductDTO'
+
+        400:
+          description: Error en los datos de entrada enviados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                PageSizeTooBig:
+                  description: aplica solo si se envia el parametro 'size'
+                  value:
+                    message: "El formato del filtro 'precio' es inválido"
+                InvalidCategoryId:
+                  description: aplica solo si se envia el parametro 'categoryId'
+                  value:
+                    message: "El id de la categoria no es valido"
+
+        403:
+          description: Petición prohibida explicitamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                InvalidSortProperty:
+                  description: "La propiedad de ordenamiento no esta permitida (propiedad 'sort' de paginacion)"
+                  value:
+                    message: "Propiedad de ordenamiento no permitida"
+                PageSizeTooBig:
+                  value:
+                    message: "El tamaño de la página no puede ser mayor a 100"
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+
+    post:
+      summary: crear un nuevo producto
+      description: d
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateProductDTO'
+      responses:
+        201:
+          description: Producto creado exitosamente
+          headers:
+            Location:
+              description: URL del nuevo producto creado
+              schema:
+                type: string
+
+        400:
+          description: Error en los datos de entrada enviados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                ProductNameLengthMismatch:
+                  value:
+                    message: "El nombre del producto debe contener entre 1 y 255 caracteres"
+                InvalidPrice:
+                  value:
+                    message: "El precio es inválido"
+                EmptyFileList:
+                  value:
+                    message: "La lista de imagenes no puede estar vacía"
+                InvalidFileName:
+                  value:
+                    message: "Nombre de la imagen inválida: asegúrese de incluir una extensión (por ejemplo: hola.jpg)"
+
+        404:
+          description: Usuario que esta creando el producto no existe en la base de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                UserNotFound:
+                  value:
+                    message: "Usuario no encontrado"
+        403:
+          description: Usuario no autorizado para crear productos (no contendra cuerpo si el usuario no esta autenticado o no tiene el rol adecuado)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                EmailNotVerified:
+                  value:
+                    message: "Tu correo electronico no esta verificado. Completa el proceso de verificacion para continuar"
+
+        409:
+          description: El usuario ya tiene un producto con el mismo nombre
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                UniqueUserIdProductName:
+                  value:
+                    message: "Ya existe un producto con el mismo nombre para el usuario especificado"
+
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+
+
 components:
   responses:
     UnexpectedError:
@@ -442,6 +552,33 @@ components:
           type: integer
         name:
           type: string
+    CreateProductDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+        stock:
+          type: integer
+        description:
+          type: string
+        weightPounds:
+          type: number
+        widthCM:
+          type: number
+        heightCM:
+          type: number
+        lengthCM:
+          type: number
+        images:
+          type: array
+          items:
+            type: string
+            format: binary
+        categoryId:
+          type: integer
+
   requestBodies:
     Signup:
       required: true

@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "b94e628d-d3dc-4e39-992e-e6c0eacd030c",
-		"name": "Ecommerce-FINAL Copy 5",
+		"_postman_id": "8cde6bee-134b-448c-bccd-1c33a431ab14",
+		"name": "Ecommerce-FINAL",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "29096460"
 	},
@@ -328,7 +328,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"const url = pm.environment.get(\"hostURL\");\r",
+									"const url = pm.collectionVariables.get(\"hostURL\");\r",
 									"\r",
 									"pm.sendRequest({\r",
 									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
@@ -943,7 +943,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"const url = pm.environment.get(\"hostURL\");\r",
+									"const url = pm.collectionVariables.get(\"hostURL\");\r",
 									"\r",
 									"pm.sendRequest({\r",
 									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
@@ -1317,7 +1317,7 @@
 							"script": {
 								"exec": [
 									"// // resetar DB, para tener el codigo no usado\r",
-									"const url = pm.environment.get(\"hostURL\");\r",
+									"const url = pm.collectionVariables.get(\"hostURL\");\r",
 									"\r",
 									"pm.sendRequest({\r",
 									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
@@ -1453,7 +1453,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"const url = pm.environment.get(\"hostURL\");\r",
+									"const url = pm.collectionVariables.get(\"hostURL\");\r",
 									"\r",
 									"pm.sendRequest({\r",
 									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
@@ -1817,10 +1817,8 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"const url = pm.environment.get(\"hostURL\");\r",
-									"\r",
 									"pm.sendRequest({\r",
-									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
+									"    url: 'http://localhost:8080/api/v1/tests/reset-functional-testing-db',\r",
 									"    method: 'GET',\r",
 									"    header: {\r",
 									"        'Content-Type': 'application/json'\r",
@@ -1893,7 +1891,7 @@
 							"script": {
 								"exec": [
 									"// resetar DB, para tener el codigo no usado\r",
-									"const url = pm.environment.get(\"hostURL\");\r",
+									"const url = pm.collectionVariables.get(\"hostURL\");\r",
 									"\r",
 									"pm.sendRequest({\r",
 									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
@@ -2649,10 +2647,8 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"const url = pm.environment.get(\"hostURL\");\r",
-									"\r",
 									"pm.sendRequest({\r",
-									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
+									"    url: 'http://localhost:8080/api/v1/tests/reset-functional-testing-db',\r",
 									"    method: 'GET',\r",
 									"    header: {\r",
 									"        'Content-Type': 'application/json'\r",
@@ -2740,13 +2736,8 @@
 								},
 								{
 									"key": "approxHeightCm",
-									"value": "25",
+									"value": "",
 									"type": "text"
-								},
-								{
-									"key": "images",
-									"type": "file",
-									"src": "test-img.jpg"
 								},
 								{
 									"key": "categoryId",
@@ -2843,7 +2834,11 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "test-img.jpg"
+									"src": [
+										"/C:/Users/Cristian/OneDrive/Imágenes/Capturas de pantalla/Captura de pantalla (1).png",
+										"/C:/Users/Cristian/Downloads/pic.png",
+										"/C:/Users/Cristian/Downloads/images.png"
+									]
 								},
 								{
 									"key": "categoryId",
@@ -2947,7 +2942,11 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "test-img.jpg"
+									"src": [
+										"/C:/Users/Cristian/OneDrive/Imágenes/Capturas de pantalla/Captura de pantalla (1).png",
+										"/C:/Users/Cristian/Downloads/pic.png",
+										"/C:/Users/Cristian/Downloads/images.png"
+									]
 								},
 								{
 									"key": "categoryId",
@@ -3056,7 +3055,11 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "test-img.jpg"
+									"src": [
+										"/C:/Users/Cristian/OneDrive/Imágenes/Capturas de pantalla/Captura de pantalla (1).png",
+										"/C:/Users/Cristian/Downloads/pic.png",
+										"/C:/Users/Cristian/Downloads/images.png"
+									]
 								},
 								{
 									"key": "categoryId",
@@ -3165,7 +3168,12 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "test-img.jpg"
+									"src": [
+										"postman-cloud:///1efcbef3-eb00-4500-9f0b-088b611023dc",
+										"/C:/Users/Cristian/OneDrive/Imágenes/Capturas de pantalla/Captura de pantalla (1).png",
+										"/C:/Users/Cristian/Downloads/pic.png",
+										"/C:/Users/Cristian/Downloads/images.png"
+									]
 								},
 								{
 									"key": "categoryId",
@@ -3274,7 +3282,7 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "test-img.jpg"
+									"src": "postman-cloud:///1efcbef3-eb00-4500-9f0b-088b611023dc"
 								},
 								{
 									"key": "categoryId",
@@ -3383,7 +3391,7 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "test-img.jpg"
+									"src": "postman-cloud:///1efcbef3-eb00-4500-9f0b-088b611023dc"
 								},
 								{
 									"key": "categoryId",
@@ -3492,7 +3500,7 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "test-img.jpg"
+									"src": "postman-cloud:///1efcbef3-eb00-4500-9f0b-088b611023dc"
 								},
 								{
 									"key": "categoryId",
@@ -3601,7 +3609,7 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "test-img.jpg"
+									"src": "postman-cloud:///1efcbef3-eb00-4500-9f0b-088b611023dc"
 								},
 								{
 									"key": "categoryId",
@@ -3710,7 +3718,7 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "test-img.jpg"
+									"src": "postman-cloud:///1efcbef3-eb00-4500-9f0b-088b611023dc"
 								},
 								{
 									"key": "categoryId",
@@ -3819,7 +3827,7 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "test-img.jpg"
+									"src": "postman-cloud:///1efcbef3-eb00-4500-9f0b-088b611023dc"
 								},
 								{
 									"key": "categoryId",
@@ -3928,7 +3936,7 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "test-img.jpg"
+									"src": "postman-cloud:///1efcbef3-eb00-4500-9f0b-088b611023dc"
 								},
 								{
 									"key": "categoryId",
@@ -4146,7 +4154,7 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "test-img.jpg"
+									"src": "postman-cloud:///1efcbef3-eb00-4500-9f0b-088b611023dc"
 								},
 								{
 									"key": "categoryId",
