@@ -9,6 +9,7 @@ pipeline {
         REMOTE_SERVER = '172.16.60.107'
         REMOTE_USER = 'Cristian'
         APP_SERVER_PATH = "C:/Users/Cristian/Desktop/cicd/ssh"
+        EMAIL_RECIPIENT = 'cristianmherrera21@gmail.com'
     }
     stages {
         stage('Checkout') {
@@ -19,9 +20,7 @@ pipeline {
         stage ('Limpiar Carpeta') {
             steps {
                 script {
-                    withCredentials([
-                        file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')
-                    ]) {
+                    withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
                         sh """
                             ssh -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'rd /s /q  ${APP_SERVER_PATH}/ || exit 0'
                         """
@@ -33,10 +32,7 @@ pipeline {
         stage('Copy Application to Remote') {
             steps {
                 script {
-                    withCredentials([
-                        file(credentialsId: 'firebase-key', variable: 'FIREBASE_KEY_FILE'),
-                        file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')
-                    ]) {
+                    withCredentials([file(credentialsId: 'firebase-key', variable: 'FIREBASE_KEY_FILE'), file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
                         sh 'mkdir -p file/src/main/resources'
                         sh 'cp ${FIREBASE_KEY_FILE} file/src/main/resources/firebase-private-key.json'
                         sh """
@@ -65,10 +61,9 @@ pipeline {
                         sleep(15)
                         sh "curl -f http://${REMOTE_SERVER}:7937/health || exit 1"
                     }
+                    sh 'rm -f report.html'
                     sh '''
-                        newman run $COLLECTION_FILE \
-                        --reporters cli,junit --reporter-junit-export newman-results.xml \
-                        --env-var hostURL=http://${REMOTE_SERVER}:7937
+                        newman run $COLLECTION_FILE --env-var hostURL=http://${REMOTE_SERVER}:7937 -r html --reporter-html-export report.html
                     '''
                 }
             }
@@ -83,6 +78,16 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+    post {
+        always {
+            emailext (
+                subject: 'Newman Test Report',
+                body: 'Aquí está el reporte de las pruebas de Newman.',
+                attachmentsPattern: '**/report.html',
+                to: "${EMAIL_RECIPIENT}"
+            )
         }
     }
 }
