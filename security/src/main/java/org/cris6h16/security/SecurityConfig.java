@@ -57,7 +57,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // @Bean
+     @Bean
     static RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.withDefaultRolePrefix()
                 .role("ADMIN").implies("SELLER")
