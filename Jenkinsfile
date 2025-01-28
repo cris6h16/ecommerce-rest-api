@@ -6,7 +6,7 @@ pipeline {
     }
     environment {
         COLLECTION_FILE = 'collection.json'
-        REMOTE_SERVER = '172.16.60.131'
+        REMOTE_SERVER = '192.168.100.135'
         REMOTE_USER = 'Cristian'
         APP_SERVER_PATH = "C:/Users/Cristian/Desktop/cicd/ssh"
         EMAIL_RECIPIENT = 'cristianmherrera21@gmail.com'
@@ -62,11 +62,11 @@ pipeline {
                         sh "curl -f http://${REMOTE_SERVER}:7937/health || exit 1"
                     }
                     sh 'rm -f report.html'
-//                         newman run $COLLECTION_FILE --env-var hostURL=http://${REMOTE_SERVER}:7937 -r html --reporter-html-export report.html
                     sh '''
                         npm install -g newman newman-reporter-html
-                        newman run $COLLECTION_FILE --env-var hostURL=http://${REMOTE_SERVER}:7937
+                        newman run $COLLECTION_FILE --env-var hostURL=http://${REMOTE_SERVER}:7937 -r html --reporter-html-export report.html
                     '''
+//                         newman run $COLLECTION_FILE --env-var hostURL=http://${REMOTE_SERVER}:7937
                 }
             }
         }

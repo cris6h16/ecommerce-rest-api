@@ -5,13 +5,13 @@ CREATE EXTENSION IF NOT EXISTS unaccent SCHEMA public;
 
 -- TODO: usar para test environment un usuario que tenga solo los permisos para el schema que corresponde a test. para evitar por error borrar la base de datos
 -- testing funcional
-TRUNCATE TABLE cart_items CASCADE;
-TRUNCATE TABLE carts CASCADE;
-TRUNCATE TABLE products CASCADE;
-TRUNCATE TABLE users CASCADE;
-TRUNCATE TABLE email_verification CASCADE;
-TRUNCATE TABLE product_images CASCADE;
-TRUNCATE TABLE categories CASCADE;
+DELETE FROM cart_items;
+DELETE FROM carts;
+DELETE FROM products;
+DELETE FROM users;
+DELETE FROM email_verification;
+DELETE FROM product_images;
+DELETE FROM categories;
 
 SELECT setval('users_id_seq', 100, true);
 SELECT setval('products_id_seq', 100, true);

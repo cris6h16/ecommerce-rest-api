@@ -24,7 +24,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 server:
-  port: 8080 # modificar docker-compose si se cambia
+  port: 6211 # modificar docker-compose si se cambia
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
