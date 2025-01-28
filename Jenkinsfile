@@ -62,9 +62,10 @@ pipeline {
                         sh "curl -f http://${REMOTE_SERVER}:7937/health || exit 1"
                     }
                     sh 'rm -f report.html'
+//                         newman run $COLLECTION_FILE --env-var hostURL=http://${REMOTE_SERVER}:7937 -r html --reporter-html-export report.html
                     sh '''
                         npm install -g newman newman-reporter-html
-                        newman run $COLLECTION_FILE --env-var hostURL=http://${REMOTE_SERVER}:7937 -r html --reporter-html-export report.html
+                        newman run $COLLECTION_FILE --env-var hostURL=http://${REMOTE_SERVER}:7937
                     '''
                 }
             }
