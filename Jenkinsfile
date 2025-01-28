@@ -63,7 +63,7 @@ pipeline {
                     }
                     sh 'rm -f report.html'
                     sh '''
-                        npm install newman-reporter-html
+                        npm install -g newman newman-reporter-html
                         newman run $COLLECTION_FILE --env-var hostURL=http://${REMOTE_SERVER}:7937 -r html --reporter-html-export report.html
                     '''
                 }
