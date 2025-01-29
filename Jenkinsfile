@@ -85,16 +85,12 @@ pipeline {
     post {
         always {
             script {
-                try {
                     emailext (
                         subject: 'Newman Test Report',
                         body: 'Aquí está el reporte de las pruebas de Newman.',
                         attachmentsPattern: '**/report.html',
                         to: "${EMAIL_RECIPIENT}"
                     )
-                } catch (Exception e) {
-                    echo "Failed to send email: ${e}"
-                }
             }
         }
     }
