@@ -9,7 +9,7 @@ pipeline {
         REMOTE_SERVER = '192.168.100.135'
         REMOTE_USER = 'Cristian'
         APP_SERVER_PATH = "C:/Users/Cristian/Desktop/cicd/ssh"
-        EMAIL_RECIPIENT = 'cristianmherrera21@gmail.com'
+        EMAIL_RECIPIENT = 'cristianh9073@gmail.com'
     }
     stages {
         stage('Checkout') {
