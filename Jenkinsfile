@@ -88,7 +88,7 @@ pipeline {
                     emailext (
                         subject: 'Newman Test Report',
                         body: 'Aquí está el reporte de las pruebas de Newman.',
-                        attachmentsPattern: '**/report.html',
+//                         attachmentsPattern: '**/report.html',
                         to: "${EMAIL_RECIPIENT}"
                     )
             }
