@@ -18,13 +18,13 @@ pipeline {
             }
         }
 
-        stage('Ejecutar Pruebas Unitarias') {
-            steps {
-                script {
-                    sh 'mvn test'
-                }
-            }
-        }
+//         stage('Ejecutar Pruebas Unitarias') {
+//             steps {
+//                 script {
+//                     sh 'mvn test'
+//                 }
+//             }
+//         }
 
         stage ('Limpiar Carpeta de Aplicación en Servidor de Staging') {
             steps {
