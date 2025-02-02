@@ -17,15 +17,13 @@ pipeline {
                 checkout scm
             }
         }
-
-//         stage('Ejecutar Pruebas Unitarias') {
-//             steps {
-//                 script {
-//                     sh 'mvn test'
-//                 }
-//             }
-//         }
-
+        //         stage('Ejecutar Pruebas Unitarias') {
+        //             steps {
+        //                 script {
+        //                     sh 'mvn test'
+        //                 }
+        //             }
+        //         }
         stage ('Limpiar Carpeta de Aplicación en Servidor de Staging') {
             steps {
                 script {
@@ -44,9 +42,9 @@ pipeline {
             steps {
                 script {
                     withCredentials([
-                                    file(credentialsId: 'firebase-key', variable: 'FIREBASE_KEY_FILE'),
-                                    file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')
-                        ]) {
+                        file(credentialsId: 'firebase-key', variable: 'FIREBASE_KEY_FILE'),
+                        file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')
+                    ]) {
                         sh """
                             mkdir -p file/src/main/resources
                             cp ${FIREBASE_KEY_FILE} file/src/main/resources/firebase-private-key.json
@@ -88,30 +86,27 @@ pipeline {
                 }
             }
         }
-        stage('Detener API en Servidor de Staging') {
-            steps {
-                script {
-                    withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
-                        sh """
-                            ssh \
-                                -i ${SSH_PRIVATE_KEY} \
-                                -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER_IP} \
-                                'docker compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml down --rmi local'
-                        """
-                    }
-                }
-            }
-        }
     }
     post {
         always {
             script {
-                    emailext (
-                        subject: 'Newman Test Report',
-                        body: 'Aquí está el reporte de las pruebas de Newman.',
-                        attachmentsPattern: '**/report.html',
-                        to: "${EMAIL_RECIPIENT}"
-                    )
+                emailext (
+                    subject: "Newman Test Report",
+                    body: "Aquí está el reporte de las pruebas de Newman.",
+                    attachmentsPattern: "**/report.html",
+                    to: "${EMAIL_RECIPIENT}"
+                )
+            }
+            // Detener API en Servidor de Staging
+            script {
+                withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
+                    sh """
+                        ssh \
+                            -i ${SSH_PRIVATE_KEY} \
+                            -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER_IP} \
+                            'docker compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml down --rmi local'
+                    """
+                }
             }
         }
     }
