@@ -34,7 +34,7 @@ pipeline {
                             ssh \
                                 -i ${SSH_PRIVATE_KEY} \
                                 -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER_IP} \
-                                'rd /s /q  ${APP_SERVER_PATH}/ || exit 0 && mkdir ${APP_SERVER_PATH}'"
+                                'rd /s /q  ${APP_SERVER_PATH}/ || exit 0 && mkdir ${APP_SERVER_PATH}'
                         """
                     }
                 }
