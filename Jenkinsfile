@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'docker-mvn'
+            label 'nodejs-newman-jdk21-mvn'
         }
     }
     environment {
@@ -17,7 +17,16 @@ pipeline {
                 checkout scm
             }
         }
-        stage ('Limpiar Carpeta') {
+
+        stage('Ejecutar Pruebas Unitarias') {
+            steps {
+                script {
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        stage ('Limpiar Carpeta de Aplicación en Servidor de Staging') {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
@@ -31,7 +40,7 @@ pipeline {
                 }
             }
         }
-        stage('Copy Application to Remote') {
+        stage('Copiar Archivos al Servidor de Staging') {
             steps {
                 script {
                     withCredentials([
@@ -49,7 +58,7 @@ pipeline {
                 }
             }
         }
-        stage('Run API in Test Mode') {
+        stage('Levantar API en Modo de Prueba') {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
@@ -64,7 +73,7 @@ pipeline {
                 }
             }
         }
-        stage('Run Newman Tests') {
+        stage('Ejecutar Pruebas de Newman') {
             steps {
                 script {
                     retry(5) {
@@ -73,14 +82,13 @@ pipeline {
                     }
                     sh '''
                         rm -f report.html
-                        npm install -g newman newman-reporter-html
                         newman run $COLLECTION_FILE --env-var hostURL=http://${REMOTE_SERVER_IP}:7937 \
                             -r html --reporter-html-export report.html
                     '''
                 }
             }
         }
-        stage('Stop Test API Container') {
+        stage('Detener API en Servidor de Staging') {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
