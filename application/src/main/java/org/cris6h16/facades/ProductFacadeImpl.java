@@ -53,10 +53,18 @@ public class ProductFacadeImpl implements ProductFacade {
         Long userId = securityComponent.getCurrentUserId();
         isUserEnabledById(userId, userComponent);
         isEmailVerified(userId);
-        Long id = productComponent.createProduct(toInput(dto, userId));
+        CreateProductInput input = toInput(dto, userId);
+        defImgIfEmpty(input);
+        Long id = productComponent.createProduct(input);
         Set<String> url = fileComponent.uploadImages(dto.getImages(), MAX_IMG_SIZE);
         productComponent.updateImagesById(id, url);
         return id;
+    }
+
+    private void defImgIfEmpty(CreateProductInput input) {
+        if (input.getImageUrls().isEmpty()) {
+            input.getImageUrls().add("https://via.placeholder.com/150");
+        }
     }
 
     private void isEmailVerified(Long userId) {

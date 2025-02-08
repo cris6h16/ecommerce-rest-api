@@ -67,8 +67,10 @@ class ProductValidator {
         return validateNonNegative(wCM, WIDTH_CM_NEGATIVE);
     }
 
-    public Integer validateWeightPounds(Integer wp) {
-        return validateNonNegative(wp, WEIGHT_POUNDS_NEGATIVE);
+    public BigDecimal validateWeightPounds(BigDecimal wp) {
+        wp = wp == null ? BigDecimal.ZERO : wp;
+        if (!(wp.compareTo(BigDecimal.ZERO) > 0)) throwE(WEIGHT_POUNDS_NEGATIVE);
+        return wp;
     }
 
     public String validateDescription(String description) {

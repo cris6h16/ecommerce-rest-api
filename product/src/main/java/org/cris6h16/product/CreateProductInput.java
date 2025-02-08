@@ -17,7 +17,7 @@ public class CreateProductInput implements Prepareable {
     private BigDecimal price;
     private Integer stock;
     private String description;
-    private Integer weightPounds;
+    private BigDecimal weightPounds;
     private Integer widthCM;
     private Integer heightCM;
     private Integer lengthCM;
@@ -38,7 +38,7 @@ public class CreateProductInput implements Prepareable {
         price = price == null ? BigDecimal.ZERO : price;
         stock = stock == null ? 0 : stock;
         description = description == null ? "" : description;
-        weightPounds = weightPounds == null ? 0 : weightPounds;
+        weightPounds = weightPounds == null ? BigDecimal.ZERO : weightPounds;
         widthCM = widthCM == null ? 0 : widthCM;
         heightCM = heightCM == null ? 0 : heightCM;
         lengthCM = lengthCM == null ? 0 : lengthCM;

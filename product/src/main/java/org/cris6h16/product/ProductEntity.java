@@ -66,7 +66,7 @@ public class ProductEntity {
     private String description;
 
     @Column(nullable = false, name = "weight_pounds")
-    private Integer weightPounds;
+    private BigDecimal weightPounds;
 
     @Column(nullable = false, name = "width_cm")
     private Integer widthCM;

@@ -86,6 +86,15 @@ pipeline {
                 }
             }
         }
+        stage('Ejecutar Pruebas de JMeter') {
+            steps {
+                script {
+                    sh '''
+                        jmeter -n -t jmeter.jmx -l jmeter.jtl
+                    '''
+                }
+            }
+        }
     }
     post {
         always {
@@ -93,7 +102,7 @@ pipeline {
                 emailext (
                     subject: "Newman Test Report",
                     body: "Aquí está el reporte de las pruebas de Newman.",
-                    attachmentsPattern: "**/report.html",
+                    attachmentsPattern: "**/report.html,**/jmeter.jtl",
                     to: "${EMAIL_RECIPIENT}"
                 )
             }

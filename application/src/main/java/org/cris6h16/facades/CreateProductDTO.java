@@ -24,7 +24,7 @@ public class CreateProductDTO {
     private BigDecimal price;
     private Integer stock;
     private String description;
-    private Integer weightPounds;
+    private BigDecimal weightPounds;
     private Integer widthCM;
     private Integer heightCM;
     private Integer lengthCM;
