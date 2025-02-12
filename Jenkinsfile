@@ -121,8 +121,7 @@ pipeline {
                 }
             }
 
-            // limpiar ws
-
+            // limpiar ws (es efimero se autodestruye)
         }
     }
 }
