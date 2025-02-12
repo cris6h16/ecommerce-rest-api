@@ -69,7 +69,7 @@ class ProductValidator {
 
     public BigDecimal validateWeightPounds(BigDecimal wp) {
         wp = wp == null ? BigDecimal.ZERO : wp;
-        if (!(wp.compareTo(BigDecimal.ZERO) > 0)) throwE(WEIGHT_POUNDS_NEGATIVE);
+        if (wp.compareTo(BigDecimal.ZERO) < 0) throwE(WEIGHT_POUNDS_NEGATIVE);
         return wp;
     }
 

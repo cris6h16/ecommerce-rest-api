@@ -200,6 +200,7 @@ public class ProductFacadeImpl implements ProductFacade {
                 .weightPounds(dto.getWeightPounds())
                 .widthCM(dto.getWidthCM())
                 .heightCM(dto.getHeightCM())
+                .lengthCM(dto.getLengthCM())
                 .imageUrls(new HashSet<>(0)) // todo: put a def img url
                 .categoryId(dto.getCategoryId())
                 .userId(userId)

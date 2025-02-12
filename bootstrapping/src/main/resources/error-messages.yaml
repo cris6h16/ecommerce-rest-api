@@ -18,7 +18,7 @@ error-messages:
     product:
       image-url-too-long: "La URL de la imagen del producto no puede tener más de {MAX} caracteres"
       product-not-found-by-id: "No se encontró el producto con el id especificado"
-      unique-user-id-product-name: "Ya existe un producto con el mismo nombre para el usuario especificado"
+      unique-user-id-product-name: "No se pudo crear el producto ya que usted ya cuenta con un producto con el mismo nombre"
       stock-negative: "El stock del producto no puede ser negativo"
       price-filter-error-parsing-str-to-big-decimal: "Ha ocurrido un error al parsear el precio a un número decimal"
       user-not-found-by-id: "No se encontró el usuario con el id especificado"
@@ -28,7 +28,11 @@ error-messages:
       product-description-length-mismatch: "La descripción del producto debe contener entre 1 y 1000 caracteres"
       invalid-price: "El precio es inválido"
       invalid-stock: "El stock no puede ser negativo"
-      invalid-category-id: "El id de la categoria no es valido"
+      invalid-category-id: "Id de la categoría no es un numero entero"
+      weight-pounds-negative: "El peso del producto no puede ser negativo"
+      height-cm-negative: La altura del producto no puede ser negativa
+      width-cm-negative: "El ancho del producto no puede ser negativo"
+      length-cm-negative: El largo del producto no puede ser negativo
 
     email:
       email-invalid: "def"
@@ -53,7 +57,7 @@ error-messages:
 
     file:
       empty-multipart-file: "La imagen enviada se encuentra vacía"
-      empty-file-list: "La lista de imagenes no puede estar vacía"
+      empty-file-list: "No es posible crear un producto sin imágenes"
       size-exceeded: "El tamaño del archivo excede el límite permitido"
       invalid-file-name: "Nombre de la imagen inválida: asegúrese de incluir una extensión (por ejemplo: hola.jpg)"
 

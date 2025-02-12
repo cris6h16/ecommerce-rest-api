@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.CATEGORY_NOT_FOUND_BY_ID;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.HEIGHT_CM_NEGATIVE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.IMAGE_URL_TOO_LONG;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.INVALID_CATEGORY_ID;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.INVALID_PRICE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.INVALID_STOCK;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.LENGTH_CM_NEGATIVE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRICE_FILTER_ERROR_PARSING_STR_TO_BIGDECIMAL;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_DESCRIPTION_LENGTH_MISMATCH;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRODUCT_NAME_LENGTH_MISMATCH;
@@ -27,6 +29,8 @@ import static org.cris6h16.product.Exceptions.ProductErrorCode.STOCK_NEGATIVE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.UNIQUE_USER_ID_PRODUCT_NAME;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.UNSUPPORTED_FILTER_ATTRIBUTE;
 import static org.cris6h16.product.Exceptions.ProductErrorCode.USER_NOT_FOUND_BY_ID;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.WEIGHT_POUNDS_NEGATIVE;
+import static org.cris6h16.product.Exceptions.ProductErrorCode.WIDTH_CM_NEGATIVE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -107,6 +111,22 @@ public class ProductComponentAdvice {
         }  else if (e.equals(INVALID_CATEGORY_ID)) {
             status = BAD_REQUEST;
             msg = msgs.getInvalidCategoryId();
+
+        }  else if (e.equals(WEIGHT_POUNDS_NEGATIVE)) {
+            status = BAD_REQUEST;
+            msg = msgs.getWeightPoundsNegative();
+
+        } else if (e.equals(HEIGHT_CM_NEGATIVE)) {
+            status = BAD_REQUEST;
+            msg = msgs.getHeightCmNegative();
+
+        } else if (e.equals(WIDTH_CM_NEGATIVE)) {
+            status = BAD_REQUEST;
+            msg = msgs.getWidthCmNegative();
+
+        }  else if (e.equals(LENGTH_CM_NEGATIVE)) {
+            status = BAD_REQUEST;
+            msg = msgs.getLengthCmNegative();
 
         } else {
             log.error("A custom exception should have custom response handling {}", e);

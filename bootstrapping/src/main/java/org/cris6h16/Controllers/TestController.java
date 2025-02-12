@@ -2,6 +2,7 @@ package org.cris6h16.Controllers;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,13 +27,14 @@ public class TestController {
     }
 
     @GetMapping("/reset-functional-testing-db")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
-    public void resetFunctionalTestingDb() {
+    public ResponseEntity<Void> resetFunctionalTestingDb() {
         try {
             Path path = Paths.get(getClass().getClassLoader().getResource("data-testing.sql").toURI());
             String sql = Files.readString(path);
             jdbcTemplate.execute(sql);
+            return ResponseEntity.noContent().build();
+
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException("Failed to reset the functional testing database", e);
         }

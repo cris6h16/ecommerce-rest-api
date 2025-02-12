@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "24719329-b0cd-4dd1-bdee-c716c386822d",
+		"_postman_id": "49e17bea-5b9c-4aa7-b812-5fb897a820f9",
 		"name": "Ecommerce-FINAL Copy 5",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "29096460"
@@ -47,65 +47,6 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"email\": \"uhabilitado@gmail.com\",\r\n    \"password\": \"12345678\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{hostURL}}/api/v1/auth/login",
-							"host": [
-								"{{hostURL}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"auth",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "TF001 - Exitoso Copy",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
-									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"El token de Refresco tiene al menos 10 caracteres\", function () {\r",
-									"    let refreshToken = pm.response.json().refreshToken;\r",
-									"    pm.expect(refreshToken.length).to.be.at.least(10);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"El token de Acceso tiene al menos 10 caracteres\", function () {\r",
-									"    let accessToken = pm.response.json().accessToken;\r",
-									"    pm.expect(accessToken.length).to.be.at.least(10);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Status es 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"vdeshabilitado@gmail.com \",\r\n    \"password\": \"12345678\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2655,7 +2596,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM2MTQzODE2LCJleHAiOjE3NDM5MTk4MTYsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.eMAvIBTXV2qVRDc8KzrSQ6cyik60Kl3zQgBoRvpW4mmErrnXo39K2AhEL8AKh5Js",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIzIiwiaWF0IjoxNzM3OTQ3MjA5LCJleHAiOjE3NDU3MjMyMDksImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.a_uGI51G6-1TKKfHGAW16ywBrEQEWR7OIjnmKJg-2oSfCYjSn-02laVpul6LxsOf",
 									"type": "string"
 								}
 							]
@@ -3338,7 +3279,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM2MTQxMjY4LCJleHAiOjE3NDM5MTcyNjgsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.Mj9qzwWtLOOLOHPSVItDBc0UVAoSPh1NjTLhRzrjEopX-AaLsq6RBmlRheg7jRQe",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzM3OTQ3MTQyLCJleHAiOjE3NDU3MjMxNDIsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.sIha5dy8gg_u1Pmf4eixFJCdxci2MonOU7A4JxEztZ3Y7aG_k_OkVPBA7gduJY_v",
 									"type": "string"
 								}
 							]
@@ -3380,7 +3321,7 @@
 								},
 								{
 									"key": "heightCM",
-									"value": "-1",
+									"value": "-2",
 									"type": "text"
 								},
 								{
@@ -3390,7 +3331,7 @@
 								},
 								{
 									"key": "categoryId",
-									"value": "4",
+									"value": "1",
 									"type": "text"
 								}
 							]
@@ -3601,7 +3542,7 @@
 								},
 								{
 									"key": "widthCM",
-									"value": "-1",
+									"value": "0",
 									"type": "text"
 								},
 								{
@@ -3616,7 +3557,12 @@
 								},
 								{
 									"key": "categoryId",
-									"value": "4",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "lengthCM",
+									"value": "-1",
 									"type": "text"
 								}
 							]
@@ -3677,7 +3623,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM2MTQxMjY4LCJleHAiOjE3NDM5MTcyNjgsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.Mj9qzwWtLOOLOHPSVItDBc0UVAoSPh1NjTLhRzrjEopX-AaLsq6RBmlRheg7jRQe",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzM3OTQ3MTQyLCJleHAiOjE3NDU3MjMxNDIsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.sIha5dy8gg_u1Pmf4eixFJCdxci2MonOU7A4JxEztZ3Y7aG_k_OkVPBA7gduJY_v",
 									"type": "string"
 								}
 							]
@@ -3694,7 +3640,7 @@
 								},
 								{
 									"key": "price",
-									"value": "0",
+									"value": "0.1",
 									"type": "text"
 								},
 								{
@@ -3725,11 +3671,12 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": []
+									"src": [],
+									"disabled": true
 								},
 								{
 									"key": "categoryId",
-									"value": "4",
+									"value": "1",
 									"type": "text"
 								}
 							]
@@ -3802,7 +3749,7 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "Cable USB 3.0 marca Samsung",
+									"value": "Cargador de batería AA",
 									"type": "text"
 								},
 								{
@@ -3842,7 +3789,7 @@
 								},
 								{
 									"key": "categoryId",
-									"value": "4",
+									"value": "1",
 									"type": "text"
 								}
 							]
@@ -4425,8 +4372,8 @@
 									"const b = pm.response.json();\r",
 									"const precios = b.content.map(c => c.price);\r",
 									"\r",
-									"pm.test(`Cantidad de Productos es Igual a 2`, function () {\r",
-									"    pm.expect(b.content.length).to.equal(2);\r",
+									"pm.test(`Cantidad de Productos es Igual a 1`, function () {\r",
+									"    pm.expect(b.content.length).to.equal(1);\r",
 									"});\r",
 									"\r",
 									"pm.test(`Productos.Precio son menores a 99`, function () {\r",

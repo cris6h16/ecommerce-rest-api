@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
 @ValidatePropertiesNotNullOrEmpty
 public class ProductComponentErrorMsgProperties {
     private String productNameLengthMismatch;
+    private String weightPoundsNegative;
+    private String heightCmNegative;
+    private String widthCmNegative;
+    private String lengthCmNegative;
     private String productDescriptionLengthMismatch;
     private String invalidPrice;
     private String invalidStock;
