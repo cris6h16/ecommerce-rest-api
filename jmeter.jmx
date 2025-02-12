@@ -104,7 +104,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Iniciar Secion">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Iniciar Secion" enabled="true">
           <stringProp name="HTTPSampler.domain">${__P(host,localhost)}</stringProp>
           <stringProp name="HTTPSampler.port">${__P(port,6211)}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -163,10 +163,10 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+        <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config">
           <stringProp name="delimiter">,</stringProp>
           <stringProp name="fileEncoding"></stringProp>
-          <stringProp name="filename">C:/Users/Cristian/IdeaProjects/delivery/jmeter.csv</stringProp>
+          <stringProp name="filename">jmeter.csv</stringProp>
           <boolProp name="ignoreFirstLine">false</boolProp>
           <boolProp name="quotedData">false</boolProp>
           <boolProp name="recycle">true</boolProp>
@@ -175,7 +175,7 @@
           <stringProp name="variableNames"></stringProp>
         </CSVDataSet>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Crear Cuenta">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Crear Cuenta" enabled="true">
           <stringProp name="HTTPSampler.domain">${__P(host,localhost)}</stringProp>
           <stringProp name="HTTPSampler.port">${__P(port,6211)}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -478,7 +478,7 @@
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
