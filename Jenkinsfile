@@ -92,7 +92,7 @@ pipeline {
                    def jmeterCsvPath = sh(script: 'realpath jmeter.csv', returnStdout: true).trim()
 
                    sh """
-                       jmeter -n -t jmeter.jmx -Jhost="${REMOTE_SERVER_IP}" -Jport=6211 -JjmeterCsv="${jmeterCsvPath}" -l jmeter.jtl
+                       jmeter -n -t jmeter.jmx -Jhost="${REMOTE_SERVER_IP}" -Jport=7937 -JjmeterCsv="${jmeterCsvPath}" -l jmeter.jtl
                    """
                }
            }
