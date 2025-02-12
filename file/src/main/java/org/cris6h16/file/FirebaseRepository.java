@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.UUID;
 
 import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_DELETE_BY_URL_ALL_RETRIES_ERROR;
@@ -102,15 +103,22 @@ public class FirebaseRepository implements FileRepository {
     }
 
     private File convertToFile(MultipartFile multipartFile, String fileName) {
-        File tempFile = new File(fileName);
-        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-            fos.write(multipartFile.getBytes());
+        try {
+            // Obtener directorio temporal según el sistema operativo
+            Path tempDir = Files.createTempDirectory("upload_");
 
+            // Crear el archivo en el directorio temporal
+            File tempFile = new File(tempDir.toFile(), fileName);
+
+            // Escribir los bytes en el archivo
+            try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+                fos.write(multipartFile.getBytes());
+            }
+
+            return tempFile;
         } catch (IOException e) {
             throw new RuntimeException("Unable to convert file: " + e.getMessage(), e);
         }
-
-        return tempFile;
     }
 
     @Override
