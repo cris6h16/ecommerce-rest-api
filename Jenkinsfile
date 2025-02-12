@@ -91,7 +91,6 @@ pipeline {
                 script {
                     sh '''
                         jmeter -n -t jmeter.jmx -Jhost="${REMOTE_SERVER_IP}" -Jport=6211 -l jmeter.jtl
-                        ls -altr
                     '''
                 }
             }
@@ -118,6 +117,9 @@ pipeline {
                     """
                 }
             }
+
+            // limpiar ws
+
         }
     }
 }
