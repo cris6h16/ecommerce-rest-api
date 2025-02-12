@@ -88,13 +88,16 @@ pipeline {
         }
         stage('Ejecutar Pruebas de JMeter') {
             steps {
-                script {
-                    sh '''
-                        jmeter -n -t jmeter.jmx -Jhost="${REMOTE_SERVER_IP}" -Jport=6211 -l jmeter.jtl
-                    '''
-                }
-            }
-        }
+               script {
+                   def jmeterCsvPath = sh(script: 'realpath jmeter.csv', returnStdout: true).trim()
+
+                   sh """
+                       jmeter -n -t jmeter.jmx -Jhost="${REMOTE_SERVER_IP}" -Jport=6211 -JjmeterCsv="${jmeterCsvPath}" -l jmeter.jtl
+                   """
+               }
+           }
+       }
+
     }
     post {
         always {
