@@ -51,7 +51,7 @@
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Refrescar Token de Acceso" enabled="true">
-          <stringProp name="HTTPSampler.domain">${__P(host,localhost)}}</stringProp>
+          <stringProp name="HTTPSampler.domain">${__P(host,localhost)}</stringProp>
           <stringProp name="HTTPSampler.port">${__P(port,6211)}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/api/v1/auth/refresh-token</stringProp>
