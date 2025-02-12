@@ -90,7 +90,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        jmeter -n -t jmeter.jmx -Jhost=http://${REMOTE_SERVER_IP} -Jport=7937 -l jmeter.jtl
+                        jmeter -n -t jmeter.jmx -Jhost=${REMOTE_SERVER_IP} -Jport=7937 -l jmeter.jtl
                     '''
                 }
             }
