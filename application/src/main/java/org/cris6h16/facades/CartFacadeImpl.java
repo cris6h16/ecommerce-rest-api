@@ -29,7 +29,8 @@ public class CartFacadeImpl implements CartFacade{
     public Long addItemToCart(CreateCartItemDTO dto) {
         Long userId = securityComponent.getCurrentUserId();
         isUserEnabledById(userId, userComponent);
-        return cartComponent.addItemToCart(toInput(dto), userId);
+        CreateCartItemInput input = toInput(dto);
+        return cartComponent.addItemToCart(input, userId);
     }
 
     private CreateCartItemInput toInput(CreateCartItemDTO dto) {

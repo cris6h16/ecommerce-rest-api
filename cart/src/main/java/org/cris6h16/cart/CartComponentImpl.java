@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.cris6h16.cart.CartComponentErrorCode.PRODUCT_NOT_FOUND_BY_ID;
-import static org.cris6h16.cart.CartComponentErrorCode.USER_NOT_FOUND_BY_ID;
+import static org.cris6h16.cart.CartComponentErrorCode.USER_NOT_FOUND;
 
 @Component
 public class CartComponentImpl implements CartComponent {
@@ -49,11 +49,20 @@ public class CartComponentImpl implements CartComponent {
     }
 
     private CartEntity findCartByUserIdOrCreate(Long userId) {
-        return cartRepository.findByUserId(userId).orElse(createCart(userId));
+        return cartRepository
+                .findByUserId(userId)
+                .orElse(createCart(userId));
     }
 
     private CartEntity createCart(Long userId) {
-        Supplier<CartComponentException> cartNotFound = () -> new CartComponentException(USER_NOT_FOUND_BY_ID);
+        Supplier<CartComponentException> cartNotFound = () -> new CartComponentException(USER_NOT_FOUND);
+
+        CartEntity cart = CartEntity.builder()
+                .user(userRepository
+                        .findByIdAndEnabled(userId, true)
+                        .orElseThrow(cartNotFound))
+                .id(null)
+                .build();
 
         return cartRepository.save(CartEntity.builder()
                 .user(userRepository.findByIdAndEnabled(userId, true).orElseThrow(cartNotFound))
