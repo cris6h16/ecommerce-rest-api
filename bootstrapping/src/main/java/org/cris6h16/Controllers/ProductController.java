@@ -1,4 +1,4 @@
-package org.cris6h16.Controllers.Products;
+package org.cris6h16.Controllers;
 
 // todo: para todo el proyecto: ESCAPAR ENTRADAS
 import lombok.extern.slf4j.Slf4j;

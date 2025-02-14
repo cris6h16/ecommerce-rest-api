@@ -1,4 +1,4 @@
-package org.cris6h16.Controllers.Products;
+package org.cris6h16.Controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.facades.CategoryDTO;
@@ -18,7 +18,7 @@ import java.net.URI;
 import java.util.Set;
 
 import static org.cris6h16.Controllers.HTTPCommons.jsonHeaderCons;
-import static org.cris6h16.Controllers.Products.CategoryController.CATEGORY_PATH;
+import static org.cris6h16.Controllers.CategoryController.CATEGORY_PATH;
 
 @RestController
 @RequestMapping(CATEGORY_PATH)
