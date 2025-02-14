@@ -103,9 +103,9 @@ pipeline {
         always {
             script {
                 emailext (
-                    subject: "Newman Test Report",
-                    body: "Aquí está el reporte de las pruebas de Newman.",
-                    attachmentsPattern: "**/report.html,**/jmeter.jtl,**/jmeter.jmx, **/jmeter.log",
+                    subject: "Reporte de Pruebas Jenkins",
+                    body: "Aquí está el reporte de las pruebas ejecutadas de Newman y JMeter",
+                    attachmentsPattern: "**/report.html,**/jmeter.jtl, **/jmeter.log",
                     to: "${EMAIL_RECIPIENT}"
                 )
             }
