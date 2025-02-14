@@ -11,10 +11,10 @@ import java.util.Collection;
 public class UserPrincipal extends User {
     private Long id;
 
-    public UserPrincipal(Collection<? extends GrantedAuthority> authorities, Long id) {
+    public UserPrincipal(Collection<? extends GrantedAuthority> authorities, Long id, boolean enabled) {
         super("username",
                 "password",
-                true,
+                enabled,
                 true,
                 true,
                 true, authorities);

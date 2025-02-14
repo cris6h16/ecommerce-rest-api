@@ -1,5 +1,6 @@
 package org.cris6h16.security;
 
+import org.cris6h16.user.UserComponent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,9 +26,11 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
 
     private final JwtUtils jwtUtils;
+    private final UserComponent userComponent;
 
-    SecurityConfig(JwtUtils jwtUtils) {
+    SecurityConfig(JwtUtils jwtUtils, UserComponent userComponent) {
         this.jwtUtils = jwtUtils;
+        this.userComponent = userComponent;
     }
 
     @Bean
@@ -51,7 +54,7 @@ public class SecurityConfig {
                                 "/api/v1/tests/reset-functional-testing-db",
                                 "/api/v1/products").permitAll()
                         .anyRequest().denyAll())
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtils, userComponent), UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(conf -> conf.configurationSource(this.corsConfigurer()))
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -61,7 +64,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-     @Bean
+    @Bean
     static RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.withDefaultRolePrefix()
                 .role("ADMIN").implies("SELLER")

@@ -172,7 +172,6 @@ class UserFacadeImpl implements UserFacade {
     public String refreshAccessToken() {
         Long id = securityComponent.getCurrentUserId();
         String authority = securityComponent.getCurrentUserAuthority();
-        existsEnabledUserByEmail(id);
         return securityComponent.generateAccessToken(id, authority);
     }
 
@@ -184,7 +183,7 @@ class UserFacadeImpl implements UserFacade {
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public void updateRole(Long id, String authority) {
-        existsEnabledUserByEmail(id);
+        existsEnabledUserById(id);
         userComponent.updateAuthorityById(id, EAuthority.valueOf(authority));
     }
 
@@ -214,14 +213,8 @@ class UserFacadeImpl implements UserFacade {
                 .build();
     }
 
-    @Override
-    public void adjustBalance(Long id, BigDecimal delta) {
-        existsEnabledUserByEmail(id);
-        userComponent.adjustBalanceById(id, delta);
-    }
 
-
-    private void existsEnabledUserByEmail(Long id) {
+    private void existsEnabledUserById(Long id) {
         if (!userComponent.existsByIdAndEnabled(id, true)) {
             throw new ApplicationException(ENABLED_USER_NOT_FOUND);
         }

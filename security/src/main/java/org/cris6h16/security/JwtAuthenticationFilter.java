@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.cris6h16.user.UserComponent;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,10 +21,12 @@ import java.util.Collection;
 class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
+    private final UserComponent userComponent;
 
 
-    public JwtAuthenticationFilter(JwtUtils jwtUtils) {
+    public JwtAuthenticationFilter(JwtUtils jwtUtils, UserComponent userComponent) {
         this.jwtUtils = jwtUtils;
+        this.userComponent = userComponent;
     }
 
     @Override
@@ -40,17 +43,21 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        Long id = jwtUtils.getId(token);
+        Long userId = jwtUtils.getId(token);
         Collection<? extends SimpleGrantedAuthority> authorities = jwtUtils.getAuthority(token).stream()
                 .map(SimpleGrantedAuthority::new)
                 .toList();
 
-        UserPrincipal user = new UserPrincipal(authorities, id);
+        UserPrincipal user = new UserPrincipal(authorities, userId, isEnabledUser(userId));
         var authToken = new UsernamePasswordAuthenticationToken(user, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authToken);
         log.debug("Authenticated user: {}", user);
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isEnabledUser(Long userId) {
+        return userComponent.existsByIdAndEnabled(userId, true);
     }
 
 

@@ -21,7 +21,5 @@ public interface UserFacade {
 
     UserDTO findById(Long id);
 
-    void adjustBalance(Long id, BigDecimal delta);
-
 
 }

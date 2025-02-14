@@ -21,8 +21,13 @@ class AddressFacadeImpl implements AddressFacade {
     @Transactional(propagation = Propagation.MANDATORY)
     public Long createAddress(CreateAddressDTO dto) {
         Long userId = securityComponent.getCurrentUserId();
-        isEnab
+        availableCountry(dto.getCountry());
         return addressComponent.createAddress(dto);
+    }
+
+    private void availableCountry(String country) {
+        if (country.trim().equalsIgnoreCase("EC")) return;
+        throw new AddressComponentException(AddressComponentErrorCode.UNSUPPORTED_COUNTRY);
     }
 
     @Override

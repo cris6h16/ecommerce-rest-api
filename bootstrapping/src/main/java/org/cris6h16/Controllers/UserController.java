@@ -63,14 +63,6 @@ public class UserController {
                 .body(userFacade.findById(id));
     }
 
-    @PatchMapping(
-            path = "/{id}/balance",
-            consumes = TEXT_PLAIN_VALUE
-    )
-    public ResponseEntity<Void> adjustBalance(@PathVariable Long id, @RequestBody BigDecimal delta) {
-        userFacade.adjustBalance(id, delta);
-        return ResponseEntity.noContent().build();
-    }
 
 
     @PutMapping(
