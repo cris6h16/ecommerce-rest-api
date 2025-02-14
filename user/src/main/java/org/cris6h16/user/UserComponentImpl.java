@@ -15,7 +15,6 @@ import static org.cris6h16.user.Exceptions.UserErrorCode.EMAIL_ALREADY_EXISTS;
 import static org.cris6h16.user.Exceptions.UserErrorCode.USER_NOT_FOUND;
 
 @Service
-@Slf4j
 class UserComponentImpl implements UserComponent {
 
     private final UserRepository userRepository;
@@ -56,11 +55,14 @@ class UserComponentImpl implements UserComponent {
 
 
     @Override
-    public Optional<UserOutput> findByEmailAndEnabled(String email, boolean enabled) {
+    public UserOutput findByEmailAndEnabled(String email, boolean enabled) {
         email = userValidator.validateEmail(email);
 
-        UserEntity ue = userRepository.findByEmailAndEnabled(email, enabled).orElse(null);
-        return Optional.ofNullable(toUserOutput(ue));
+        UserEntity ue = userRepository
+                .findByEmailAndEnabled(email, enabled)
+                .orElseThrow(() -> new UserComponentException(USER_NOT_FOUND));
+
+        return toUserOutput(ue);
     }
 
 
@@ -86,9 +88,12 @@ class UserComponentImpl implements UserComponent {
     }
 
     @Override
-    public Optional<UserOutput> findByIdAndEnable(Long id, boolean enabled) {
+    public UserOutput findByIdAndEnable(Long id, boolean enabled) {
         userValidator.validateUserId(id);
-        return userRepository.findByIdAndEnabled(id, enabled).map(EntityMapper::toUserOutput);
+        return userRepository
+                .findByIdAndEnabled(id, enabled)
+                .map(EntityMapper::toUserOutput)
+                .orElseThrow(() -> new UserComponentException(USER_NOT_FOUND));
     }
 
     @Override

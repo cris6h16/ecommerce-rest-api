@@ -10,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.cris6h16.user.UserEntity;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -43,7 +41,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-public class ProductEntity {
+ class ProductEntity {
     // todo: se puede centrilizar en un YAML para que los errores se actualizen dinamicamente
     public final static int PRODUCT_MAX_NAME_LENGTH = 255; // si se cambia esto, hay que su error message correspondiente
     public final static int PRODUCT_MAX_DESCRIPTION_LENGTH = 1000; // si se cambia esto, hay que su error message correspondiente
@@ -77,6 +75,13 @@ public class ProductEntity {
     @Column(nullable = false, name = "length_cm")
     private Integer lengthCM;
 
+    @Column(nullable = false, name = "user_id")
+    private Long userId;
+
+
+    @Column(nullable = false, name = "category_id")
+    private Long categoryId;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "product_images",
@@ -91,26 +96,4 @@ public class ProductEntity {
     )
     @Column(name = "url", nullable = false, length = PRODUCT_MAX_IMG_URL_LENGTH) // collection table
     private Set<String> imageUrls;
-
-    @ManyToOne(
-            cascade = {},
-            fetch = FetchType.LAZY
-    )
-    @JoinColumn(
-            name = "user_id",
-            foreignKey = @ForeignKey(name = "fk_products_users")
-    )
-    private UserEntity user;
-
-
-    @ManyToOne(
-            cascade = {},
-            fetch = FetchType.EAGER
-    )
-    @JoinColumn(
-            name = "category_id",
-            foreignKey = @ForeignKey(name = "fk_products_categories")
-    )
-    private CategoryEntity category;
-
 }

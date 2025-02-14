@@ -7,8 +7,8 @@ import org.cris6h16.facades.Exceptions.ApplicationException;
 import org.cris6h16.security.SecurityComponent;
 import org.cris6h16.user.CreateUserInput;
 import org.cris6h16.user.EAuthority;
+import org.cris6h16.user.Exceptions.UserComponentException;
 import org.cris6h16.user.LoginOutput;
-import org.cris6h16.user.ResetPasswordDTO;
 import org.cris6h16.user.UserComponent;
 import org.cris6h16.user.UserOutput;
 import org.springframework.data.domain.Page;
@@ -19,13 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
-import static org.cris6h16.facades.EmailCodeActionType.VERIFY_EMAIL;
-import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.EMAIL_NOT_VERIFIED;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.ENABLED_USER_NOT_FOUND;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.INVALID_CREDENTIALS;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.VALID_VERIFICATION_CODE_NOT_FOUND;
+import static org.cris6h16.user.Exceptions.UserErrorCode.USER_NOT_FOUND;
 
-@Slf4j
 @Component
 class UserFacadeImpl implements UserFacade {
 
@@ -90,9 +88,21 @@ class UserFacadeImpl implements UserFacade {
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public LoginOutput login(LoginDTO loginDTO) {
-        UserOutput output = userComponent.findByEmailAndEnabled(loginDTO.getEmail(), true).orElseThrow(() -> new ApplicationException(INVALID_CREDENTIALS));
+        UserOutput output = _login(loginDTO);
         passMatches(loginDTO, output, INVALID_CREDENTIALS);
         return createLoginOutput(output);
+    }
+
+    private UserOutput _login(LoginDTO loginDTO) {
+        try {
+            return userComponent.findByEmailAndEnabled(loginDTO.getEmail(), true);
+
+        } catch (UserComponentException e) {
+            if (e.getErrorCode().equals(USER_NOT_FOUND)) {
+                throw new ApplicationException(INVALID_CREDENTIALS);
+            }
+            throw e;
+        }
     }
 
     private LoginOutput createLoginOutput(UserOutput userDTO) {
@@ -188,10 +198,20 @@ class UserFacadeImpl implements UserFacade {
 
     @Override
     public UserDTO findById(Long id) {
-        existsEnabledUserByEmail(id);
-        return userComponent.findByIdAndEnable(id, true)
-                .map(UserFacadeImpl::toUserDTO)
-                .orElseThrow(() -> new ApplicationException(ENABLED_USER_NOT_FOUND));
+        return toDTO(userComponent.findByIdAndEnable(id, true));
+    }
+
+    private UserDTO toDTO(UserOutput output) {
+        return UserDTO.builder()
+                .id(output.getId())
+                .firstname(output.getFirstname())
+                .lastname(output.getLastname())
+                .email(output.getEmail())
+                .authority(output.getAuthority())
+                .enabled(output.isEnabled())
+                .balance(output.getBalance())
+                .emailVerified(output.isEmailVerified())
+                .build();
     }
 
     @Override

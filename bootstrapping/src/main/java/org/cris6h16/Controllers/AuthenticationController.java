@@ -4,7 +4,7 @@ import org.cris6h16.facades.LoginDTO;
 import org.cris6h16.facades.SignupDTO;
 import org.cris6h16.facades.UserFacade;
 import org.cris6h16.user.LoginOutput;
-import org.cris6h16.user.ResetPasswordDTO;
+import org.cris6h16.facades.ResetPasswordDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Isolation;

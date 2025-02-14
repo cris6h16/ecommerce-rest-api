@@ -1,7 +1,21 @@
 package org.cris6h16.user;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
@@ -27,7 +41,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode
 @Getter
 @Setter
- public class UserEntity {
+  class UserEntity {
     protected static final int FIRSTNAME_MAX_LENGTH = 30;
     protected static final int LASTNAME_MAX_LENGTH = 30;
     protected static final int EMAIL_MAX_LENGTH = 255;

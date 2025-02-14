@@ -5,7 +5,7 @@ public interface CartFacade {
 
     CartDTO getOrCreateMyCart();
 
-    void updateCartItemQuantity(Long itemId, Integer quantity);
+    void updateCartItemQuantity(Long itemId, Integer delta);
 
     void deleteCartItem(Long itemId);
 }

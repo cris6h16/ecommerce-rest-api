@@ -33,6 +33,10 @@ public interface ProductComponent {
 
     void deleteProductByIdAndUserId(Long productId, Long userId);
 
+    CategoryOutput findCategoryById(Long categoryId);
+
+    Integer findProductStockById(Long productId);
+
 
 //    BrandOutput getBrandByName(String name);
 //    Long createBrand(CreateBrandInput input);

@@ -3,6 +3,7 @@ package org.cris6h16.cart;
 import org.springframework.stereotype.Component;
 
 import static org.cris6h16.cart.CartComponentErrorCode.CART_ITEM_ID_LESS_THAN_ONE;
+import static org.cris6h16.cart.CartComponentErrorCode.INVALID_DELTA;
 import static org.cris6h16.cart.CartComponentErrorCode.INVALID_PRODUCT_ID;
 import static org.cris6h16.cart.CartComponentErrorCode.INVALID_QUANTITY;
 import static org.cris6h16.cart.CartComponentErrorCode.INVALID_USER_ID;
@@ -38,5 +39,9 @@ public class CartValidator {
     void validateCartItemId(Long itemId) {
         if (itemId == null) throwE(NULL_CART_ITEM_ID);
         if (itemId < 1) throwE(CART_ITEM_ID_LESS_THAN_ONE);
+    }
+
+    void validateDelta(Integer delta) {
+        if (delta == null || delta == 0) throwE(INVALID_DELTA);
     }
 }

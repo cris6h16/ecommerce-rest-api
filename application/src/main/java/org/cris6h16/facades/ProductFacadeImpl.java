@@ -1,6 +1,5 @@
 package org.cris6h16.facades;
 
-import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.facades.Exceptions.ApplicationErrorCode;
 import org.cris6h16.facades.Exceptions.ApplicationException;
 import org.cris6h16.file.FileComponent;
@@ -29,7 +28,6 @@ import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.PAGE_SIZE_TOO
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.PRODUCT_NOT_FOUND_BY_ID;
 import static org.cris6h16.facades.FacadesCommon.isUserEnabledById;
 
-@Slf4j
 @Component // todo: should be a custom annotation @Facade -> @Service
 public class ProductFacadeImpl implements ProductFacade {
     private final ProductComponent productComponent;
@@ -76,12 +74,11 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     public Set<CategoryDTO> getCategories() {
         return productComponent.findAllCategories(Pageable.unpaged()).stream()
-                .map(this::toProductDTO)
+                .map(this::toDTO)
                 .collect(toSet());
     }
 
-    private CategoryDTO toProductDTO(CategoryOutput output) {
-        log.debug("Converting CategoryOutput to CategoryDTO: {}", output);
+    private CategoryDTO toDTO(CategoryOutput output) {
         if (output == null) return CategoryDTO.builder().build();
         return CategoryDTO.builder()
                 .id(output.getId())
@@ -102,7 +99,7 @@ public class ProductFacadeImpl implements ProductFacade {
         hasAllowedSortProperties(pageable.getSort());
         checkSize(pageable);
         return productComponent.findAllProducts(pageable, filters)
-                .map(this::toProductDTO);
+                .map(this::toDTO);
     }
 
     private void checkSize(Pageable pageable) {
@@ -123,22 +120,27 @@ public class ProductFacadeImpl implements ProductFacade {
         }
     }
 
-    private ProductDTO toProductDTO(ProductOutput productOutput) {
-        log.debug("Converting ProductOutput to ProductDTO: {}", productOutput);
+    private ProductDTO toDTO(ProductOutput pO) {
+        CategoryDTO categoryDTO = toDTO(productComponent
+                .findCategoryById(pO.getCategoryId()));
+        UserInProductDTO userInProductDTO = toUserInProductDTO(userComponent.
+                findByIdAndEnable(pO.getUserId(), true));
+
         return ProductDTO.builder()
-                .id(productOutput.getId())
-                .name(productOutput.getName())
-                .price(productOutput.getPrice())
-                .stock(productOutput.getStock())
-                .description(productOutput.getDescription())
-                .weightPounds(productOutput.getWeightPounds())
-                .widthCM(productOutput.getWidthCM())
-                .heightCM(productOutput.getHeightCM())
-                .imageUrls(productOutput.getImageUrls())
-                .category(toProductDTO(productOutput.getCategory()))
-                .user(toUserInProductDTO(productOutput.getUser()))
+                .id(pO.getId())
+                .name(pO.getName())
+                .price(pO.getPrice())
+                .stock(pO.getStock())
+                .description(pO.getDescription())
+                .weightPounds(pO.getWeightPounds())
+                .widthCM(pO.getWidthCM())
+                .heightCM(pO.getHeightCM())
+                .imageUrls(pO.getImageUrls())
+                .category(categoryDTO)
+                .user(userInProductDTO)
                 .build();
     }
+
 
     private UserInProductDTO toUserInProductDTO(UserOutput user) {
         if (user == null) return UserInProductDTO.builder().build();
@@ -154,12 +156,12 @@ public class ProductFacadeImpl implements ProductFacade {
         Long userId = securityComponent.getCurrentUserId();
         isUserEnabledById(userId, userComponent);
         return productComponent.findProductByUserId(userId, pageable)
-                .map(this::toProductDTO);
+                .map(this::toDTO);
     }
 
     @Override
     public ProductDTO getProductById(Long id) {
-        return toProductDTO(productComponent.findProductById(id));
+        return toDTO(productComponent.findProductById(id));
     }
 
     @Override
@@ -183,11 +185,9 @@ public class ProductFacadeImpl implements ProductFacade {
     }
 
     private CreateCategoryInput toInput(CreateCategoryDTO input) {
-        log.debug("Converting CreateCategoryDTO to CreateCategoryInput: {}", input);
         CreateCategoryInput res = CreateCategoryInput.builder()
                 .name(input.getName())
                 .build();
-        log.debug("CreateCategoryInput created: {}", res);
         return res;
     }
 

@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.cris6h16.user.UserOutput;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -26,6 +25,6 @@ public class ProductOutput {
     private Integer heightCM;
     private Integer lengthCM;
     private Set<String> imageUrls;
-    private UserOutput user;
-    private CategoryOutput category;
+    private Long userId;
+    private Long categoryId;
 }

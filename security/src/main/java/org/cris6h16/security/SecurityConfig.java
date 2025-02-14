@@ -34,7 +34,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh-token").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/cart/my-cart").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/v1/auth/refresh-token",
+                                "api/v1/cart/item/add",
+                                "api/v1/cart/item/{itemId}/amount").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/api/v1/products").hasRole("SELLER")
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/auth/login",

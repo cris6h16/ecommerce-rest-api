@@ -5,7 +5,6 @@ import org.cris6h16.Controllers.Advices.Properties.ProductComponentErrorMsgPrope
 import org.cris6h16.Controllers.Advices.Properties.SystemErrorProperties;
 import org.cris6h16.product.Exceptions.ProductComponentException;
 import org.cris6h16.product.Exceptions.ProductErrorCode;
-import org.cris6h16.product.ProductEntity;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -82,7 +81,7 @@ public class ProductComponentAdvice {
 
         }   else if (e.equals(IMAGE_URL_TOO_LONG)) {
             status = BAD_REQUEST;
-            msg = msgs.getImageUrlTooLong().replace("{MAX}", ProductEntity.PRODUCT_MAX_IMG_URL_LENGTH + "");
+            msg = msgs.getImageUrlTooLong();
 
         }  else if (e.equals(STOCK_NEGATIVE)) {
             status = BAD_REQUEST;

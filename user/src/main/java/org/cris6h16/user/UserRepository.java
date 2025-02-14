@@ -1,16 +1,13 @@
 package org.cris6h16.user;
 
-import aj.org.objectweb.asm.commons.InstructionAdapter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.math.BigDecimal;
-import java.nio.channels.FileChannel;
 import java.util.Optional;
-import java.util.Set;
 
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+ interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
 
     boolean existsByEmail(String email);

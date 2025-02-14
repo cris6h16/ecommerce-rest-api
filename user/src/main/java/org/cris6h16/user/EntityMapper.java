@@ -1,8 +1,5 @@
 package org.cris6h16.user;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 public class EntityMapper {
     public   static UserOutput toUserOutput(UserEntity userEntity) {
         if (userEntity == null) return null;

@@ -55,8 +55,8 @@ public class CartController {
             value = CART_ITEM_SUB_PATH + "/{itemId}/amount",
             consumes = "application/json"
     )
-    public ResponseEntity<Void> updateCartItem(@PathVariable Long itemId, @RequestBody Integer quantity) {
-        cartFacade.updateCartItemQuantity(itemId, quantity);
+    public ResponseEntity<Void> updateCartItem(@PathVariable Long itemId, @RequestBody Integer delta) {
+        cartFacade.updateCartItemQuantity(itemId, delta);
         return ResponseEntity.noContent().build();
     }
 

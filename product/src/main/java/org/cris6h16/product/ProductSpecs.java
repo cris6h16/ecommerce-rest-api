@@ -13,7 +13,7 @@ import static org.cris6h16.product.Exceptions.ProductErrorCode.PRICE_FILTER_ERRO
 import static org.cris6h16.product.Exceptions.ProductErrorCode.PRICE_FILTER_INVALID_FORMAT;
 
 @Slf4j
-public class ProductSpecs {
+ class ProductSpecs {
     // todo: escapar caracteres especiales de operaciones like
     public static Specification<ProductEntity> hasNameLike(String name) {
         name = name.trim().toLowerCase();
@@ -44,7 +44,7 @@ public class ProductSpecs {
 
 
     public static Specification<ProductEntity> hasCategoryId(String categoryId) {
-        return (root, query, cb) -> cb.equal(root.get("category").get("id"), parseLong(categoryId, INVALID_CATEGORY_ID));
+        return (root, query, cb) -> cb.equal(root.get("categoryId"), parseLong(categoryId, INVALID_CATEGORY_ID));
     }
 
     private static Long parseLong(String categoryId, ProductErrorCode errorCode) {

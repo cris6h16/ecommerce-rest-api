@@ -1,8 +1,15 @@
 package org.cris6h16.facades;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.util.Set;
 
+@NoArgsConstructor
+@Getter
+@Setter
 public class CartDTO {
     private Long id;
     private Set<CartItemDTO> items;

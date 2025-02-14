@@ -4,10 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.math.BigDecimal;
-import java.util.Set;
 @Builder
 @Getter
-
 public class UserOutput {
 
     private Long id;

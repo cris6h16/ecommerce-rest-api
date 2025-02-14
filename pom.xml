@@ -45,6 +45,7 @@
         <module>file</module>
         <module>cart</module>
         <module>payment</module>
+        <module>logging</module>
     </modules>
 
 <!--    <properties>-->

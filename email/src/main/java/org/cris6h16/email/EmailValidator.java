@@ -18,7 +18,7 @@ import static org.cris6h16.email.VerificationCodeEntity.EMAIL_MAX_LENGTH;
 
 @Slf4j
 @Component
-public class EmailValidator {
+ class EmailValidator {
 
     String validateEmail(String email) {
         if (email == null) throwE(EMAIL_NULL);

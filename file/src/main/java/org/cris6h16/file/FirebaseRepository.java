@@ -27,7 +27,7 @@ import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_UPLOAD_ALL_RETRIES
 
 @Slf4j
 @Component
-public class FirebaseRepository implements FileRepository {
+ class FirebaseRepository implements FileRepository {
     static String bucketName = "ecommerce-de918.firebasestorage.app";
     static String credentialsFile = "firebase-private-key.json";
     private final Storage storage;

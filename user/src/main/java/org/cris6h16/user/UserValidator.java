@@ -19,7 +19,6 @@ import static org.cris6h16.user.UserEntity.FIRSTNAME_MAX_LENGTH;
 import static org.cris6h16.user.UserEntity.LASTNAME_MAX_LENGTH;
 import static org.cris6h16.user.UserEntity.PASSWORD_MAX_LENGTH;
 
-@Slf4j
 @Component
 class UserValidator {
     private void throwE(UserErrorCode errorCode) {

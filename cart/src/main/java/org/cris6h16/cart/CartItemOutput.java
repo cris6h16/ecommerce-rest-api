@@ -10,12 +10,5 @@ import java.math.BigDecimal;
 public class CartItemOutput {
     private Long id;
     private Long productId;
-    private String productName;
-    private String productImgUrl;
     private Integer quantity;
-    private BigDecimal price;
-
-    public BigDecimal getTotal() {
-        return price.multiply(BigDecimal.valueOf(quantity));
-    }
 }

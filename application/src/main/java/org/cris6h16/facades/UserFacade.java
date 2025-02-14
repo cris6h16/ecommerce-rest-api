@@ -1,7 +1,6 @@
 package org.cris6h16.facades;
 
 import org.cris6h16.user.LoginOutput;
-import org.cris6h16.user.ResetPasswordDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

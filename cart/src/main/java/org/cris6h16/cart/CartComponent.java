@@ -8,7 +8,9 @@ public interface CartComponent {
 
     void deleteCartItemById(Long itemId);
 
-    void updateCartItemQuantityById(Integer quantity, Long itemId);
+    void updateCartItemQuantityById(Integer delta, Long itemId, int stock);
 
     boolean isOwnerOfCartItem(Long userId, Long itemId);
+
+    Long findProductIdByItemId(Long itemId);
 }

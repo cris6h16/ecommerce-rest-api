@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Service
 @Slf4j
-public class EmailComponentImpl implements EmailComponent {
+ class EmailComponentImpl implements EmailComponent {
     private final EmailSender emailSender;
     private final EmailValidator validator;
     private final VerificationCodeRepository repository;
