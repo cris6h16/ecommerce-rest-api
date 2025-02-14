@@ -1,6 +1,9 @@
 package org.cris6h16.cart;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,7 +56,7 @@ public class CartComponentImpl implements CartComponent {
     private CartEntity findCartByUserIdOrCreate(Long userId) {
         return cartRepository
                 .findByUserId(userId)
-                .orElse(createCart(userId));
+                .orElseGet(() -> createCart(userId));
     }
 
     private CartEntity createCart(Long userId) {

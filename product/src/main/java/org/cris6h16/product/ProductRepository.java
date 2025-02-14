@@ -24,5 +24,6 @@ import java.util.Set;
 
     void deleteByIdAndUserId(Long productId, Long userId);
 
+    @Query("SELECT p.stock FROM products p WHERE p.id = :productId")
     Optional<Integer> findStockById(Long productId);
  }

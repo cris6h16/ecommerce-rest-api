@@ -12,12 +12,13 @@ public interface CartItemRepository extends JpaRepository<CartItemEntity, Long> 
     Set<CartItemEntity> findByCartId(Long cartId);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE CartItemEntity c SET c.quantity = :quantity WHERE c.id = :itemId")
+    @Query("UPDATE cart_items c SET c.quantity = :quantity WHERE c.id = :itemId")
     void updateQuantityById(Integer quantity, Long itemId);
 
     boolean existsByIdAndCartUserId(Long itemId, Long userId);
 
     boolean existsByProductIdAndCartUserId(Long productId, Long userId);
 
+    @Query("SELECT c.productId FROM cart_items c WHERE c.id = :itemId")
     Optional<Long> findProductIdById(Long itemId);
 }

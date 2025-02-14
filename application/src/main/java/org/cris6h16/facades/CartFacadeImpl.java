@@ -10,6 +10,9 @@ import org.cris6h16.product.ProductOutput;
 import org.cris6h16.security.SecurityComponent;
 import org.cris6h16.user.UserComponent;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.stream.Collectors;
@@ -34,6 +37,7 @@ public class CartFacadeImpl implements CartFacade {
     }
 
     @Override
+    @Transactional(propagation = Propagation.MANDATORY)
     public Long addItemToCart(CreateCartItemDTO dto) {
         Long userId = securityComponent.getCurrentUserId();
         isUserEnabledById(userId, userComponent);
@@ -63,6 +67,7 @@ public class CartFacadeImpl implements CartFacade {
     }
 
     @Override
+    @Transactional(propagation = Propagation.MANDATORY)
     public CartDTO getOrCreateMyCart() {
         Long userId = securityComponent.getCurrentUserId();
         isUserEnabledById(userId, userComponent);
@@ -96,6 +101,7 @@ public class CartFacadeImpl implements CartFacade {
 
 
     @Override
+    @Transactional(propagation = Propagation.MANDATORY)
     public void updateCartItemQuantity(Long itemId, Integer delta) {
         isUserEnabledById(securityComponent.getCurrentUserId(), userComponent);
         isOwnerOfCartItem(securityComponent.getCurrentUserId(), itemId); // todo: hacer verificaciones como estas

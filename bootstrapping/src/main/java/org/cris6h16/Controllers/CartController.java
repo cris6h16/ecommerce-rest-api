@@ -5,6 +5,8 @@ import org.cris6h16.facades.CartDTO;
 import org.cris6h16.facades.CreateCartItemDTO;
 import org.cris6h16.facades.CartFacade;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +36,7 @@ public class CartController {
             value = "/my-cart",
             produces = "application/json"
     )
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public ResponseEntity<CartDTO> getCart() {
         return ResponseEntity.ok(cartFacade.getOrCreateMyCart());
     }
@@ -42,6 +45,7 @@ public class CartController {
             value = CART_ITEM_SUB_PATH + "/add",
             consumes = "application/json"
     )
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public ResponseEntity<Void> addProductToCart(@RequestBody CreateCartItemDTO dto, UriComponentsBuilder ucb) {
         URI uri = ucb
                 .path(CART_ITEM_SUB_PATH + "/{id}")
@@ -51,10 +55,11 @@ public class CartController {
     }
 
 
-    @PutMapping(
+    @PostMapping(
             value = CART_ITEM_SUB_PATH + "/{itemId}/amount",
             consumes = "application/json"
     )
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public ResponseEntity<Void> updateCartItem(@PathVariable Long itemId, @RequestBody Integer delta) {
         cartFacade.updateCartItemQuantity(itemId, delta);
         return ResponseEntity.noContent().build();

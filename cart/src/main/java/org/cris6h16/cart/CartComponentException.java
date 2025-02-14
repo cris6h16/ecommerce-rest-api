@@ -6,6 +6,7 @@ import lombok.Getter;
 public class CartComponentException extends RuntimeException {
     CartComponentErrorCode errorCode;
     public CartComponentException(CartComponentErrorCode errorCode) {
+        super(errorCode.name());
         this.errorCode = errorCode;
     }
 }
