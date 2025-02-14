@@ -26,7 +26,6 @@ import static java.util.stream.Collectors.toSet;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.FORBIDDEN_SORT_PROPERTY;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.PAGE_SIZE_TOO_BIG;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.PRODUCT_NOT_FOUND_BY_ID;
-import static org.cris6h16.facades.FacadesCommon.isUserEnabledById;
 
 @Component // todo: should be a custom annotation @Facade -> @Service
 public class ProductFacadeImpl implements ProductFacade {
@@ -49,7 +48,6 @@ public class ProductFacadeImpl implements ProductFacade {
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public Long createProduct(CreateProductDTO dto) {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabledById(userId, userComponent);
         isEmailVerified(userId);
         CreateProductInput input = toInput(dto, userId);
         defImgIfEmpty(input);
@@ -90,7 +88,6 @@ public class ProductFacadeImpl implements ProductFacade {
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY)
     public Long createCategory(CreateCategoryDTO dto) {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabledById(userId, userComponent);
         return productComponent.createCategory(toInput(dto));
     }
 
@@ -154,7 +151,6 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     public Page<ProductDTO> findMyProducts(Pageable pageable) {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabledById(userId, userComponent);
         return productComponent.findProductByUserId(userId, pageable)
                 .map(this::toDTO);
     }
@@ -173,7 +169,6 @@ public class ProductFacadeImpl implements ProductFacade {
     @Override
     public void deleteProduct(Long productId) {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabledById(userId, userComponent);
         productComponent.deleteProductByIdAndUserId(productId, userId);
     }
 

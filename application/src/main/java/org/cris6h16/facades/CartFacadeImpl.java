@@ -10,7 +10,6 @@ import org.cris6h16.product.ProductOutput;
 import org.cris6h16.security.SecurityComponent;
 import org.cris6h16.user.UserComponent;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.CART_ITEM_NOT_FOUND;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.INSUFFICIENT_STOCK;
 import static org.cris6h16.facades.Exceptions.ApplicationErrorCode.PRODUCT_NOT_FOUND;
-import static org.cris6h16.facades.FacadesCommon.isUserEnabledById;
 
 @Component
 public class CartFacadeImpl implements CartFacade {
@@ -40,7 +38,6 @@ public class CartFacadeImpl implements CartFacade {
     @Transactional(propagation = Propagation.MANDATORY)
     public Long addItemToCart(CreateCartItemDTO dto) {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabledById(userId, userComponent);
         productExists(dto.getProductId());
         enoughStock(dto.getProductId(), dto.getQuantity());
         return cartComponent.addItemToCart(toInput(dto), userId);
@@ -70,7 +67,6 @@ public class CartFacadeImpl implements CartFacade {
     @Transactional(propagation = Propagation.MANDATORY)
     public CartDTO getOrCreateMyCart() {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabledById(userId, userComponent);
         return toDTO(cartComponent.getOrCreateCartByUserId(userId));
     }
 
@@ -103,7 +99,6 @@ public class CartFacadeImpl implements CartFacade {
     @Override
     @Transactional(propagation = Propagation.MANDATORY)
     public void updateCartItemQuantity(Long itemId, Integer delta) {
-        isUserEnabledById(securityComponent.getCurrentUserId(), userComponent);
         isOwnerOfCartItem(securityComponent.getCurrentUserId(), itemId); // todo: hacer verificaciones como estas
 
         Long productId = cartComponent.findProductIdByItemId(itemId);
@@ -115,7 +110,6 @@ public class CartFacadeImpl implements CartFacade {
     @Override
     public void deleteCartItem(Long itemId) {
         Long userId = securityComponent.getCurrentUserId();
-        isUserEnabledById(userId, userComponent);
         isOwnerOfCartItem(userId, itemId);
         cartComponent.deleteCartItemById(itemId);
     }
