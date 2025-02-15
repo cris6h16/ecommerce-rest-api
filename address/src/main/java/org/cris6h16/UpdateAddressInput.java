@@ -8,14 +8,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class CreateAddressInput implements Prepareable{
+public class UpdateAddressInput implements Prepareable {
     private String street;
     private String city;
     private String state;
     private String country;
     private String mobileNumber;
     private String reference;
-    private Long userId;
 
     @Override
     public void trim() {

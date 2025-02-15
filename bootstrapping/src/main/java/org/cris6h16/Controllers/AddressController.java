@@ -1,10 +1,12 @@
 package org.cris6h16.Controllers;
 
+import org.cris6h16.facades.adresss.AddressDTO;
 import org.cris6h16.facades.AddressFacade;
 import org.cris6h16.facades.CreateAddressDTO;
 import org.cris6h16.facades.UpdateAddressDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Set;
 
 import static org.cris6h16.Controllers.AddressController.ADDRESS_PATH;
 
@@ -56,6 +59,14 @@ public class AddressController {
                                               @PathVariable Long id) {
         addressFacade.updateAddress(dto, id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(
+            produces = "application/json"
+    )
+    public ResponseEntity<Set<AddressDTO>> getMyAddresses() {
+        return ResponseEntity
+                .ok(addressFacade.getMyAddresses());
     }
 
 }
