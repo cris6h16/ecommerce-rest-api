@@ -2,6 +2,7 @@ package org.cris6h16;
 
 import org.cris6h16.Exception.AddressErrorCode;
 import org.cris6h16.Exception.AddressException;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
@@ -17,6 +18,7 @@ import static org.cris6h16.Exception.AddressErrorCode.INVALID_STATE;
 import static org.cris6h16.Exception.AddressErrorCode.INVALID_STREET;
 
 // todo: mejorar validación con ISO 3166-1 alpha-2
+@Component
 class AddressValidator {
 
 

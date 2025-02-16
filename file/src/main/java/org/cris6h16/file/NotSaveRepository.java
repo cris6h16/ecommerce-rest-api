@@ -1,11 +1,11 @@
 package org.cris6h16.file;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 @Component
-@ConditionalOnMissingBean(FileRepository.class)
+@Profile("test")
 class NotSaveRepository implements FileRepository{
 
     @Override

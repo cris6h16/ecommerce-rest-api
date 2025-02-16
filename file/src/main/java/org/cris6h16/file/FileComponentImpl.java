@@ -2,6 +2,7 @@ package org.cris6h16.file;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.file.Exceptions.FileComponentException;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -2,12 +2,14 @@ package org.cris6h16;
 
 import org.cris6h16.Exception.AddressErrorCode;
 import org.cris6h16.Exception.AddressException;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.cris6h16.Exception.AddressErrorCode.ADDRESS_NOT_FOUND;
 
+@Component
 class AddressComponentImpl implements AddressComponent {
     private final AddressRepository addressRepository;
     private final AddressValidator addressValidator;
