@@ -8,6 +8,7 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.file.Exceptions.FileComponentException;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,7 @@ import static org.cris6h16.file.Exceptions.FileErrorCode.FILE_UPLOAD_ALL_RETRIES
 
 @Slf4j
 @Component
+@Profile("firebase")
  class FirebaseRepository implements FileRepository {
     static String bucketName = "ecommerce-de918.firebasestorage.app";
     static String credentialsFile = "firebase-private-key.json";
