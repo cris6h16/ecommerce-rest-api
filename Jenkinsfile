@@ -16,6 +16,7 @@ pipeline {
             steps {
                 cleanWs()
                 checkout scm
+                sh 'find ./product/src'
             }
         }
         //         stage('Ejecutar Pruebas Unitarias') {
