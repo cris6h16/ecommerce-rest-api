@@ -102,8 +102,10 @@ pipeline {
     post {
         always {
             script {
-                def subject = (currentBuild.result == 'FAILURE') ? "❌ PRUEBAS FALLARON | Jenkins": "✅ PRUEBAS EXITOSAS | Jenkins"
-                def body = (currentBuild.result == 'FAILURE') ? "🚨 Las pruebas fallaron. Revisa los reportes adjuntos.": "🎉 Todas las pruebas pasaron con éxito."
+                def subject = (currentBuild.result == 'FAILURE') ? "❌ PIPELINE FALLIDO | Jenkins": "✅ PIPELINE EXITOSO | Jenkins"
+                def body = (currentBuild.result == 'FAILURE') ?
+                                                    "🚨 El pipeline falló. Revisa los reportes adjuntos. (si estan presentes)" :
+                                                    "🎉 Pipeline se completo con éxito. Revisa los reportes adjuntos. (si estan presentes)"
                 emailext (
                     subject: subject,
                     body: body,

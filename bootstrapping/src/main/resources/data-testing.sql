@@ -203,21 +203,6 @@ INSERT INTO addresses(id, user_id, mobile_number, country, city, state, referenc
 VALUES (1, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre');
 
 -- Pruebas de Rendimiento
-INSERT INTO addresses(id, user_id, mobile_number, country, city, state, reference, street)
-VALUES (10, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
-       (11, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
-       (12, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
-       (13, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
-       (14, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
-       (15, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
-       (16, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
-       (17, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
-       (18, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
-       (19, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
-       (20, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
-       (21, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre');
-
-INSERT INTO categories(id, name) VALUES (4, 'No listado');
 INSERT INTO email_verification(id, email, code, action_type, created_at, expires_at, used)
 VALUES (10,
         'pfunc1@gmail.com',
@@ -388,8 +373,6 @@ VALUES (10,
         now() + interval '15 hours',
         false);
 
-
-
 INSERT INTO users(id, first_name, last_name, balance, email, email_verified, enabled, password, authority)
 VALUES (10,
         'PFunc1',
@@ -499,6 +482,22 @@ VALUES (10,
         true,
         '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y', -- 12345678
         'ROLE_USER');
+
+INSERT INTO addresses(id, user_id, mobile_number, country, city, state, reference, street)
+VALUES (10, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
+       (11, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
+       (12, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
+       (13, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
+       (14, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
+       (15, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
+       (16, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
+       (17, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
+       (18, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
+       (19, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
+       (20, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre'),
+       (21, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'ninguna', 'Av. 15 de Noviembre');
+
+INSERT INTO categories(id, name) VALUES (4, 'No listado');
 
 INSERT INTO products(id,
                      name,
