@@ -8,7 +8,7 @@ pipeline {
         COLLECTION_FILE = 'collection.json'
         REMOTE_SERVER_IP = '192.168.100.135'
         REMOTE_USER = 'Cristian'
-        APP_SERVER_PATH = "C:/Users/Cristian/Desktop/cicd/ssh"
+        APP_SERVER_PATH = "C:\\Users\\Cristian\\Desktop\\cicd\\ssh"
         EMAIL_RECIPIENT = 'cristianh9073@gmail.com'
     }
     stages {
@@ -34,7 +34,7 @@ pipeline {
                             ssh \
                                 -i ${SSH_PRIVATE_KEY} \
                                 -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER_IP} \
-                                'rd /s /q  ${APP_SERVER_PATH}/ || exit 0 && mkdir ${APP_SERVER_PATH}'
+                                'rd /s /q  ${APP_SERVER_PATH}  && mkdir ${APP_SERVER_PATH}'
                         """
                     }
                 }
@@ -66,8 +66,8 @@ pipeline {
                             ssh -i ${SSH_PRIVATE_KEY} \
                                 -o StrictHostKeyChecking=no \
                                 ${REMOTE_USER}@${REMOTE_SERVER_IP} \
-                                'docker compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml down --rmi local && \
-                                docker compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml up -d'
+                                'docker compose -f ${APP_SERVER_PATH}\\docker-compose-staging.yaml down --rmi local && \
+                                docker compose -f ${APP_SERVER_PATH}\\docker-compose-staging.yaml up -d'
                         """
                     }
                 }
@@ -118,7 +118,7 @@ pipeline {
                         ssh \
                             -i ${SSH_PRIVATE_KEY} \
                             -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER_IP} \
-                            'docker compose -f ${APP_SERVER_PATH}/docker-compose-staging.yaml down --rmi local'
+                            'docker compose -f ${APP_SERVER_PATH}\\docker-compose-staging.yaml down --rmi local'
                     """
                 }
             }
