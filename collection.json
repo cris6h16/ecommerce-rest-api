@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "49e17bea-5b9c-4aa7-b812-5fb897a820f9",
-		"name": "Ecommerce-FINAL Copy 5",
+		"_postman_id": "f05123ce-0eb1-461d-8ed2-3925bddd1aa0",
+		"name": "Ecommerce-FINAL Copy 9",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "29096460"
 	},
@@ -719,14 +719,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostURL}}/api/v1/email/send-email-verification",
+							"raw": "{{hostURL}}/api/v1/emails/send-email-verification",
 							"host": [
 								"{{hostURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"email",
+								"emails",
 								"send-email-verification"
 							]
 						}
@@ -782,14 +782,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostURL}}/api/v1/email/send-email-verification",
+							"raw": "{{hostURL}}/api/v1/emails/send-email-verification",
 							"host": [
 								"{{hostURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"email",
+								"emails",
 								"send-email-verification"
 							]
 						}
@@ -847,14 +847,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostURL}}/api/v1/email/send-email-verification",
+							"raw": "{{hostURL}}/api/v1/emails/send-email-verification",
 							"host": [
 								"{{hostURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"email",
+								"emails",
 								"send-email-verification"
 							]
 						}
@@ -902,14 +902,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostURL}}/api/v1/email/send-email-verification",
+							"raw": "{{hostURL}}/api/v1/emails/send-email-verification",
 							"host": [
 								"{{hostURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"email",
+								"emails",
 								"send-email-verification"
 							]
 						}
@@ -955,14 +955,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{hostURL}}/api/v1/email/send-email-verification",
+							"raw": "{{hostURL}}/api/v1/emails/send-email-verification",
 							"host": [
 								"{{hostURL}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"email",
+								"emails",
 								"send-email-verification"
 							]
 						}
@@ -2131,18 +2131,9 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"const msg = \"Usuario no encontrado\";\r",
 									"\r",
-									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
-									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Estado de la respuesta es 404\", function () {\r",
-									"    pm.response.to.have.status(404);\r",
-									"});\r",
-									"\r",
-									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
-									"    pm.expect(pm.response.json().message).eqls(msg);\r",
+									"pm.test(\"Estado de la respuesta es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -2458,18 +2449,9 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"const msg = \"Usuario no encontrado\";\r",
 									"\r",
-									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
-									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Estado de la respuesta es 404\", function () {\r",
-									"    pm.response.to.have.status(404);\r",
-									"});\r",
-									"\r",
-									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
-									"    pm.expect(pm.response.json().message).eqls(msg);\r",
+									"pm.test(\"Estado de la respuesta es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -4326,8 +4308,8 @@
 									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
 									"});\r",
 									"\r",
-									"pm.test(\"Estado de la respuesta es 400\", function () {\r",
-									"    pm.response.to.have.status(400);\r",
+									"pm.test(\"Estado de la respuesta es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
 									"});\r",
 									"\r",
 									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
@@ -4416,6 +4398,2080 @@
 									"key": "price",
 									"value": "<99"
 								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Agregar Producto al Carrito",
+			"item": [
+				{
+					"name": "TF060 - Exitoso - Sin Carrito",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const location = pm.response.headers.get(\"Location\");\r",
+									"pm.test(`Header 'Location' correcto: ${location}`, function () {\r",
+									"    pm.expect(location).to.match(/api\\/v1\\/carts\\/items\\/\\d+$/);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"const url = pm.environment.get(\"hostURL\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
+									"    method: 'GET',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({}) \r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"ResetDB es 204\", function () {\r",
+									"        pm.expect(res).to.have.status(204);\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzM3OTQ3MTQyLCJleHAiOjE3NDU3MjMxNDIsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.sIha5dy8gg_u1Pmf4eixFJCdxci2MonOU7A4JxEztZ3Y7aG_k_OkVPBA7gduJY_v",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"productId\": 1,\r\n  \"quantity\": 12\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF061 - Exitoso - Con Carrito",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const location = pm.response.headers.get(\"Location\");\r",
+									"pm.test(`Header 'Location' correcto: ${location}`, function () {\r",
+									"    pm.expect(location).to.match(/api\\/v1\\/carts\\/items\\/\\d+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"productId\": 1,\r\n  \"quantity\": 12\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF062 - No Autenticado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"productId\": 1,\r\n  \"quantity\": 12\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF063 - No Habilitado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiI0IiwiaWF0IjoxNzM3OTQ3MjgyLCJleHAiOjE3NDU3MjMyODIsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.Mopo1HjHmaqOXghXkUy2avG9Ki5G2hcUDOqAMAvwqJt_KINDqN6tmL2AaWJqaSSr",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"productId\": 1,\r\n  \"quantity\": 12\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF064 - Cantidad a Agregar Invalida",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const msg = \"La cantidad a agregar debe ser mayor a 0\";\r",
+									"\r",
+									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Estado de la respuesta es 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
+									"    pm.expect(pm.response.json().message).eqls(msg);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzM3OTQ3MTQyLCJleHAiOjE3NDU3MjMxNDIsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.sIha5dy8gg_u1Pmf4eixFJCdxci2MonOU7A4JxEztZ3Y7aG_k_OkVPBA7gduJY_v",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"productId\": 1,\r\n  \"quantity\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF065 - Stock Insuficiente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const msg = \"Stock Insuficiente, por favor reduzca la cantidad\";\r",
+									"\r",
+									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Estado de la respuesta es 409\", function () {\r",
+									"    pm.response.to.have.status(409);\r",
+									"});\r",
+									"\r",
+									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
+									"    pm.expect(pm.response.json().message).eqls(msg);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzM3OTQ3MTQyLCJleHAiOjE3NDU3MjMxNDIsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.sIha5dy8gg_u1Pmf4eixFJCdxci2MonOU7A4JxEztZ3Y7aG_k_OkVPBA7gduJY_v",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"productId\": 1,\r\n  \"quantity\": 13\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF066 - Producto Ya en el Carrito",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const msg = \"El producto ya se encuentra en el carrito\"\r",
+									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Estado de la respuesta es 409\", function () {\r",
+									"    pm.response.to.have.status(409);\r",
+									"});\r",
+									"\r",
+									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
+									"    pm.expect(pm.response.json().message).eqls(msg);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"productId\": 2,\r\n  \"quantity\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cambiar Cantidad de Producto en el Carrito",
+			"item": [
+				{
+					"name": "TF067 - Exitoso – Aumentar Cantidad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"const url = pm.environment.get(\"hostURL\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
+									"    method: 'GET',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({}) \r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"ResetDB es 204\", function () {\r",
+									"        pm.expect(res).to.have.status(204);\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "1",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items/1/amount",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items",
+								"1",
+								"amount"
+							],
+							"query": [
+								{
+									"key": "s",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF068 - Exitoso – Disminuir Cantidad",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"const url = pm.environment.get(\"hostURL\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
+									"    method: 'GET',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({}) \r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"ResetDB es 204\", function () {\r",
+									"        pm.expect(res).to.have.status(204);\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "-1",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items/1/amount",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items",
+								"1",
+								"amount"
+							],
+							"query": [
+								{
+									"key": "s",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF069 - Exitoso - Eliminar Item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"const url = pm.environment.get(\"hostURL\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
+									"    method: 'GET',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({}) \r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"ResetDB es 204\", function () {\r",
+									"        pm.expect(res).to.have.status(204);\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "-999",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items/1/amount",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items",
+								"1",
+								"amount"
+							],
+							"query": [
+								{
+									"key": "s",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF070 - No Autenticado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "-999",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items/1/amount",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items",
+								"1",
+								"amount"
+							],
+							"query": [
+								{
+									"key": "s",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF071 - No Habilitado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiI0IiwiaWF0IjoxNzM3OTQ3MjgyLCJleHAiOjE3NDU3MjMyODIsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.Mopo1HjHmaqOXghXkUy2avG9Ki5G2hcUDOqAMAvwqJt_KINDqN6tmL2AaWJqaSSr",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "-999",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items/1/amount",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items",
+								"1",
+								"amount"
+							],
+							"query": [
+								{
+									"key": "s",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF072 - No le Pertenece",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const msg = \"El Ítem especificado no existe en su carrito\";\r",
+									"\r",
+									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Estado de la respuesta es 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
+									"    pm.expect(pm.response.json().message).eqls(msg);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzM3OTQ3MTQyLCJleHAiOjE3NDU3MjMxNDIsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.sIha5dy8gg_u1Pmf4eixFJCdxci2MonOU7A4JxEztZ3Y7aG_k_OkVPBA7gduJY_v",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "-999",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items/1/amount",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items",
+								"1",
+								"amount"
+							],
+							"query": [
+								{
+									"key": "s",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF073 - Delta Invalido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const msg = \"El valor de cambio no debe ser 0\";\r",
+									"\r",
+									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Estado de la respuesta es 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
+									"    pm.expect(pm.response.json().message).eqls(msg);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "0",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts/items/1/amount",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts",
+								"items",
+								"1",
+								"amount"
+							],
+							"query": [
+								{
+									"key": "s",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Obtener Carrito",
+			"item": [
+				{
+					"name": "TF074 - Exitoso - Sin Carrito",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Estado es 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Cantidad de Items igual a 0\", function () {\r",
+									"    pm.expect(pm.response.json().items).to.be.an('array').that.is.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Costo total igual a 0\", function () {\r",
+									"    pm.expect(pm.response.json().total).to.equal(0);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"const url = pm.environment.get(\"hostURL\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
+									"    method: 'GET',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({}) \r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"ResetDB es 204\", function () {\r",
+									"        pm.expect(res).to.have.status(204);\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzM3OTQ3MTQyLCJleHAiOjE3NDU3MjMxNDIsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.sIha5dy8gg_u1Pmf4eixFJCdxci2MonOU7A4JxEztZ3Y7aG_k_OkVPBA7gduJY_v",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF075 - Exitoso - Con Carrito",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Estado es 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Items son los esperados\", function () {\r",
+									"    let items = pm.response.json().items.map(i => i.productName);\r",
+									"    pm.expect(items).to.include.members([\r",
+									"        \"Samsung Smart Watch 5 Pro (amoled)\",\r",
+									"        \"Celular Samsung Galaxy S21 Ultra 5G\"\r",
+									"    ]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Cantidad de Items igual a 2\", function () {\r",
+									"    pm.expect(pm.response.json().items).length(2);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Costo total igual a 3929.94\", function () {\r",
+									"    pm.expect(pm.response.json().total).to.equal(3929.94);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF076 - No Autenticado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Estado es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF077 - No Habilitado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Estado es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiI0IiwiaWF0IjoxNzM3OTQ3MjgyLCJleHAiOjE3NDU3MjMyODIsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.Mopo1HjHmaqOXghXkUy2avG9Ki5G2hcUDOqAMAvwqJt_KINDqN6tmL2AaWJqaSSr",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostURL}}/api/v1/carts",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"carts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Agregar Direccion de Envio",
+			"item": [
+				{
+					"name": "TF078 - Exitoso",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"const location = pm.response.headers.get(\"Location\");\r",
+									"pm.test(`Header 'Location' correcto: ${location}`, function () {\r",
+									"    pm.expect(location).to.match(/api\\/v1\\/addresses\\/\\d+$/);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"const url = pm.environment.get(\"hostURL\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
+									"    method: 'GET',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({}) \r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"ResetDB es 204\", function () {\r",
+									"        pm.expect(res).to.have.status(204);\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"street\": \"Av. 15 de noviembre\",\r\n  \"city\": \"Tena\",\r\n  \"state\": \"Napo\",\r\n  \"mobileNumber\": \"+593960279073\",\r\n  \"reference\": \"Frente al tia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF079 - No Autenticado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"street\": \"Av. 15 de noviembre\",\r\n  \"city\": \"Tena\",\r\n  \"state\": \"Napo\",\r\n  \"mobileNumber\": \"+593960279073\",\r\n  \"reference\": \"Frente al tia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF080 - No Habilitado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiI0IiwiaWF0IjoxNzM3OTQ3MjgyLCJleHAiOjE3NDU3MjMyODIsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.Mopo1HjHmaqOXghXkUy2avG9Ki5G2hcUDOqAMAvwqJt_KINDqN6tmL2AaWJqaSSr",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"street\": \"Av. 15 de noviembre\",\r\n  \"city\": \"Tena\",\r\n  \"state\": \"Napo\",\r\n  \"mobileNumber\": \"+593960279073\",\r\n  \"reference\": \"Frente al tia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF081 - Calle Invalida",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const msg = \"La calle proporcionada no puede estar en blanco\";\r",
+									"\r",
+									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Estado de la respuesta es 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
+									"    pm.expect(pm.response.json().message).eqls(msg);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"street\": \"\",\r\n  \"city\": \"Tena\",\r\n  \"state\": \"Napo\",\r\n  \"mobileNumber\": \"+593960279073\",\r\n  \"reference\": \"Frente al tia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF082 - Referencia Invalida",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const msg = \"La referencia proporcionada no puede estar en blanco\";\r",
+									"\r",
+									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Estado de la respuesta es 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
+									"    pm.expect(pm.response.json().message).eqls(msg);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"street\": \"Av. 15 de Noviembre\",\r\n  \"city\": \"Tena\",\r\n  \"state\": \"Napo\",\r\n  \"mobileNumber\": \"+593960279073\",\r\n  \"reference\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF083 - Numero de Celular Invalido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const msg = \"El número de celular no cumple el formato esperado\";\r",
+									"\r",
+									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Estado de la respuesta es 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
+									"    pm.expect(pm.response.json().message).eqls(msg);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"street\": \"Av. 15 de Noviembre\",\r\n  \"city\": \"Tena\",\r\n  \"state\": \"Napo\",\r\n  \"mobileNumber\": \"593960279073\",\r\n  \"reference\": \"frente al tia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF084 - Provincia Incoherente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const msg = \"La provincia proporcionada no le pertenece al pais proporcionado\";\r",
+									"\r",
+									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Estado de la respuesta es 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
+									"    pm.expect(pm.response.json().message).eqls(msg);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"street\": \"Av. 15 de Noviembre\",\r\n  \"city\": \"Tena\",\r\n  \"state\": \"Pichincha\",\r\n  \"mobileNumber\": \"593960279073\",\r\n  \"reference\": \"frente al tia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF085 - Ciudad Incoherente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const msg = \"La ciudad proporcionada no le pertenece a la provincia proporcionada\";\r",
+									"\r",
+									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Estado de la respuesta es 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
+									"    pm.expect(pm.response.json().message).eqls(msg);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"street\": \"Av. 15 de noviembre\",\r\n  \"city\": \"Quito\",\r\n  \"state\": \"Napo\",\r\n  \"mobileNumber\": \"+593960279073\",\r\n  \"reference\": \"Frente al tia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Eliminar Direccion de Envio",
+			"item": [
+				{
+					"name": "TF086 - Exitoso",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"const url = pm.environment.get(\"hostURL\");\r",
+									"\r",
+									"pm.sendRequest({\r",
+									"    url: `${url}/api/v1/tests/reset-functional-testing-db`,\r",
+									"    method: 'GET',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json'\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({}) \r",
+									"    }\r",
+									"}, function (err, res) {\r",
+									"    pm.test(\"ResetDB es 204\", function () {\r",
+									"        pm.expect(res).to.have.status(204);\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses/1",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF087 - No Autenticado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses/1",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF088 - No Habilitado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Estado es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiI0IiwiaWF0IjoxNzM3OTQ3MjgyLCJleHAiOjE3NDU3MjMyODIsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.Mopo1HjHmaqOXghXkUy2avG9Ki5G2hcUDOqAMAvwqJt_KINDqN6tmL2AaWJqaSSr",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses/1",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF089 - Direccion no le Pertenece",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const msg = \"Dirección de envío no encontrada\";\r",
+									"\r",
+									"pm.test(\"El header Content-Type es 'application/json'\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Estado de la respuesta es 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(`Mensaje de error en el cuerpo de la respuesta es: ${msg}`, function () {\r",
+									"    pm.expect(pm.response.json().message).eqls(msg);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzM3OTQ3MTQyLCJleHAiOjE3NDU3MjMxNDIsImF1dGhvcml0aWVzIjoiW1JPTEVfU0VMTEVSXSJ9.sIha5dy8gg_u1Pmf4eixFJCdxci2MonOU7A4JxEztZ3Y7aG_k_OkVPBA7gduJY_v",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses/1",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Obtener Direcciones de Envio",
+			"item": [
+				{
+					"name": "TF090 - Exitoso",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Respuesta contiene aalmenos una direccion de envio\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array').with.lengthOf(1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Estado es 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzM3OTQ3MTgyLCJleHAiOjE3NDU3MjMxODIsImF1dGhvcml0aWVzIjoiW1JPTEVfVVNFUl0ifQ.M1EQEBc6ycwxLs7Fyy7YyJhQAe19y1hBgxevNz8U78hhtMuReX3e-NOmzsx8i9zG",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF091 - No Autenticado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Estado es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TF092 - No Habilitado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Estado es 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{hostURL}}/api/v1/addresses",
+							"host": [
+								"{{hostURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"addresses"
 							]
 						}
 					},

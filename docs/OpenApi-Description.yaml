@@ -1,4 +1,4 @@
-openapi: 3.1.0
+openapi: 3.0.1
 info:
   title: Ecommerce API
   version: 1.0.0
@@ -409,15 +409,20 @@ paths:
                   type: integer
                 quantity:
                   type: integer
-                required:
-                  - productId
-                  - quantity
-                example:
-                  productId: 1
-                  quantity: 2
+              required:
+                - productId
+                - quantity
+              example:
+                productId: 1
+                quantity: 2
       responses:
-        204:
+        201:
           description: Producto agregado al carrito exitosamente
+          headers:
+            Location:
+              description: URL del nuevo item en el carrito
+              schema:
+                type: string
         403:
           description: Usuario no autenticado
         400:
@@ -492,117 +497,119 @@ paths:
         default:
           $ref: '#/components/responses/UnexpectedError'
 
-    /api/v1/carts:
-      get:
-        summary: Obtener el carrito de un usuario
-        security:
-          - BearerAuth: [ ]
-        responses:
-          200:
-            description: Carrito del usuario
-            content:
-              $ref: '#/components/schemas/CartDTO'
-          403:
-            description: Usuario no autenticado
-          default:
-            $ref: '#/components/responses/UnexpectedError'
-
-    /api/v1/addresses:
-      post:
-        summary: Agregar una direccion de envio
-        security:
-          - BearerAuth: [ ]
-        requestBody:
-          required: true
+  /api/v1/carts:
+    get:
+      summary: Obtener el carrito de un usuario
+      security:
+        - BearerAuth: [ ]
+      responses:
+        200:
+          description: Carrito del usuario
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  street:
-                    type: string
-                  city:
-                    type: string
-                  state:
-                    type: string
-                  mobileNumber:
-                    type: string
-                  reference:
-                    type: string
-                  required:
-                    - address
-                    - city
-                    - state
-                    - mobileNumber
-                    - reference
-        responses:
-          201:
-            description: Direccion de envio agregada exitosamente
-            headers:
-              Location:
-                description: URL de la nueva direccion de envio creada
-                schema:
-                  type: string
-          400:
-            description: Error en los datos de entrada enviados
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/ErrorResponseDTO'
-                examples:
-                  InvalidZip:
-                    value:
-                      message: "La calle proporcionada no puede estar en blanco"
-          403:
-            description: Usuario no autenticado
-          default:
-            $ref: '#/components/responses/UnexpectedError'
-      get:
-        summary: Obtener las direcciones de envio del usuario autenticado
-        security:
-          - BearerAuth: [ ]
-        responses:
-          200:
-            description: Direcciones de envio del usuario
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/AddressDTO'
-          403:
-            description: Usuario no autenticado
-          default:
-            $ref: '#/components/responses/UnexpectedError'
-    /api/v1/addresses/{id}:
-      delete:
-        summary: Eliminar una direccion de envio
-        security:
-          - BearerAuth: [ ]
-        parameters:
-          - name: id
-            in: path
-            description: ID de la direccion de envio
-            required: true
+                $ref: '#/components/schemas/CartDTO'
+        403:
+          description: Usuario no autenticado
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/v1/addresses:
+    post:
+      summary: Agregar una direccion de envio
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
             schema:
-              type: integer
-        responses:
-          204:
-            description: Direccion de envio eliminada exitosamente
-          403:
-            description: Usuario no autenticado
-          404:
-            description: Direccion de envio no encontrada
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/ErrorResponseDTO'
-                examples:
-                  AddressNotFound:
-                    value:
-                      message: "Dirección de envío no encontrada"
-          default:
-            $ref: '#/components/responses/UnexpectedError'
+              type: object
+              properties:
+                street:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                mobileNumber:
+                  type: string
+                reference:
+                  type: string
+              required:
+                - address
+                - city
+                - state
+                - mobileNumber
+                - reference
+      responses:
+        201:
+          description: Direccion de envio agregada exitosamente
+          headers:
+            Location:
+              description: URL de la nueva direccion de envio creada
+              schema:
+                type: string
+        400:
+          description: Error en los datos de entrada enviados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                InvalidZip:
+                  value:
+                    message: "La calle proporcionada no puede estar en blanco"
+        403:
+          description: Usuario no autenticado
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+    get:
+      summary: Obtener las direcciones de envio del usuario autenticado
+      security:
+        - BearerAuth: [ ]
+      responses:
+        200:
+          description: Direcciones de envio del usuario
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AddressDTO'
+        403:
+          description: Usuario no autenticado
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+  /api/v1/addresses/{id}:
+    delete:
+      summary: Eliminar una direccion de envio
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          description: ID de la direccion de envio
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Direccion de envio eliminada exitosamente
+        403:
+          description: Usuario no autenticado
+        404:
+          description: Direccion de envio no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                AddressNotFound:
+                  value:
+                    message: "Dirección de envío no encontrada"
+        default:
+          $ref: '#/components/responses/UnexpectedError'
 
 components:
   responses:

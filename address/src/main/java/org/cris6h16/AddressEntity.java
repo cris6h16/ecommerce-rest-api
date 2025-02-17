@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "address")
+@Entity(name = "addresses")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,7 +34,7 @@ class AddressEntity {
     @Column(length = 100,nullable = false)
     private String state;
 
-    @Column(length = 2, nullable = false)
+    @Column(length = 50, nullable = false)
     private String country;
 
     @Column(name = "mobile_number", length = 13, nullable = false)

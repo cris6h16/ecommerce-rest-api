@@ -1,10 +1,7 @@
 package org.cris6h16;
 
-import org.cris6h16.Exception.AddressErrorCode;
-import org.cris6h16.Exception.AddressException;
+import org.cris6h16.Exception.AddressComponentException;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
 
 import static org.cris6h16.CountryCity.existCityByName;
 import static org.cris6h16.CountryCity.existCountryByName;
@@ -42,38 +39,38 @@ class AddressValidator {
 
     private void validateReference(String reference) {
         if (reference == null || reference.isBlank()) {
-            throw new AddressException(INVALID_REFERENCE);
+            throw new AddressComponentException(INVALID_REFERENCE);
         }
     }
 
     private void validateStreet(String street) {
         if (street == null || street.isBlank()) {
-            throw new AddressException(INVALID_STREET);
+            throw new AddressComponentException(INVALID_STREET);
         }
     }
 
     private void validateMobileNumber(String mobileNumber, String country) {
         String regex = getRegexByCountry(country);
         if (mobileNumber == null || !mobileNumber.matches(regex)) {
-            throw new AddressException(INVALID_MOBILE_NUMBER);
+            throw new AddressComponentException(INVALID_MOBILE_NUMBER);
         }
     }
 
     private void validateState(String provinceName, String countryName) {
         if (provinceName == null || !existStateByName(provinceName, countryName)) {
-            throw new AddressException(INVALID_STATE);
+            throw new AddressComponentException(INVALID_STATE);
         }
     }
 
     private void validateCountry(String name) {
         if (name == null || !existCountryByName(name)) {
-            throw new AddressException(INVALID_COUNTRY);
+            throw new AddressComponentException(INVALID_COUNTRY);
         }
     }
 
     private void validateCity(String city, String state, String country){
         if (city == null || !existCityByName(city, state, country)) {
-            throw new AddressException(INVALID_CITY);
+            throw new AddressComponentException(INVALID_CITY);
         }
     }
 

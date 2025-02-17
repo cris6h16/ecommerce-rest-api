@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class Logging {
 
-    @Before("execution(* org.cris6h16..*(..))")
+    @Before("execution(* org.cris6h16..*.*(..))")
     public void bef(JoinPoint joinPoint) {
         StringBuilder argsLog = new StringBuilder();
         Object[] args = joinPoint.getArgs();
@@ -27,19 +27,19 @@ public class Logging {
                 argsLog.toString());
     }
 
-    @After("execution(* org.cris6h16..*(..))")
+    @After("execution(* org.cris6h16..*.*(..))")
     public void aft(JoinPoint joinPoint) {
         log.debug("Method {} executed", joinPoint.getSignature());
     }
 
-    @AfterReturning(pointcut = "execution(* org.cris6h16..*(..))", returning = "result")
+    @AfterReturning(pointcut = "execution(* org.cris6h16..*.*(..))", returning = "result")
     public void aftRet(JoinPoint joinPoint, Object result) {
         log.debug("Method {} returned: {}",
                 joinPoint.getSignature(),
                 result != null ? result.toString() : "null");
     }
 
-    @AfterThrowing(pointcut = "execution(* org.cris6h16..*(..))", throwing = "exception")
+    @AfterThrowing(pointcut = "execution(* org.cris6h16..*.*(..))", throwing = "exception")
     public void aftThrow(JoinPoint joinPoint, Throwable exception) {
         log.error("Method {} threw an exception: {}",
                 joinPoint.getSignature(),

@@ -23,4 +23,7 @@ public class ApplicationComponentErrorMsgProperties {
     private String enabledUserNotFound;
     private String productNotFoundById;
     private String invalidActionType;
+    private String insufficientStock;
+    private String cartItemNotFound;
+    private String addressNotFound;
 }

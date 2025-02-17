@@ -54,6 +54,9 @@ error-messages:
       product-not-found-by-id: "No se encontró el producto con el id especificado"
       invalid-action-type: "def"
       forbidden-sort-property: "Propiedad de ordenamiento no permitida"
+      insufficient-stock: "Stock Insuficiente, por favor reduzca la cantidad"
+      cart-item-not-found: "El Ítem especificado no existe en su carrito"
+      address-not-found: "Dirección de envío no encontrada"
 
     file:
       empty-multipart-file: "La imagen enviada se encuentra vacía"
@@ -63,3 +66,14 @@ error-messages:
 
       file-upload-fail: "Ha ocurrido un error al subir el archivo"
       file-list-is-empty: "La lista de imagenes no puede estar vacía"
+    cart:
+      invalid-quantity: "La cantidad a agregar debe ser mayor a 0"
+      product-already-in-cart: "El producto ya se encuentra en el carrito"
+      invalid-delta: "El valor de cambio no debe ser 0"
+
+    address:
+      invalid-street: "La calle proporcionada no puede estar en blanco"
+      invalid-reference: "La referencia proporcionada no puede estar en blanco"
+      invalid-mobile-number: "El número de celular no cumple el formato esperado"
+      invalid-state: "La provincia proporcionada no le pertenece al pais proporcionado"
+      invalid-city: "La ciudad proporcionada no le pertenece a la provincia proporcionada"

@@ -84,6 +84,19 @@ public class ApplicationComponentAdvice {
                 msg = properties.getPageSizeTooBig();
                 break;
 
+            case INSUFFICIENT_STOCK:
+                status = HttpStatus.CONFLICT;
+                msg = properties.getInsufficientStock();
+                break;
+            case CART_ITEM_NOT_FOUND:
+                status = HttpStatus.NOT_FOUND;
+                msg = properties.getCartItemNotFound();
+                break;
+            case ADDRESS_NOT_FOUND:
+                status = HttpStatus.NOT_FOUND;
+                msg = properties.getAddressNotFound();
+                break;
+
             default:
                 log.error("A custom exception should have custom response handling", e);
                 status = HttpStatus.INTERNAL_SERVER_ERROR;

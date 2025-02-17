@@ -5,6 +5,7 @@ CREATE EXTENSION IF NOT EXISTS unaccent SCHEMA public;
 
 -- TODO: usar para test environment un usuario que tenga solo los permisos para el schema que corresponde a test. para evitar por error borrar la base de datos
 -- testing funcional
+DELETE FROM addresses;
 DELETE FROM cart_items;
 DELETE FROM carts;
 DELETE FROM product_images;
@@ -13,6 +14,7 @@ DELETE FROM users;
 DELETE FROM email_verification;
 DELETE FROM categories;
 
+SELECT setval('addresses_id_seq', 100, true);
 SELECT setval('users_id_seq', 100, true);
 SELECT setval('products_id_seq', 100, true);
 SELECT setval('email_verification_id_seq', 100, true);
@@ -181,6 +183,16 @@ VALUES (1,
         10,
         0.6);
 
+
+INSERT INTO carts(id, user_id)
+VALUES (1,2);
+
+INSERT INTO cart_items(id, product_id, cart_id, quantity)
+VALUES (1, 2, 1, 3),
+       (2, 3, 1, 6);
+
+INSERT INTO addresses(id, user_id, mobile_number, country, city, state, reference, street)
+VALUES (1, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre');
 
 -- Pruebas de Rendimiento
 INSERT INTO email_verification(id, email, code, action_type, created_at, expires_at, used)
@@ -464,3 +476,6 @@ VALUES (10,
         true,
         '{bcrypt}$2a$10$J3qMm9RkVc9l2hUUyWcS..9G.fB6mEhhUcqF0N0y6QLCAsCaBh23y', -- 12345678
         'ROLE_USER');
+
+
+

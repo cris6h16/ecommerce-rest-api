@@ -1,7 +1,6 @@
 package org.cris6h16;
 
-import org.cris6h16.Exception.AddressErrorCode;
-import org.cris6h16.Exception.AddressException;
+import org.cris6h16.Exception.AddressComponentException;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -34,6 +33,7 @@ class AddressComponentImpl implements AddressComponent {
                 .country(input.getCountry())
                 .mobileNumber(input.getMobileNumber())
                 .userId(input.getUserId())
+                .reference(input.getReference())
                 .build();
     }
 
@@ -43,7 +43,7 @@ class AddressComponentImpl implements AddressComponent {
         addressValidator.validate(input);
         AddressEntity addressEntity = addressRepository
                 .findById(addressId)
-                .orElseThrow(() -> new AddressException(ADDRESS_NOT_FOUND));
+                .orElseThrow(() -> new AddressComponentException(ADDRESS_NOT_FOUND));
         setInputValuesInEntity(input, addressEntity);
         addressRepository.save(addressEntity);
     }

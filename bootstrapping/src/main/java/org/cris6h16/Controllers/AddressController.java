@@ -5,6 +5,8 @@ import org.cris6h16.facades.AddressFacade;
 import org.cris6h16.facades.CreateAddressDTO;
 import org.cris6h16.facades.UpdateAddressDTO;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +36,7 @@ public class AddressController {
     @PostMapping(
             consumes = "application/json"
     )
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public ResponseEntity<Void> createAddress(@RequestBody CreateAddressDTO dto,
                                               UriComponentsBuilder ucb) {
         URI uri = ucb
@@ -46,6 +49,7 @@ public class AddressController {
     @DeleteMapping(
             path = "/{id}"
     )
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public ResponseEntity<Void> deleteAddress(@PathVariable Long id) {
         addressFacade.deleteAddress(id);
         return ResponseEntity.noContent().build();

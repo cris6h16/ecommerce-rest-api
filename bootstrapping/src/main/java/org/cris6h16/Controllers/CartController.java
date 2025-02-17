@@ -47,7 +47,7 @@ public class CartController {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public ResponseEntity<Void> addProductToCart(@RequestBody CreateCartItemDTO dto, UriComponentsBuilder ucb) {
         URI uri = ucb
-                .path(CART_ITEM_SUB_PATH + "/{id}")
+                .path(CART_PATH + CART_ITEM_SUB_PATH + "/{id}")
                 .buildAndExpand(cartFacade.addItemToCart(dto))
                 .toUri();
         return ResponseEntity.created(uri).build();

@@ -39,6 +39,7 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = getTokenFromRequest(request);
 
         if (token == null || !jwtUtils.validate(token)) {
+            log.debug("Token is null or invalid");
             filterChain.doFilter(request, response);
             return;
         }
@@ -48,7 +49,13 @@ class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .map(SimpleGrantedAuthority::new)
                 .toList();
 
-        UserPrincipal user = new UserPrincipal(authorities, userId, isEnabledUser(userId));
+        if (!isEnabledUser(userId)) {
+            log.debug("User with id: {} is not enabled", userId);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        UserPrincipal user = new UserPrincipal(authorities, userId);
         var authToken = new UsernamePasswordAuthenticationToken(user, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authToken);
         log.debug("Authenticated user: {}", user);

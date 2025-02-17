@@ -1,7 +1,6 @@
 package org.cris6h16;
 
-import org.cris6h16.Exception.AddressErrorCode;
-import org.cris6h16.Exception.AddressException;
+import org.cris6h16.Exception.AddressComponentException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,6 +26,7 @@ public final class CountryCity {
         countries.add(CountryInfo.builder()
                 .name("Ecuador")
                 .provinces(Set.of(napo))
+                .mobileNumberRegex("^\\+5939[0-9]{8}$")
                 .build());
     }
 
@@ -54,6 +54,6 @@ public final class CountryCity {
                 .filter(country -> country.getName().equals(countryName))
                 .map(CountryInfo::getMobileNumberRegex)
                 .findFirst()
-                .orElseThrow(() -> new AddressException(COUNTRY_NOT_FOUND));
+                .orElseThrow(() -> new AddressComponentException(COUNTRY_NOT_FOUND));
     }
 }
