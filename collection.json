@@ -6356,7 +6356,7 @@
 								"exec": [
 									"\r",
 									"pm.test(\"Respuesta contiene aalmenos una direccion de envio\", function () {\r",
-									"    pm.expect(pm.response.json()).to.be.an('array').with.length.above(1);\r",
+									"    pm.expect(pm.response.json()).to.be.an('array').with.length.above(0);\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Estado es 200\", function () {\r",
