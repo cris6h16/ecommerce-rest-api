@@ -14,9 +14,7 @@ COPY ./pom.xml ./pom.xml
 RUN --mount=type=cache,target=/root/.m2 mvn dependency:go-offline -B
 
 # Compilar el proyecto sin pruebas
-RUN --mount=type=cache,target=/root/.m2 \
-    rm -rf /root/.m2/repository/org/cris6h16 && \
-    mvn clean package -DskipTests -T 3C
+RUN --mount=type=cache,target=/root/.m2 mvn clean package -DskipTests -T 3C
 
 # Stage 2: Production Stage
 FROM openjdk:21-jdk-slim as production
