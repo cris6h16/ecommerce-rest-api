@@ -6,19 +6,7 @@ LABEL authors="cris6h16"
 
 WORKDIR /app
 
-COPY ./address ./address
-COPY ./application ./application
-COPY ./application ./application
-COPY ./bootstrapping ./bootstrapping
-COPY ./cart ./cart
-COPY ./deposit ./deposit
-COPY ./email ./email
-COPY ./file ./file
-COPY ./order ./order
-COPY ./payment ./payment
-COPY ./product ./product
-COPY ./security ./security
-COPY ./user ./user
+COPY . .
 COPY ./pom.xml ./pom.xml
 
 
