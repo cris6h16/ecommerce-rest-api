@@ -25,7 +25,7 @@ import static org.cris6h16.Controllers.AddressController.ADDRESS_PATH;
 public class AddressController {
 
     private final AddressFacade addressFacade;
-    public static final String ADDRESS_PATH = "/api/v1/address";
+    public static final String ADDRESS_PATH = "/api/v1/addresses";
 
     public AddressController(AddressFacade addressFacade) {
         this.addressFacade = addressFacade;

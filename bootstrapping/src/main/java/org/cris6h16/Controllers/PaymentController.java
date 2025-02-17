@@ -11,11 +11,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+import static org.cris6h16.Controllers.PaymentController.PAYMENT_PATH;
+
 @RestController
-@RequestMapping("/api/v1/payment")
+@RequestMapping(PAYMENT_PATH)
 public class PaymentController {
 
     private final PaymentFacade paymentFacade;
+    public static final String PAYMENT_PATH = "/api/v1/payments";
 
     public PaymentController(PaymentFacade paymentFacade) {
         this.paymentFacade = paymentFacade;
@@ -24,7 +27,7 @@ public class PaymentController {
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Void> processPayment(@RequestBody PaymentRequestDTO dto, UriComponentsBuilder ucb) {
         URI uri = ucb
-                .path("/api/v1/payment/{id}")
+                .path(PAYMENT_PATH + "/{id}")
                 .buildAndExpand(paymentFacade.processPayment(dto))
                 .toUri();
         return ResponseEntity.created(uri).build();

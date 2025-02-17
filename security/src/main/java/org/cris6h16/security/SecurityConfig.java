@@ -37,22 +37,27 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/v1/cart/my-cart").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/carts",
+                                "/api/v1/addresses").hasRole("USER")
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/auth/refresh-token",
-                                "/api/v1/cart/item/add",
-                                "/api/v1/cart/item/{itemId}/amount").hasRole("USER")
+                                "/api/v1/carts/items/{itemId}/amount",
+                                "/api/v1/carts/items",
+                                "/api/v1/addresses").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/api/v1/products").hasRole("SELLER")
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/signup",
-                                "/api/v1/email/send-email-verification",
+                                "/api/v1/emails/send-email-verification",
                                 "/api/v1/users/verify-email",
                                 "/api/v1/auth/reset-password").permitAll()
                         .requestMatchers(HttpMethod.GET, "/health").permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/tests/reset-functional-testing-db",
                                 "/api/v1/products").permitAll()
+                        .requestMatchers(HttpMethod.DELETE,
+                                "/api/v1/addresses/{id}").hasRole("USER")
                         .anyRequest().denyAll())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtils, userComponent), UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)

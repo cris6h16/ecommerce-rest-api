@@ -80,7 +80,7 @@ public class ApplicationComponentAdvice {
                 break;
 
             case PAGE_SIZE_TOO_BIG:
-                status = HttpStatus.BAD_REQUEST;
+                status = HttpStatus.FORBIDDEN;
                 msg = properties.getPageSizeTooBig();
                 break;
 

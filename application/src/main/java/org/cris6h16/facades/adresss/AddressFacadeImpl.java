@@ -43,6 +43,7 @@ class AddressFacadeImpl implements AddressFacade {
                 .state(dto.getState())
                 .street(dto.getStreet())
                 .userId(userId)
+                .reference(dto.getReference())
                 .build();
     }
 

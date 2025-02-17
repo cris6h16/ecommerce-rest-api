@@ -4,15 +4,13 @@ import org.cris6h16.facades.EmailFacade;
 import org.cris6h16.facades.SendEmailVerificationDTO;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/email")
+@RequestMapping("/api/v1/emails")
 public class EmailController {
     private final EmailFacade emailFacade;
 

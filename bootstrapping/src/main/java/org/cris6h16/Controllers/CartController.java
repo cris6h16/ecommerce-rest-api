@@ -24,8 +24,8 @@ import java.net.URI;
 @RequestMapping(CartController.CART_PATH)
 @Slf4j
 public class CartController {
-    public static final String CART_PATH =  "api/v1/cart";
-    public static final String CART_ITEM_SUB_PATH =  "/item";
+    public static final String CART_PATH =  "api/v1/carts";
+    public static final String CART_ITEM_SUB_PATH =  "/items";
     private final CartFacade cartFacade;
 
     public CartController(CartFacade cartFacade) {
@@ -33,7 +33,6 @@ public class CartController {
     }
 
     @GetMapping(
-            value = "/my-cart",
             produces = "application/json"
     )
     @Transactional(isolation = Isolation.READ_COMMITTED)
@@ -42,7 +41,7 @@ public class CartController {
     }
 
     @PostMapping(
-            value = CART_ITEM_SUB_PATH + "/add",
+            value = CART_ITEM_SUB_PATH,
             consumes = "application/json"
     )
     @Transactional(isolation = Isolation.READ_COMMITTED)

@@ -33,12 +33,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponseDTO'
               examples:
-                PasswordTooShort:
-                  value:
-                    message: "La contraseña debe contener entre 8 y 80 caracteres"
-                FirstnameLengthMismatch:
-                  value:
-                    message: "El primer apellido debe contener entre 1 y 30 caracteres"
                 EmailRegexMismatch:
                   value:
                     message: "El correo electrónico ingresado no tiene el formato correcto"
@@ -51,7 +45,7 @@ paths:
               examples:
                 EmailAlreadyExists:
                   value:
-                    message: "El email ya está registrado"
+                    message: "El correo electrónico ya está en uso"
         default:
           $ref: '#/components/responses/UnexpectedError'
   /api/v1/auth/login:
@@ -92,7 +86,7 @@ paths:
           $ref: '#/components/responses/UnexpectedError'
   /api/v1/email/send-email-verification:
     post:
-      summary: enviar correo de verificacion
+      summary: SOLICITAR CÓDIGO DE VERIFICACIÓN AL CORREO ELECTRÓNICO
       description: enviar codigos de verificacion a los correos de los usuarios registrados
       requestBody:
         $ref: '#/components/requestBodies/SendEmailVerification'
@@ -167,12 +161,6 @@ paths:
                 EmailRegexMismatch:
                   value:
                     message: "El correo electrónico ingresado no tiene el formato correcto"
-                CodeRegexMismatch:
-                  value:
-                    message: "El código de verificación no cumple con el formato esperado"
-                PasswordLengthMismatch:
-                  value:
-                    message: "La contraseña debe contener entre 8 y 80 caracteres"
         403:
           description: Codigo de verificacion no valido o ya usado
           content:
@@ -197,19 +185,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccessTokenDTO'
-        401:
-          description: La autenticacion ha fallado, posiblemente el token de acceso ha expirado o es invalido
-        404:
-          description: El id del usuario que esta en el token referencia a un usuario que no existe en la base de datos
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponseDTO'
-              examples:
-                UserNotFound:
-                  value:
-                    message: "Usuario no encontrado"
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+        403:
+          description: Usuario no autenticado
         default:
           $ref: '#/components/responses/UnexpectedError'
   /api/v1/products:
@@ -269,7 +250,63 @@ paths:
             minimum: 0
       responses:
         200:
-          $ref: '#/components/responses/PageProductDTO'
+          description: Pagina de productos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalPages:
+                    type: integer
+                  totalElements:
+                    type: integer
+                  pageable:
+                    type: object
+                    properties:
+                      pageNumber:
+                        type: integer
+                      pageSize:
+                        type: integer
+                      sort:
+                        type: object
+                        properties:
+                          sorted:
+                            type: boolean
+                          empty:
+                            type: boolean
+                          unsorted:
+                            type: boolean
+                      offset:
+                        type: integer
+                      paged:
+                        type: boolean
+                      unpaged:
+                        type: boolean
+                  first:
+                    type: boolean
+                  last:
+                    type: boolean
+                  size:
+                    type: integer
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductDTO'
+                  number:
+                    type: integer
+                  sort:
+                    type: object
+                    properties:
+                      sorted:
+                        type: boolean
+                      empty:
+                        type: boolean
+                      unsorted:
+                        type: boolean
+                  numberOfElements:
+                    type: integer
+                  empty:
+                    type: boolean
 
         400:
           description: Error en los datos de entrada enviados
@@ -278,15 +315,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponseDTO'
               examples:
-                PageSizeTooBig:
-                  description: aplica solo si se envia el parametro 'size'
-                  value:
-                    message: "El formato del filtro 'precio' es inválido"
                 InvalidCategoryId:
                   description: aplica solo si se envia el parametro 'categoryId'
                   value:
-                    message: "El id de la categoria no es valido"
-
+                    message: "Id de la categoría no es un número entero"
         403:
           description: Petición prohibida explicitamente
           content:
@@ -298,9 +330,6 @@ paths:
                   description: "La propiedad de ordenamiento no esta permitida (propiedad 'sort' de paginacion)"
                   value:
                     message: "Propiedad de ordenamiento no permitida"
-                PageSizeTooBig:
-                  value:
-                    message: "El tamaño de la página no puede ser mayor a 100"
         default:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -339,23 +368,11 @@ paths:
                     message: "El precio es inválido"
                 EmptyFileList:
                   value:
-                    message: "La lista de imagenes no puede estar vacía"
-                InvalidFileName:
-                  value:
-                    message: "Nombre de la imagen inválida: asegúrese de incluir una extensión (por ejemplo: hola.jpg)"
-
-        404:
-          description: Usuario que esta creando el producto no existe en la base de datos
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponseDTO'
-              examples:
-                UserNotFound:
-                  value:
-                    message: "Usuario no encontrado"
+                    message: "No es posible crear un producto sin imágenes"
         403:
-          description: Usuario no autorizado para crear productos (no contendra cuerpo si el usuario no esta autenticado o no tiene el rol adecuado)
+          description: |
+            1: Usuario no autenticado (respuesta sin contenido en el cuerpo de la respuesta)
+            2: No tiene el rol de Vendedor, por lo tanto no autorizado para crear productos
           content:
             application/json:
               schema:
@@ -363,8 +380,7 @@ paths:
               examples:
                 EmailNotVerified:
                   value:
-                    message: "Tu correo electronico no esta verificado. Completa el proceso de verificacion para continuar"
-
+                    message: "Tu correo electrónico no está verificado. Completa el proceso de verificación para continuar"
         409:
           description: El usuario ya tiene un producto con el mismo nombre
           content:
@@ -374,11 +390,219 @@ paths:
               examples:
                 UniqueUserIdProductName:
                   value:
-                    message: "Ya existe un producto con el mismo nombre para el usuario especificado"
-
+                    message: "No se pudo crear el producto ya que usted ya cuenta con un producto con el mismo nombre"
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+  /api/v1/carts/items:
+    post:
+      summary: Agregar un producto al carrito
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  type: integer
+                quantity:
+                  type: integer
+                required:
+                  - productId
+                  - quantity
+                example:
+                  productId: 1
+                  quantity: 2
+      responses:
+        204:
+          description: Producto agregado al carrito exitosamente
+        403:
+          description: Usuario no autenticado
+        400:
+          description: Cantidad a agregar invalida (menor o igual a 0)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                InvalidQuantity:
+                  value:
+                    message: "La cantidad a agregar debe ser mayor a 0"
+        409:
+          description: Stock insuficiente o producto ya esta en el carrito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                InsufficientStock:
+                  value:
+                    message: "Stock Insuficiente, por favor reduzca la cantidad"
+                ProductAlreadyInCart:
+                  value:
+                    message: "El producto ya se encuentra en el carrito"
         default:
           $ref: '#/components/responses/UnexpectedError'
 
+  /api/v1/carts/items/{itemId}/amount:
+    post:
+      summary: Cambiar la cantidad de un producto en el carrito
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: itemId
+          in: path
+          description: ID del item en el carrito
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+      responses:
+        204:
+          description: Cantidad de producto en el carrito cambiada exitosamente
+        400:
+          description: El valor de cambio es 0 (invalido)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                InvalidDelta:
+                  value:
+                    message: "El valor de cambio no debe ser 0"
+        403:
+          description: Usuario no autenticado
+        404:
+          description: Item no encontrado en el carrito del usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+              examples:
+                ItemNotFound:
+                  value:
+                    message: "El Ítem especificado no existe en su carrito"
+        default:
+          $ref: '#/components/responses/UnexpectedError'
+
+    /api/v1/carts:
+      get:
+        summary: Obtener el carrito de un usuario
+        security:
+          - BearerAuth: [ ]
+        responses:
+          200:
+            description: Carrito del usuario
+            content:
+              $ref: '#/components/schemas/CartDTO'
+          403:
+            description: Usuario no autenticado
+          default:
+            $ref: '#/components/responses/UnexpectedError'
+
+    /api/v1/addresses:
+      post:
+        summary: Agregar una direccion de envio
+        security:
+          - BearerAuth: [ ]
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  street:
+                    type: string
+                  city:
+                    type: string
+                  state:
+                    type: string
+                  mobileNumber:
+                    type: string
+                  reference:
+                    type: string
+                  required:
+                    - address
+                    - city
+                    - state
+                    - mobileNumber
+                    - reference
+        responses:
+          201:
+            description: Direccion de envio agregada exitosamente
+            headers:
+              Location:
+                description: URL de la nueva direccion de envio creada
+                schema:
+                  type: string
+          400:
+            description: Error en los datos de entrada enviados
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResponseDTO'
+                examples:
+                  InvalidZip:
+                    value:
+                      message: "La calle proporcionada no puede estar en blanco"
+          403:
+            description: Usuario no autenticado
+          default:
+            $ref: '#/components/responses/UnexpectedError'
+      get:
+        summary: Obtener las direcciones de envio del usuario autenticado
+        security:
+          - BearerAuth: [ ]
+        responses:
+          200:
+            description: Direcciones de envio del usuario
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/AddressDTO'
+          403:
+            description: Usuario no autenticado
+          default:
+            $ref: '#/components/responses/UnexpectedError'
+    /api/v1/addresses/{id}:
+      delete:
+        summary: Eliminar una direccion de envio
+        security:
+          - BearerAuth: [ ]
+        parameters:
+          - name: id
+            in: path
+            description: ID de la direccion de envio
+            required: true
+            schema:
+              type: integer
+        responses:
+          204:
+            description: Direccion de envio eliminada exitosamente
+          403:
+            description: Usuario no autenticado
+          404:
+            description: Direccion de envio no encontrada
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResponseDTO'
+                examples:
+                  AddressNotFound:
+                    value:
+                      message: "Dirección de envío no encontrada"
+          default:
+            $ref: '#/components/responses/UnexpectedError'
 
 components:
   responses:
@@ -392,64 +616,7 @@ components:
             UnexpectedError:
               value:
                 message: "Ha ocurrido un error inesperado"
-    PageProductDTO:
-      description: Pagina de productos
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              totalPages:
-                type: integer
-              totalElements:
-                type: integer
-              pageable:
-                type: object
-                properties:
-                  pageNumber:
-                    type: integer
-                  pageSize:
-                    type: integer
-                  sort:
-                    type: object
-                    properties:
-                      sorted:
-                        type: boolean
-                      empty:
-                        type: boolean
-                      unsorted:
-                        type: boolean
-                  offset:
-                    type: integer
-                  paged:
-                    type: boolean
-                  unpaged:
-                    type: boolean
-              first:
-                type: boolean
-              last:
-                type: boolean
-              size:
-                type: integer
-              content:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProductDTO'
-              number:
-                type: integer
-              sort:
-                type: object
-                properties:
-                  sorted:
-                    type: boolean
-                  empty:
-                    type: boolean
-                  unsorted:
-                    type: boolean
-              numberOfElements:
-                type: integer
-              empty:
-                type: boolean
+
   schemas:
     LoginDTO:
       type: object
@@ -467,11 +634,7 @@ components:
           type: string
         refreshToken:
           type: string
-    AccessTokenDTO:
-      type: object
-      properties:
-        accessToken:
-          type: string
+
     SignupDTO:
       type: object
       properties:
@@ -579,6 +742,59 @@ components:
         categoryId:
           type: integer
 
+    CartDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItemDTO'
+        total:
+          type: number
+
+
+    CartItemDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        productId:
+          type: integer
+        productName:
+          type: string
+        productImgUrl:
+          type: array
+          items:
+            type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+        total:
+          type: number
+
+    AddressDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        street:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        mobileNumber:
+          type: string
+        reference:
+          type: string
+        userId:
+          type: integer
+
   requestBodies:
     Signup:
       required: true
@@ -604,6 +820,9 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/SendEmailVerificationDTO'
+
+
+
   securitySchemes:
     BearerAuth:
       type: http
