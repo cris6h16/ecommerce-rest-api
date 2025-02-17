@@ -5,14 +5,22 @@ CREATE EXTENSION IF NOT EXISTS unaccent SCHEMA public;
 
 -- TODO: usar para test environment un usuario que tenga solo los permisos para el schema que corresponde a test. para evitar por error borrar la base de datos
 -- testing funcional
-DELETE FROM addresses;
-DELETE FROM cart_items;
-DELETE FROM carts;
-DELETE FROM product_images;
-DELETE FROM products;
-DELETE FROM users;
-DELETE FROM email_verification;
-DELETE FROM categories;
+DELETE
+FROM addresses;
+DELETE
+FROM cart_items;
+DELETE
+FROM carts;
+DELETE
+FROM product_images;
+DELETE
+FROM products;
+DELETE
+FROM users;
+DELETE
+FROM email_verification;
+DELETE
+FROM categories;
 
 SELECT setval('addresses_id_seq', 100, true);
 SELECT setval('users_id_seq', 100, true);
@@ -153,7 +161,7 @@ VALUES (1,
         'Celular Samsung Galaxy S21 Ultra 5G',
         'Potente smartphone con pantalla Dynamic AMOLED de 6.8", cámaras profesionales y batería de 5000 mAh para todo el día. Compatible con carga rápida e inalámbrica.',
         1210,
-        4,
+        40,
         2,
         1,
         5,
@@ -181,18 +189,163 @@ VALUES (1,
         10,
         10,
         10,
-        0.6);
+        0.6),
+
+
+       (10,
+        'Honor 7 Pro',
+        'Potente smartphone con pantalla Dynamic AMOLED de 6.8", cámaras profesionales y batería de 5000 mAh para todo el día. Compatible con carga rápida e inalámbrica.',
+        170,
+        90,
+        2,
+        1,
+        10,
+        5,
+        20,
+        0.2),
+       (11,
+        'Redmi Note 10 Pro',
+        'Potente smartphone con pantalla Dynamic AMOLED de 6.8", cámaras profesionales y batería de 5000 mAh para todo el día. Compatible con carga rápida e inalámbrica.',
+        170,
+        90,
+        2,
+        1,
+        10,
+        5,
+        20,
+        0.2),
+       (12,
+        'Honor 20 Plus',
+        'Potente smartphone con pantalla Dynamic AMOLED de 6.8", cámaras profesionales y batería de 5000 mAh para todo el día. Compatible con carga rápida e inalámbrica.',
+        170,
+        90,
+        2,
+        1,
+        10,
+        5,
+        20,
+        0.2),
+       (13,
+        'Xiomi 9 lite',
+        'Potente smartphone con pantalla Dynamic AMOLED de 6.8", cámaras profesionales y batería de 5000 mAh para todo el día. Compatible con carga rápida e inalámbrica.',
+        170,
+        90,
+        2,
+        1,
+        10,
+        5,
+        20,
+        0.2),
+       (14,
+        'Honor 007',
+        'Potente smartphone con pantalla Dynamic AMOLED de 6.8", cámaras profesionales y batería de 5000 mAh para todo el día. Compatible con carga rápida e inalámbrica.',
+        170,
+        90,
+        2,
+        1,
+        10,
+        5,
+        20,
+        0.2),
+       (15,
+        'Honor 008',
+        'Potente smartphone con pantalla Dynamic AMOLED de 6.8", cámaras profesionales y batería de 5000 mAh para todo el día. Compatible con carga rápida e inalámbrica.',
+        170,
+        90,
+        2,
+        1,
+        10,
+        5,
+        20,
+        0.2),
+       (16,
+        'Honor 009',
+        'Potente smartphone con pantalla Dynamic AMOLED de 6.8", cámaras profesionales y batería de 5000 mAh para todo el día. Compatible con carga rápida e inalámbrica.',
+        170,
+        90,
+        2,
+        1,
+        10,
+        5,
+        20,
+        0.2),
+       (17,
+        'Honor 010',
+        'Potente smartphone con pantalla Dynamic AMOLED de 6.8", cámaras profesionales y batería de 5000 mAh para todo el día. Compatible con carga rápida e inalámbrica.',
+        170,
+        90,
+        2,
+        1,
+        10,
+        5,
+        20,
+        0.2),
+       (18,
+        'Honor 011',
+        'Potente smartphone con pantalla Dynamic AMOLED de 6.8", cámaras profesionales y batería de 5000 mAh para todo el día. Compatible con carga rápida e inalámbrica.',
+        170,
+        90,
+        2,
+        1,
+        10,
+        5,
+        20,
+        0.2),
+       (19,
+        'Honor 012',
+        'Potente smartphone con pantalla Dynamic AMOLED de 6.8", cámaras profesionales y batería de 5000 mAh para todo el día. Compatible con carga rápida e inalámbrica.',
+        170,
+        90,
+        2,
+        1,
+        10,
+        5,
+        20,
+        0.2),
+       (20,
+        'Honor 013',
+        'Potente smartphone con pantalla Dynamic AMOLED de 6.8", cámaras profesionales y batería de 5000 mAh para todo el día. Compatible con carga rápida e inalámbrica.',
+        170,
+        90,
+        2,
+        1,
+        10,
+        5,
+        20,
+        0.2),
+       (21,
+        'Honor 014',
+        'Potente smartphone con pantalla Dynamic AMOLED de 6.8", cámaras profesionales y batería de 5000 mAh para todo el día. Compatible con carga rápida e inalámbrica.',
+        170,
+        90,
+        2,
+        1,
+        10,
+        5,
+        20,
+        0.2);
 
 
 INSERT INTO carts(id, user_id)
-VALUES (1,2);
+VALUES (1, 2);
 
 INSERT INTO cart_items(id, product_id, cart_id, quantity)
 VALUES (1, 2, 1, 3),
        (2, 3, 1, 6);
 
 INSERT INTO addresses(id, user_id, mobile_number, country, city, state, reference, street)
-VALUES (1, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre');
+VALUES (10, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre'),
+       (11, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre'),
+       (12, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre'),
+       (13, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre'),
+       (14, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre'),
+       (15, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre'),
+       (16, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre'),
+       (17, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre'),
+       (18, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre'),
+       (19, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre'),
+       (20, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre'),
+       (21, 2, '+593960009070', 'Ecuador', 'Tena', 'Napo', 'Frente a la iglesia', 'Av. 15 de Noviembre');
 
 -- Pruebas de Rendimiento
 INSERT INTO email_verification(id, email, code, action_type, created_at, expires_at, used)
