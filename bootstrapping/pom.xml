@@ -36,7 +36,7 @@
         <dependency>
             <groupId>org.cris6h16</groupId>
             <artifactId>application</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
