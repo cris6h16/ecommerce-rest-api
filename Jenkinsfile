@@ -52,7 +52,7 @@ pipeline {
                             cp ${FIREBASE_KEY_FILE} file/src/main/resources/firebase-private-key.json
                             scp -i ${SSH_PRIVATE_KEY} \
                                 -o StrictHostKeyChecking=no \
-                                -r ./ ${REMOTE_USER}@${REMOTE_SERVER_IP}:${APP_SERVER_PATH}
+                                -r ./ ${REMOTE_USER}@${REMOTE_SERVER_IP}:"${APP_SERVER_PATH}"
                         """
                     }
                 }
