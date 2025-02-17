@@ -88,23 +88,23 @@ pipeline {
         }
         stage('Ejecutar Pruebas de JMeter') {
             steps {
-               script {
-                   def jmeterCsvPath = sh(script: 'realpath jmeter.csv', returnStdout: true).trim()
-
-                   sh """
+                script {
+                    def jmeterCsvPath = sh(script: 'realpath jmeter.csv', returnStdout: true).trim()
+                    sh """
                        jmeter -n -t jmeter.jmx -Jhost="${REMOTE_SERVER_IP}" -Jport=7937 -JjmeterCsv="${jmeterCsvPath}" -l jmeter.jtl
                    """
-               }
-           }
-       }
-
+                }
+            }
+        }
     }
     post {
         always {
             script {
+                def subject = (currentBuild.result == 'FAILURE') ? "❌ PRUEBAS FALLARON | Jenkins": "✅ PRUEBAS EXITOSAS | Jenkins"
+                def body = (currentBuild.result == 'FAILURE') ? "🚨 Las pruebas fallaron. Revisa los reportes adjuntos.": "🎉 Todas las pruebas pasaron con éxito."
                 emailext (
-                    subject: "Reporte de Pruebas Jenkins",
-                    body: "Aquí está el reporte de las pruebas ejecutadas de Newman y JMeter",
+                    subject: subject,
+                    body: body,
                     attachmentsPattern: "**/report.html,**/jmeter.jtl, **/jmeter.log",
                     to: "${EMAIL_RECIPIENT}"
                 )
@@ -120,7 +120,6 @@ pipeline {
                     """
                 }
             }
-
             // limpiar ws (es efimero se autodestruye)
         }
     }
