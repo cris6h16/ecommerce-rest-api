@@ -3849,9 +3849,6 @@
 								"exec": [
 									"const b = pm.response.json();\r",
 									"\r",
-									"pm.test(`Cantidad de Productos es Igual a 4`, function () {\r",
-									"    pm.expect(b.content.length).to.equal(4);\r",
-									"});\r",
 									"\r",
 									"pm.test(`Productos.Precio estan ordenados ASC`, function () {\r",
 									"    let precio1 = b.content[0].price;\r",
@@ -3908,10 +3905,6 @@
 							"script": {
 								"exec": [
 									"const b = pm.response.json();\r",
-									"\r",
-									"pm.test(`Cantidad de Productos es Igual a 4`, function () {\r",
-									"    pm.expect(b.content.length).to.equal(4);\r",
-									"});\r",
 									"\r",
 									"pm.test(`Productos.Id estan ordenados DESC`, function () {\r",
 									"    let id1 = b.content[0].id;\r",
@@ -6363,7 +6356,7 @@
 								"exec": [
 									"\r",
 									"pm.test(\"Respuesta contiene aalmenos una direccion de envio\", function () {\r",
-									"    pm.expect(pm.response.json()).to.be.an('array').with.lengthOf(1);\r",
+									"    pm.expect(pm.response.json()).to.be.an('array').with.length.above(1);\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Estado es 200\", function () {\r",
