@@ -14,6 +14,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                cleanWs()
                 checkout scm
             }
         }
@@ -120,7 +121,6 @@ pipeline {
                     """
                 }
             }
-            // limpiar ws (es efimero se autodestruye)
         }
     }
 }
