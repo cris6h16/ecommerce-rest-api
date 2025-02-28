@@ -30,6 +30,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
+                        sh "cat ${SSH_PRIVATE_KEY}""
                         sh """
                             ssh \
                                 -i ${SSH_PRIVATE_KEY} \
