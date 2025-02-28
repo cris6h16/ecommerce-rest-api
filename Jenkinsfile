@@ -30,11 +30,11 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
-                        sh """
+                        sh """add
                             ssh \
                                 -i ${SSH_PRIVATE_KEY} \
                                 -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER_IP} \
-                                'mkdir ${APP_SERVER_PATH} || exit 0 && rd /s /q  ${APP_SERVER_PATH}  && mkdir ${APP_SERVER_PATH}'
+                                'rd /s /q  ${APP_SERVER_PATH}  && mkdir ${APP_SERVER_PATH}'
                         """
                     }
                 }
@@ -47,6 +47,7 @@ pipeline {
                         file(credentialsId: 'firebase-key', variable: 'FIREBASE_KEY_FILE'),
                         file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')
                     ]) {
+
                         sh """
                             mkdir -p file/src/main/resources
                             cp ${FIREBASE_KEY_FILE} file/src/main/resources/firebase-private-key.json
