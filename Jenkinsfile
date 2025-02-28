@@ -128,7 +128,7 @@ pipeline {
                     file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')
                 ]) {
                     sh """
-                        scp -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no report.html jmeter.jtl jmeter.log ${REMOTE_USER}@${REMOTE_SERVER_IP}:"C:\Users\Cristian\Desktop"
+                        scp -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no report.html jmeter.jtl jmeter.log ${REMOTE_USER}@${REMOTE_SERVER_IP}:"C:\\Users\\Cristian\\Desktop"
                         """
                 }
             }
