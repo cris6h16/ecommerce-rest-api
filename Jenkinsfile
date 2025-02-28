@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
-                        sh """add
+                        sh """
                             ssh \
                                 -i ${SSH_PRIVATE_KEY} \
                                 -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER_IP} \
