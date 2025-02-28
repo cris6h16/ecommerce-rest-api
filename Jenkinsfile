@@ -112,16 +112,6 @@ pipeline {
                     to: "${EMAIL_RECIPIENT}"
                 )
             }
-            script {
-                withCredentials([
-                    file(credentialsId: 'firebase-key', variable: 'FIREBASE_KEY_FILE'),
-                    file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')
-                ]) {
-                    sh """
-                        scp -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no report.html jmeter.jtl jmeter.log ${REMOTE_USER}@${REMOTE_SERVER_IP}:"${APP_SERVER_PATH}"
-                        """
-                }
-            }
             // Detener API en Servidor de Staging
             script {
                 withCredentials([file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')]) {
@@ -131,6 +121,15 @@ pipeline {
                             -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER_IP} \
                             'docker compose -f ${APP_SERVER_PATH}\\docker-compose-staging.yaml down --rmi local'
                     """
+                }
+            }
+            script {
+                withCredentials([
+                    file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')
+                ]) {
+                    sh """
+                        scp -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no report.html jmeter.jtl jmeter.log ${REMOTE_USER}@${REMOTE_SERVER_IP}:"C:\Users\Cristian\Desktop"
+                        """
                 }
             }
         }
