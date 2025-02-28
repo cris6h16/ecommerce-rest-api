@@ -6,7 +6,7 @@ pipeline {
     }
     environment {
         COLLECTION_FILE = 'collection.json'
-        REMOTE_SERVER_IP = '192.168.19.79'
+        REMOTE_SERVER_IP = '172.16.61.75'
         REMOTE_USER = 'Cristian'
         APP_SERVER_PATH = "C:\\Users\\Cristian\\Desktop\\cicd\\ssh"
         EMAIL_RECIPIENT = 'cristianh9073@gmail.com'
@@ -47,7 +47,6 @@ pipeline {
                         file(credentialsId: 'firebase-key', variable: 'FIREBASE_KEY_FILE'),
                         file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')
                     ]) {
-
                         sh """
                             mkdir -p file/src/main/resources
                             cp ${FIREBASE_KEY_FILE} file/src/main/resources/firebase-private-key.json
@@ -104,15 +103,24 @@ pipeline {
         always {
             script {
                 def subject = (currentBuild.result == 'FAILURE') ? "❌ PIPELINE FALLIDO | Jenkins": "✅ PIPELINE EXITOSO | Jenkins"
-                def body = (currentBuild.result == 'FAILURE') ?
-                                                    "🚨 El pipeline falló. Revisa los reportes adjuntos. (si estan presentes)" :
-                                                    "🎉 Pipeline se completo con éxito. Revisa los reportes adjuntos. (si estan presentes)"
+                def body = (currentBuild.result == 'FAILURE') ? "🚨 El pipeline falló. Revisa los reportes adjuntos. (si estan presentes)":
+                "🎉 Pipeline se completo con éxito. Revisa los reportes adjuntos. (si estan presentes)"
                 emailext (
                     subject: subject,
                     body: body,
                     attachmentsPattern: "**/report.html,**/jmeter.jtl, **/jmeter.log",
                     to: "${EMAIL_RECIPIENT}"
                 )
+            }
+            script {
+                withCredentials([
+                    file(credentialsId: 'firebase-key', variable: 'FIREBASE_KEY_FILE'),
+                    file(credentialsId: 'win-private-key', variable: 'SSH_PRIVATE_KEY')
+                ]) {
+                    sh """
+                        scp -i ${SSH_PRIVATE_KEY} -o StrictHostKeyChecking=no report.html jmeter.jtl jmeter.log ${REMOTE_USER}@${REMOTE_SERVER_IP}:"${APP_SERVER_PATH}"
+                        """
+                }
             }
             // Detener API en Servidor de Staging
             script {
