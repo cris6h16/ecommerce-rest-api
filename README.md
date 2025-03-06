@@ -233,7 +233,7 @@ PD:
 
 ## Requisitos Funcionales Cumplidos
 
-![pdf](docs/requisitos.pdf)
+![PDF](docs/requisitos.pdf)
 
 <hr>
 DOCS INCOMPLETOS desde aqui
