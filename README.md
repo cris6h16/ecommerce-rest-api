@@ -242,15 +242,6 @@ DOCS INCOMPLETOS desde aqui
 
 ### Aplicación
 
-1. ¿Porque no se integra con pasarelas de pago?   
-   // todo: explicar: necesito ruc, hisotrial crediticio, bancos internacionales(strype), mesualidad
-
-2. ¿Si no se integram pasarelas de pago como se realizan los pagos?
-   // explcair creditos internos de app
-
-3. como integrar asarelas de pago
-   // todo: explicar extension de la clase abstracta base y impl en el componente mediante una interface
-
 ### Desarrollo
 
 <hr>
