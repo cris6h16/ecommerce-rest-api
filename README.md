@@ -231,8 +231,9 @@ PD:
     - _Inputs_: Objetos de entradas a componentes
     - _Outputs_:Objetos de salida de componentes
 
-## Requisitos Funcionales
+## Requisitos Funcionales Cumplidos
 
+![pdf](docs/requisitos.pdf)
 
 <hr>
 DOCS INCOMPLETOS desde aqui
