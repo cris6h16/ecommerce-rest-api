@@ -1,5 +1,6 @@
 package org.cris6h16.product;
 
+import lombok.extern.slf4j.Slf4j;
 import org.cris6h16.product.Exceptions.ProductComponentException;
 import org.cris6h16.product.Exceptions.ProductErrorCode;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import static org.cris6h16.product.ProductSpecs.hasNameLike;
 import static org.cris6h16.product.ProductSpecs.hasPrice;
 
 @Component
+@Slf4j
 class ProductComponentImpl implements ProductComponent {
     private final ProductRepository productRepository;
     private final ProductValidator productValidator;
@@ -50,10 +52,18 @@ class ProductComponentImpl implements ProductComponent {
         input.prepare();
         productValidator.validate(input);
 
+        categoryExists(input.getCategoryId());
+
         ProductEntity pe = toProductEntity(input);
         checkDuplicates(pe, null);
 
         return productRepository.save(pe).getId();
+    }
+
+    private void categoryExists(Long categoryId) {
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new ProductComponentException(CATEGORY_NOT_FOUND);
+        }
     }
 
     @Override

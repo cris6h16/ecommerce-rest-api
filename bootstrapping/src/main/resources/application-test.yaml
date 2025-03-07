@@ -10,8 +10,10 @@ spring:
 
 
 logging:
-    level:
-      root: debug
+  level:
+    org.cris6h16: DEBUG
+    root: INFO
+
 
 jwt:
   secret-key: 1234567890123456789012345678902345678901234567890123456789012345

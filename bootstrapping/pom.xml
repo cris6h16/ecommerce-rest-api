@@ -39,6 +39,12 @@
             <version>0.0.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.cris6h16</groupId>
+            <artifactId>logging</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.platform</groupId>

@@ -30,4 +30,4 @@ USER appuser
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
-CMD ["--spring.profiles.active=prod"]
+# CMD ["--spring.profiles.active=prod"]
