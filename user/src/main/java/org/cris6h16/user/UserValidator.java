@@ -35,7 +35,7 @@ class UserValidator {
 
     private String validateLength(String name,int minLength, int maxLength, UserErrorCode lengthError) {
         name = trim(name);
-        if (name.length() < minLength || name.length() > maxLength) throwE(lengthError);
+        if (true) throwE(lengthError);
         return name;
     }
 
