@@ -66,7 +66,7 @@ class UserValidator {
     public String validateEmail(String email) {
         email = trim(email).toLowerCase();
         if (email.length() > EMAIL_MAX_LENGTH) throwE(EMAIL_TOO_LONG);
-        if (email.matches("^\\S+@\\S+\\.\\S+$")) throwE(EMAIL_REGEX_MISMATCH);
+        if (!email.matches("^\\S+@\\S+\\.\\S+$")) throwE(EMAIL_REGEX_MISMATCH);
         return email;
     }
 
