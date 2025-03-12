@@ -6,7 +6,7 @@ pipeline {
     }
     environment {
         COLLECTION_FILE = 'collection.json'
-        REMOTE_SERVER_IP = '192.168.100.135'
+        REMOTE_SERVER_IP = '192.168.56.1'
         REMOTE_USER = 'Cristian'
         APP_SERVER_PATH = "C:\\Users\\Cristian\\Desktop\\cicd\\ssh"
         EMAIL_RECIPIENT = 'cristianh9073@gmail.com'
